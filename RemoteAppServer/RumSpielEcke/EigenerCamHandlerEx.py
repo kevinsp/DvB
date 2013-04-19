@@ -39,9 +39,9 @@ class MyCameraHandler( viz.CameraHandler ):
         elif viz.iskeydown ('s' ):
             #move backward the amout of time in seconds sence the last call to _camUpdate
             e.view.move( [0, 0, -e.elapsed * 10] )
-        elif viz.iskeydown ('a' ):
+        elif viz.iskeydown ('a') and viz.iskeydown("w"):
             #move backward the amout of time in seconds sence the last call to _camUpdate
-            e.view.move( [ -e.elapsed * 10, 0, 0] )
+            e.view.move( [ -e.elapsed * 10, 0,-e.elapsed * 10] )
 
 #Set camera handler
 viz.cam.setHandler( MyCameraHandler() )
