@@ -1,7 +1,7 @@
 import viz
 import vizact
 
-viz.setMultiSample(4)
+"""viz.setMultiSample(4)
 viz.fov(60)
 viz.go()
 
@@ -10,10 +10,14 @@ info = vizinfo.add( 'The view is controlled by custom camera handler class.\nCon
 
 #Initialize world
 viz.clearcolor( viz.GRAY )
-ground = viz.addChild( 'ground.osgb' )
+ground = viz.addChild( 'ground.osgb' )"""
 
 #Create custom camera handler
 class MyCameraHandler( viz.CameraHandler ):
+
+    def _camKeyDown(self,e):
+        print "Bin im eigenen cam handler ",
+        print dir(e)
 
     def _camMouseDown( self, e ):
         if e.button == viz.MOUSEBUTTON_LEFT:
@@ -42,9 +46,9 @@ class MyCameraHandler( viz.CameraHandler ):
         elif viz.iskeydown ('a') and viz.iskeydown("w"):
             #move backward the amout of time in seconds sence the last call to _camUpdate
             e.view.move( [ -e.elapsed * 10, 0,-e.elapsed * 10] )
-
+"""
 #Set camera handler
 viz.cam.setHandler( MyCameraHandler() )
 
 #Remove camera handler on spacebar (will revert to built-in camera handler)
-vizact.onkeydown( ' ', viz.cam.setHandler, None )
+vizact.onkeydown( ' ', viz.cam.setHandler, None )"""

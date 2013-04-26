@@ -4,6 +4,7 @@ import viz
 import vizact
 
 
+
 #Enable full screen anti-aliasing (FSAA) to smooth edges
 viz.setMultiSample(4)
 
