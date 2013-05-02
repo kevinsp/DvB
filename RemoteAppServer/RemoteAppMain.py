@@ -5,10 +5,11 @@ from JasonCam import JassonCam
 from TestClassEmulateJEvents import EmulateJEvents
 
 if __name__ == "__main__":
-    jCam = JassonCam()
-    jEHandler = JasonEventHandler(jCam,JASON_KEYDOWN_EVENT=["onJassonKeyDown"])
+    jEventHandler = JasonEventHandler()
+    jCam = JassonCam(jEventHandler)
 
-    jEventEmulator = EmulateJEvents({"JASON_KEYDOWN_EVENT":{"blub":"Cool"}})
+
+    jEventEmulator = EmulateJEvents({"JASON_KEYDOWN_EVENT":{"key":"w"}})
 
     viz.go()
     viz.addChild('piazza.osgb')

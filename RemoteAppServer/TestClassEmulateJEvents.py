@@ -10,7 +10,7 @@ class EmulateJEvents():
         """
         This class is for Emulating JEvents. Testing if the callbackers are working properly.
 
-        dicti - is a dict.His values are also dict's
+        dicti - is a dict. His values are also dict's
         """
         self.dict = {}
         for eventName,jEventArgs in  dicti.iteritems():
