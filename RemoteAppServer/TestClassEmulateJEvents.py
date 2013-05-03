@@ -1,39 +1,55 @@
 __author__ = 'MrLapTop'
 import viz
+import vizact
 
-class jEventObj(object):
+class JEventObj(object):
+    #the overgiven dict will be convortet into membervarbs (of the createt jEventObj)
     def __init__(self,dicti):
         self.__dict__.update(dicti)
 
 class EmulateJEvents():
-    def __init__(self,dicti):
+    def __init__(self,jEHandler,dicti):
         """
         This class is for Emulating JEvents. Testing if the callbackers are working properly.
 
-        dicti - is a dict. His values are also dict's
+        dicti - is a dict -> His values are lists -> Which values are dicts. Example:
+          {"JASON_KEYDOWN_EVENT":[{"key":"w"},{"key":"a"}],
+           "JASON_IDONTCARE_EVENT": [{"key":"anykey"}]
+           }
         """
+        self.jEHandler = jEHandler
+        #needed for Lisening to the Keybord
+        self.listForVizact = []
+
         self.dict = {}
-        for eventName,jEventArgs in  dicti.iteritems():
-            #viz.getEventID(str(eventName)) gives us the eventID of the eventName(key in dicti)
-            #and makeing it the new Key of self.dict.
-            #self.dict.values are jEventObj(wich makes the passedOn dict to his own Attributes)
-            self.dict[viz.getEventID(str(eventName))] = jEventObj(jEventArgs)
+        #after that self.dict looks like that {"key1" : [JEventObj1,JEventObj2], "key2" : [JEventObj3]}
+        for eventName,jEventArgsList in  dicti.iteritems():
+            #jEHandler.getEventID(str(eventName)) gives us the eventID of the eventName(key in dicti)
+            eventID = jEHandler.getEventID(str(eventName))
+            #and makeing it the new Key of self.dict. His value is a freesh list
+            self.dict[eventID] = []
+            for jEventArgs in jEventArgsList:
+                #makeing all ellements from JeventArgsList to JEventObj. Adding them to a list where They belong
+                self.dict[eventID].append(JEventObj(jEventArgs))
 
 
-    def startJEvents(self,frames=50,loops = None):
-        #this funktion should be called from another Thread
-        self.counter = loops
-        if loops:
-            for x in xrange(0,loops):
-                viz.waitFrame(frames)
-                for k in self.dict:
-                    self.sendJEvent(k,self.dict[k])
-        else:
-            while(1):
+    #while a spezifik key is down, jEvents will trigger
+    def lisenToKeyboard(self):
 
-                for k in self.dict:
-                    viz.waitFrame(frames)
-                    self.sendJEvent(k,self.dict[k])
+        for ls in self.dict.itervalues():
+           for jEObj in ls:
+                if jEObj.key:
+                    vizactEObj = vizact.whilekeydown(jEObj.key,self.sendJEvent,self.jEHandler.getEventID("JASON_KEYDOWN_EVENT")
+                                                    ,jEObj)
+                    self.listForVizact.append(vizactEObj)
+        #if we hit spacebar the programm stops reakting to keyboadevents
+        unLisen = vizact.onkeydown(" ", self.unLisenToKeyboard)
+        self.listForVizact.append(unLisen)
+
+    def unLisenToKeyboard(self):
+        for vizactEObj in self.listForVizact:
+            vizactEObj.setEnabled(False)
+
 
     def sendJEvent(self,eventID,jEObj):
         #This command allows us to send events to the main script thread from different threads.

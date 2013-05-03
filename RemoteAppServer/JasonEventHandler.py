@@ -8,8 +8,6 @@ import AndroidMSGConvorter
 """This class handels the Events from the Parser for the JasonObj"""
 class JasonEventHandler(viz.EventClass):
 
-
-
     def __init__(self):
         #IMPORTANT: We need to initialize base class
         viz.EventClass.__init__(self)
@@ -29,4 +27,4 @@ class JasonEventHandler(viz.EventClass):
                 self.callback(self.eventID, getattr(callerClass, ls[0]))
 
     def getEventID(self, eventName):
-        return self.dictOfEvents.setdefault(eventName, viz.getEventID(eventName))
+        return self.dictOfEvents.setdefault(eventName,viz.getEventID(eventName))

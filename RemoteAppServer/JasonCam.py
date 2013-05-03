@@ -12,7 +12,7 @@ class JassonCam():
         self.myHandler = jasonEventHandler
 
         #Register funkt with Events
-        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"])
+        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"])
 
         #Movement/turn speeds
         self.moveScale = self.MOVE_SPEED * moveScale
@@ -22,9 +22,10 @@ class JassonCam():
 
         #set of movement for the next Frame
         self.moveSet = set()
+        #helper dict for getting the keys into the moveSet
+        self.helperDict = {}
 
         self.typOfMovment = {}
-
         #Create movements for each typ
         self.typOfMovment[forward] = viz.Data(index=2,sign=1,move=True)
         self.typOfMovment[backward] = viz.Data(index=2,sign=-1,move=True)
@@ -39,18 +40,28 @@ class JassonCam():
         self.typOfMovment[rollRight] = viz.Data(axis=[0,0,-1],mode=viz.REL_LOCAL,move=False)
         self.typOfMovment[rollLeft] = viz.Data(axis=[0,0,1],mode=viz.REL_LOCAL,move=False)
 
+        for typeOfMovment,vizDataObj in self.typOfMovment.iteritems():
+            self.__fillHelperDictWithSets(typeOfMovment, vizDataObj)
 
-    def onJassonKeyDown(self,jE):
-        self.moveSet.update(self.typOfMovment[jE.key])
+        #print self.helperDict
 
-    def onCamUpdate(self,e):
+    def __fillHelperDictWithSets(self, key, vizDataObj):
+        self.helperDict.setdefault(key,set()).add(vizDataObj)
+
+
+    def onJassonKeyDown(self, jE):
+        #print jE.key
+        self.moveSet.update(self.helperDict[jE.key])
+
+    def onCamUpdate(self, e):
         #Iterate throught movements that are currently down
-
+        #print self.moveSet
         if self.moveSet:
-            move = [0,0,0]
+            move = [0, 0, 0]
             for k in self.moveSet:
                 if k.move:
                     move[k.index] += k.sign * e.elapsed * self.moveScale
                 else:
-                    e.view.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
-            e.view.setPosition(move,self.moveMode)
+                    viz.MainView.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
+            viz.MainView.setPosition(move,self.moveMode)
+            self.moveSet.clear()
