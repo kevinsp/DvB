@@ -1,38 +1,38 @@
 __author__ = 'MrLapTop'
 
 import viz
-from EigenerCamHandlerEx import MyCameraHandler
-import vizact
+from SubThread import SubThread
 import vizcam
+import random
+
 
 class MainThread():
     def __init__(self):
         viz.go()
         vizcam.AUTO_REGISTER = 0
-        viz.cam.setHandler(None)
+
         self.court = viz.addChild('piazza.osgb')
-        man = vizcam.Manager(viz.MainView,vizcam.KeyboardCamera)
-        viz.callback(viz.KEYDOWN_EVENT,self.printMe)
 
-        #self.losGehts()
-        viz.director(self.losGehts)
+    def stopThread(self,thread):
+        viz.waitTime(10)
+        thread.stop()
+        return
 
-    def printMe(self,obj):
+    def manageThread(self,thread):
+        lsAll =[["a","b","c"],[1,2,3],[4,5,6]]
+        for ls in lsAll:
+            thread.changeData(ls)
+            viz.waitTime(5)
+        thread.stop()
 
-        print obj
-
-
-    def losGehts(self):
-
-        while(True):
-
-            viz.waitFrame(200)
-            viz.logNotice("Bin in Schleife")
-            #pre = viz.Event(key="ME")
-            viz.postEvent(viz.KEYDOWN_EVENT,key='w')
 
 
 if __name__ == "__main__":
     wtf = MainThread()
+    subThread = SubThread()
+
+
+    viz.director(subThread.run)
+    viz.director(wtf.manageThread,subThread)
 
 

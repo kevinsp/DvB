@@ -1,15 +1,65 @@
 __author__ = 'MrLapTop'
-import viz
-from JasonEventModule import JasonEventHandler
 
-"""our Cam that will interpret the JasonEvents to CamaraMovments"""
+import viz
+import threading
+
+"""This class is an Obj that holds data"""
+class JEventObj(object):
+    #the overgiven dict will be convortet into membervarbs (of the createt jEventObj)
+    def __init__(self,dicti):
+        self.__dict__.update(dicti)
+
+"""This class handels the EventIDs and registers callbacks"""
+class JasonEventRegister(viz.EventClass):
+
+    def __init__(self):
+        #IMPORTANT: We need to initialize base class
+        viz.EventClass.__init__(self)
+
+        self.dictOfEvents = {}
+
+    def registerCallback(self, callerClass, **dicti):
+        #Registers callback with our callerClass
+        #ls is a list
+        #ls[0] is the callebel funk/obj that should be executet when an specifik Event(spezified by eventName) is receved
+        #ls[1] is the viz.Pryoriti, if not spezifide , default is used
+        for eventName,ls in dicti.iteritems():
+            self.eventID = self.getEventID(eventName)
+            if len(ls)== 2:
+                self.callback(self.eventID, getattr(callerClass,ls[0]), ls[1])
+            else:
+                self.callback(self.eventID, getattr(callerClass, ls[0]))
+
+    def getEventID(self, eventName):
+        return self.dictOfEvents.setdefault(eventName,viz.getEventID(eventName))
+
+
+"""This class sends JassonEvents to viz and can be threaded"""
+
+class JasonEventSender():
+    def __init__(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+"""This Class will interpret the JasonEvents to CamaraMovments"""
+
 class JassonCam():
     #constant definitions
     MOVE_SPEED = 3.0
     TURN_SPEED = 90.0
 
-    def __init__(self,jasonEventHandler,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
-        self.myHandler = jasonEventHandler
+    def __init__(self,jasonEventRegister,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
+        self.myHandler = jasonEventRegister
 
         #Register funkt with Events
         self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"])
@@ -43,7 +93,7 @@ class JassonCam():
         for typeOfMovment,vizDataObj in self.typOfMovment.iteritems():
             self.__fillHelperDictWithSets(typeOfMovment, vizDataObj)
 
-        #print self.helperDict
+            #print self.helperDict
 
     def __fillHelperDictWithSets(self, key, vizDataObj):
         self.helperDict.setdefault(key,set()).add(vizDataObj)

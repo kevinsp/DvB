@@ -22,9 +22,9 @@ class EmulateJEvents():
         self.listForVizact = []
 
         self.dict = {}
-        #after that self.dict looks like that {"key1" : [JEventObj1,JEventObj2], "key2" : [JEventObj3]}
+        #after that self.dict looks like that {"eventID1" : [JEventObj1,JEventObj2], "eventID2" : [JEventObj3]}
         for eventName,jEventArgsList in  dicti.iteritems():
-            #jEHandler.getEventID(str(eventName)) gives us the eventID of the eventName(key in dicti)
+            #jEHandler.getEventID(str(eventName)) gives us the eventID of the eventName
             eventID = jEHandler.getEventID(str(eventName))
             #and makeing it the new Key of self.dict. His value is a freesh list
             self.dict[eventID] = []

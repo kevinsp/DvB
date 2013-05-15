@@ -1,16 +1,18 @@
 __author__ = 'MrLapTop'
 import viz
-from JasonEventHandler import JasonEventHandler
-from JasonCam import JassonCam
+
 from TestClassEmulateJEvents import EmulateJEvents
+import thread
+from JasonEventModule import JassonCam
+from JasonEventModule import JasonEventRegister
 import vizact
 
 if __name__ == "__main__":
-    jEventHandler = JasonEventHandler()
-    jCam = JassonCam(jEventHandler)
+    jEventRegister = JasonEventRegister()
+    jCam = JassonCam()
 
 
-    jEventEmulator1 = EmulateJEvents(jEventHandler,{"JASON_KEYDOWN_EVENT":[{"key":"w"},{"key":"a"},{"key":"s"},{"key":"d"}]})
+    jEventEmulator1 = EmulateJEvents(jEventRegister,{"JASON_KEYDOWN_EVENT":[{"key":"w"},{"key":"a"},{"key":"s"},{"key":"d"}]})
     #jEventEmulator2 = EmulateJEvents(jEventHandler,{"JASON_KEYDOWN_EVENT":{"key":"w"}})
 
     viz.go()
