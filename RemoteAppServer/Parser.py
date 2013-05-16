@@ -88,7 +88,7 @@ class Parser(object):
             return self.mreDict[typeArg][firstArg]
 
 
-            #   Set of all possible permutations and matching keys
+            #   Set of all possible permutations and matching keys.
 
     def createDicti(self):
         self.dicti = {

@@ -1,5 +1,6 @@
 
 import Parser
+
 ###
 # Connector is a proxy class for being able to use interchangable handlers
 # for the incoming data, such as different parsers.
