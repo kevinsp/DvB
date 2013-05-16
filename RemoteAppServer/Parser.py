@@ -1,9 +1,19 @@
-__author__ = 'MrLapTop'
+
 import viz
 from JasonEventModule import JEventObj
 from JasonEventModule import JasonEventSender
 import json
 
+###
+# Parser takes a String representation of the sent JSONObject to collect and forward the
+# data in a processable form.
+#
+# Incoming data currently diveded into 3 sections, being
+# 'move'[a,b]
+# 'rotate'[x,y]
+# 'elevate'[d]
+# all represented by either 0,-1,1 in each parameter.
+###
 
 class Parser(object):
 
@@ -13,16 +23,21 @@ class Parser(object):
         viz.director(self.sender.run)
         self.mreDict = self.createDicti()
 
+            #    Method gets the data 'jpacket' for further use
     def parseJson(self, jpacket):
         jloadout = json.loads(jpacket)
 
-        # Special cases such as 'Checkpoint' that need own parsing/treatment
+            #   Special cases such as 'Checkpoint' that need own parsing/treatment
         if jloadout.has_key("end"):
             return "end"
         elif jloadout.has_key("cp"):
             return "cp"
         elif jloadout.has_key("nt"):
             return "nt"
+
+            #   Create a list for the keys for the JEvent (3 spots)
+            #   Strip out paramters from each section and parse out
+            #   necessary keystroke depending on pattern (getKey() method)
 
         self.keyToSend = []
         self.move = jloadout["m"]
@@ -31,19 +46,25 @@ class Parser(object):
 
         self.rotate = jloadout["r"]
         self.rotateKey = self.getKey("r",self.rotate["x"],self.rotate["y"])
-
         self.keyToSend.append(self.rotateKey)
 
         self.elev = jloadout["e"]
         self.elevKey = self.getKey("e",self.elev)
         self.keyToSend.append(self.elevKey)
 
+            #   Should the JSONObj be 'all zero' aka no action, just return
+
         if self.moveKey == None and self.rotateKey == None and self.elevKey == None:
             return
 
+            #   Push tailored dictionary to next class for posting needed Event
 
         self.sender.setJEventsObjToSend(self.makeJEventDict())
 
+
+            #   Method will prepare a dictionary of certain syntax
+            #   matching what the following classes need for triggering
+            #   the correkt events.
 
     def makeJEventDict(self):
         self.jEventDict = {}
@@ -66,6 +87,8 @@ class Parser(object):
         else:
             return self.mreDict[typeArg][firstArg]
 
+
+            #   Set of all possible permutations and matching keys
 
     def createDicti(self):
         self.dicti = {
