@@ -16,10 +16,10 @@ class SubThread():
         while True:
             with self.lock:
                 if self.shouldIRun:
-                    for d in self.data:
-                        print d
-                    viz.waitTime(1)
-                    #print "Hallo"
+                    #for d in self.data:
+                       # print d
+                    #viz.waitTime(1)
+                    print "Hallo"
                 else:
                     print "Stopped"
                     return

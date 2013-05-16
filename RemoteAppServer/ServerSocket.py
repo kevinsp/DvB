@@ -1,7 +1,7 @@
 
 __author__ = 'MrLapTop'
 import socket
-import traceback
+import Connector
 
 class Serversocket():
 
@@ -11,6 +11,7 @@ class Serversocket():
         self.BUFF_SIZE = buff_size
         self.BACKLOG = backlog
         self.socket = None
+        self.connector = Connector()
 
     def open_socket(self):
         try:
@@ -29,7 +30,12 @@ class Serversocket():
 
         while True:
             try:
-                client = self.socket.accept()
+                 connection, client = self.socket.accept()
+                 data = connection.recv(self.BUFF_SIZE)
+                 if data:
+                     if self.connector.feedData(data) == "end":
+                         connection.close()
+                         break
             except Exception:
                 #Exception Handeling missing
                 print ("Something Went wrong with accepting a Client")

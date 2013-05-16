@@ -23,7 +23,7 @@ class EmulateJEvents():
 
         self.dict = {}
         #after that self.dict looks like that {"eventID1" : [JEventObj1,JEventObj2], "eventID2" : [JEventObj3]}
-        for eventName,jEventArgsList in  dicti.iteritems():
+        for eventName, jEventArgsList in  dicti.iteritems():
             #jEHandler.getEventID(str(eventName)) gives us the eventID of the eventName
             eventID = jEHandler.getEventID(str(eventName))
             #and makeing it the new Key of self.dict. His value is a freesh list

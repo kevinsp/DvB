@@ -36,19 +36,43 @@ class JasonEventRegister(viz.EventClass):
 
 """This class sends JassonEvents to viz and can be threaded"""
 
-class JasonEventSender():
+class JasonEventSender(object):
     def __init__(self):
-        pass
+        self.jEventsToSend = {}
+        self.shouldIRun = True
+        self.lock = threading.Lock()
 
 
+    def setJEventsObjToSend(self,dicti):
+        with self.lock:
+                self.jEventsToSend = dicti
 
+    def run(self):
+        self.shouldIRun = True
+        while True:
+            with self.lock:
+                if self.shouldIRun:
+                    for eventID,jEventObjList in self.jEventsToSend.iteritems():
+                        for jEventObj in jEventObjList:
+                           self.postJEvent(eventID,jEventObj)
 
+                    #print self.jEventsToSend
 
+                else:
+                    self.jEventsToSend.clear()
+                    break
 
+            viz.waitFrame(1)
 
+    def stop(self):
+        with self.lock:
+            self.shouldIRun = False
 
-
-
+    def postJEvent(self,eventID,jEObj):
+    #This command allows us to send events to the main script thread from different threads.
+    # The event is saved in a list, which the main thread processes at the beginning of every frame.
+    #Callbackers wich are rigistert to the spezific event, will be noteifide and the jEObj will be passed to them
+        viz.postEvent(eventID,jEObj)
 
 
 """This Class will interpret the JasonEvents to CamaraMovments"""
@@ -115,3 +139,5 @@ class JassonCam():
                     viz.MainView.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
             viz.MainView.setPosition(move,self.moveMode)
             self.moveSet.clear()
+
+
