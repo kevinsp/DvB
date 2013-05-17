@@ -1,10 +1,10 @@
 __author__ = 'MrLapTop'
-import Parser
+from Parser import Parser
 
-class Connector():
+class Connector(object):
 
-    def __init__(self):
-        self.parser = Parser()
+    def __init__(self,parser):
+        self.parser = parser
 
     def feedData(self, data):
         return self.parser.parseJson(data)

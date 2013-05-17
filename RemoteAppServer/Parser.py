@@ -39,6 +39,7 @@ class Parser(object):
         self.keyToSend.append(self.elevKey)
 
         if self.moveKey == None and self.rotateKey == None and self.elevKey == None:
+            self.sender.jEventsToSend({})
             return
 
 
