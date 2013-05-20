@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/dialog_layout_style">
+    
+    <LinearLayout
+        style="@style/ip_ll_style">
+        
+        <EditText
+        	android:id="@+id/et_ip1"
+        	style="@style/ip_et_style"/>
+        
+        <EditText
+        	android:id="@+id/et_ip2"
+        	style="@style/ip_et_style"/>
+        
+        <EditText
+        	android:id="@+id/et_ip3"
+        	style="@style/ip_et_style"/>
+        
+        <EditText
+        	android:id="@+id/et_ip4"
+        	style="@style/ip_et_style"/>
+        
+    </LinearLayout>
+    
+    <Button 
+        android:id="@+id/b_ok"
+        style="@style/ok_b_style"/>
+</RelativeLayout>

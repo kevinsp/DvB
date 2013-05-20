@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_navigationbar">
+
+    <ImageButton
+        android:id="@+id/ib_movement"
+        android:background="@drawable/icon_motion"
+        android:contentDescription="@string/navigation"
+        android:layout_alignParentLeft="true"
+        style="@style/navigationbarImageButton"/>
+        
+    <ImageButton
+        android:id="@+id/ib_waypoint"
+        android:background="@drawable/icon_waypoint"
+        android:contentDescription="@string/waypoint"
+        android:layout_toRightOf="@id/ib_movement"
+        style="@style/navigationbarImageButton"/>
+	    
+    <ImageButton
+        android:id="@+id/ib_settings"
+        android:background="@drawable/icon_setting"
+        android:contentDescription="@string/settings"
+        android:layout_alignParentRight="true"
+        style="@style/navigationbarImageButton"/>  
+        
+    <ImageButton
+        android:id="@+id/ib_help"
+        android:background="@drawable/icon_help"
+        android:contentDescription="@string/help"
+        android:layout_toLeftOf="@id/ib_settings"
+        style="@style/navigationbarImageButton"/>
+    
+</RelativeLayout>

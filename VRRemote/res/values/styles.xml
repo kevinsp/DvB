@@ -1,0 +1,21 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Application theme. -->
+    <style name="AppTheme">
+        <item name="android:background">@color/background_app</item>
+    </style>
+
+    
+    <style name="movementImageView">
+        <item name="android:layout_height">200sp</item>
+        <item name="android:layout_width">200sp</item>
+        <item name="android:layout_margin">20sp</item>
+    </style>
+    
+    <style name="navigationbarImageButton">
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_width">40sp</item>
+        <item name="android:layout_height">40sp</item>
+    </style>
+    
+</resources>

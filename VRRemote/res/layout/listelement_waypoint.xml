@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listelement_waypoint"
+    android:clickable="true"
+    style="@style/wp_listelement">
+
+        <TextView
+            android:id="@+id/tv_wpname"
+            android:textIsSelectable="false" 
+            style="@style/wp_name"/>
+        
+        <TextView
+            android:id="@+id/tv_wpdescription" 
+            android:textIsSelectable="false" 
+        	android:layout_below="@+id/tv_wpname"
+        	style="@style/wp_description"/>
+        
+        <Button 
+            android:id="@+id/b_wpdelete"
+            android:text="@string/delete_Waypoint"
+            android:layout_margin="0sp"
+            android:layout_alignParentRight="true"
+            android:layout_width="70sp"
+            android:textSize="12sp"
+            android:layout_height="match_parent"/>
+        
+        <Button 
+            android:id="@+id/b_wpload"
+            android:text="@string/load_Waypoint"
+            android:layout_margin="0sp"
+            android:layout_toLeftOf="@id/b_wpdelete"
+            android:layout_width="70sp"
+            android:textSize="12sp"
+            android:layout_height="match_parent"/>
+            
+        <TextView
+            android:id="@+id/tv_wpcoordination"  
+            android:layout_toLeftOf="@id/b_wpload"
+            style="@style/wp_coordinats"/>
+</RelativeLayout>
