@@ -1,4 +1,13 @@
-﻿# -*- coding: utf-8 -*-
+"""Danke, dass Sie sich f�r unsere Software entschieden haben.
+\nHier die wichtigsten Shortcuts zum bedienen des Programmes:
+c:   Anzeigen der bereits gesetzten Checkpoints
+n:   Anzeigen der bereits gesetzten 3D Notizen
+v:   Anzeigen der Vogelperspektive
+f:   Flugmodus aktivieren/deaktivieren
+h:   Anzeigen dieser Hilfe"""
+
+
+
 import viz
 import viztracker
 import vizinput
@@ -6,16 +15,22 @@ import vizshape
 import vizcam
 import vizmenu
 import vizinfo
+
 import viztask
 import vizpopup
 import vizact
 
 #Eigene Module
-import checkpoints
-import notes
-import mouse
-import birdView
-import porten
+import Checkpoints
+import Notes
+import MouseAndMovement
+import BirdView
+import Porten
+import RemoteAppMain
+import GlobalVariables
+
+
+
 
 
 #viz.go(viz.FULLSCREEN) 
@@ -27,27 +42,13 @@ mouseMode = False
 class Oberflaeche(object):
 	
 	def __init__(self):
-		#viz.window.setFullscreen(True)
-
+		
 		viz.MainWindow.fov(60)
 		#viz.window.setFullscreen(True)
+		viz.addChild('sky_day.osgb')
+		
 
-
-		#Popups
-		fullscreenItem = vizpopup.Item('Fullscreen')
-
-		mymenu = vizpopup.Menu('Main',[fullscreenItem])
-
-
-
-		#Bei Rechtklick Menüaufruf
-		vizact.onmouseup(viz.MOUSEBUTTON_RIGHT, self.showMenu)
-
-		#Fullscreen on/off
-		vizpopup.onMenuItem(fullscreenItem,viz.window.setFullscreen,viz.TOGGLE)
-
-
-		#Menübar
+		#Men�bar
 		self.menubar = vizmenu.add()
 		self.menubar.setVisible(False)
 
@@ -58,14 +59,9 @@ class Oberflaeche(object):
 
 		#Ansicht DropDown
 		self.AnsichtsMenu = self.menubar.add("Ansicht")
-		self.checkRohre = self.AnsichtsMenu.add(viz.CHECKBOX, "Rohre")
-		self.checkWaende = self.AnsichtsMenu.add(viz.CHECKBOX, "Wände")
-		self.checkBirdEyeView = self.AnsichtsMenu.add(viz.CHECKBOX, "Vogelperspektive")
-		self.checkPointsView = self.AnsichtsMenu.add(viz.CHECKBOX, "Checkpoints")
 		self.checkPointSetzen = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Checkpoint setzen")
 		self.checkPointLoeschen = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Checkpoint löschen")
-		self.checkPortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Zu Checkpoints porten")
-		self.noteViewButton = self.AnsichtsMenu.add(viz.CHECKBOX, "Notizen")
+		self.checkPortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint porten")
 		self.deleteNoteButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Lösche 3D Notiz")
 		self.notePortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen porten")
 		self.beliebigPortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Porten")
@@ -76,6 +72,7 @@ class Oberflaeche(object):
 
 		#Optionen DropDown
 		self.OptionenMenu = self.menubar.add("Optionen")
+		self.AndroidAppButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Android")
 
 		#Alphawert
 		self.alphaSlider = self.AnsichtsMenu.add(viz.SLIDER, "Alphawert")
@@ -91,7 +88,7 @@ class Oberflaeche(object):
 
 
 		#Erstes Model laden
-		self.model = viz.addChild(r'C:\Users\pasca_000\Downloads\CADModellHofner.obj')
+		self.model = viz.addChild(r'C:\Users\pasca_000\Downloads\CADModellHofner(1).obj')
 		modelIsLoaded = True
 		self.model.disable(viz.CULL_FACE)
 		self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
@@ -104,47 +101,44 @@ class Oberflaeche(object):
 		self.ground2.setPosition(0,0,50)
 		
 		#Begrüßungsnachricht
-		message = """Danke, dass Sie sich für unsere Software entschieden haben.
-		\nHier die wichtigsten Shortcuts zum bedienen des Programmes:
-		C:   Anzeigen der bereits gesetzten Checkpoints
-		N:   Anzeigen der bereits gesetzten 3D Notizen
-		V:   Anzeigen der Vogelperspektive
-		H:   Anzeigen dieser Hilfe"""
-		checkPointsPanel = vizinfo.InfoPanel(message,align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
-		checkPointsPanel.visible(True)
-		
+		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
+		self.checkPointsPanel.visible(True)
+
 		
 		#Button Definition
-		vizact.onbuttondown(self.buttonDateiOeffnen, self.setModel, r'C:\Users\pasca_000\Downloads\CADModellHofner.obj' )
+		vizact.onbuttondown(self.buttonDateiOeffnen, self.setModel, r'C:\Users\pasca_000\Downloads\CADModellHofner(1).obj' )
 		vizact.onbuttondown(self.buttonModelEntfernen, self.deleteModel)
 
 		#Note Buttons
-		vizact.onbuttondown(self.buttonNotizEinfuegen, notes.openTextBox)
-		vizact.onbuttondown(self.noteViewButton, notes.noteView, False)
-		vizact.onbuttonup(self.noteViewButton, notes.noteView, False)
-		vizact.onbuttondown(self.deleteNoteButton, notes.delete3DNote)
-		vizact.onbuttondown(self.notePortButton, notes.port3DNote, self.tracker)
-
-		#BirdEyeView Buttons
-		vizact.onbuttondown(self.checkBirdEyeView, birdView.enableBirdEyeView)
-		vizact.onbuttonup(self.checkBirdEyeView, birdView.enableBirdEyeView)
+		vizact.onbuttondown(self.buttonNotizEinfuegen, Notes.openTextBox, self.menubar)
+		vizact.onbuttondown(self.deleteNoteButton, Notes.delete3DNote, self.menubar)
+		vizact.onbuttondown(self.notePortButton, Notes.port3DNote, self.tracker, self.menubar)
 
 		#Checkpoints Buttons
-		vizact.onbuttondown(self.checkPointsView, checkpoints.checkPoints, False)
-		vizact.onbuttonup(self.checkPointsView, checkpoints.checkPoints, False)
-		vizact.onbuttondown(self.checkPointSetzen, checkpoints.createCheckpoint)
-		vizact.onbuttondown(self.checkPointLoeschen, checkpoints.deleteCheckpoint)
-		vizact.onbuttondown(self.checkPortButton, checkpoints.portCheckPoint, self.tracker)
+		vizact.onbuttondown(self.checkPointSetzen, Checkpoints.createCheckpoint, self.menubar)
+		vizact.onbuttondown(self.checkPointLoeschen, Checkpoints.deleteCheckpoint, self.menubar)
+		vizact.onbuttondown(self.checkPortButton, Checkpoints.portCheckPoint, self.tracker, self.menubar)
 
 		#Port Button
-		vizact.onbuttondown(self.beliebigPortButton, porten.porten, self.tracker)
+		vizact.onbuttondown(self.beliebigPortButton, Porten.porten, self.tracker, self.menubar)
+		
+	
+		#Optionen Buttons
+		vizact.onbuttondown(self.AndroidAppButton, RemoteAppMain.startAndroid)
 	
 		#Shortcuts
-		vizact.onkeydown(viz.KEY_CONTROL_L, mouse.enableDisableMouse, self.tracker, self.link, self.menubar)
-		vizact.onkeydown("c", checkpoints.checkPoints, False)
-		vizact.onkeydown("v", birdView.enableBirdEyeView)
-		vizact.onkeydown("n", notes.noteView, False)
+		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, self.tracker, self.link, self.menubar)
+		vizact.onkeydown("c", Checkpoints.checkPoints, False)
+		vizact.onkeydown("v", BirdView.enableBirdEyeView)
+		vizact.onkeydown("n", Notes.noteView, False)
+		vizact.onkeydown("f", self.flugModusOnOff)
+	
+		#Hoch und runter
+		vizact.onkeydown(viz.KEY_SHIFT_L,self.hochUndRunter, self.tracker,  viz.KEY_SHIFT_L)
+		vizact.onkeydown(viz.KEY_ALT_L, self.hochUndRunter, self.tracker, viz.KEY_ALT_L)
 
+		#Slider
+		vizact.ontimer(0.1, self.setAlpha, self.alphaSlider)
 
 	
 	#Bekomme Slider Position
@@ -154,7 +148,7 @@ class Oberflaeche(object):
 	#Setze Alphawert
 	def setAlpha(self, slider):
 		self.alpha = self.sliderPosition(slider)
-		model.alpha(alpha)
+		self.model.alpha(self.alpha)
 			
 	#Lade neues Model
 	def setModel (self, path):
@@ -173,22 +167,27 @@ class Oberflaeche(object):
 		global modelIsLoaded
 		model.remove()
 		modelIsLoaded = False
-	"""		
-	#Setze MausModus
-	def setMouseMode(self):
-		global mouseMode
-		if (mouseMode is False):
-			mouseMode = True
+
+	#Hoch und Runter
+	def hochUndRunter(self, tracker, direction):
+		if (GlobalVariables.flugModus is True):
+			MouseAndMovement.moveUpAndDown(tracker, direction)
 		else:
-			mouseMode = False
-	"""		
-		
-		
-	#Zeige Menü
-	def showMenu(self):
-		if (mouseMode is True):
-			fullscreenItem.checked = viz.window.getFullscreen()
-			vizpopup.display(mymenu)
+			pass
+			
+	#FlugmodusOnOFF
+	def flugModusOnOff(self):
+		if (GlobalVariables.flugModus is True):
+			GlobalVariables.flugModus = False
+			viz.collision(viz.ON)
+			GlobalVariables.position = viz.MainView.getPosition()
+			self.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
+			
+		else:
+			GlobalVariables.flugModus = True
+			self.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
+			viz.collision(viz.OFF)
 
 if __name__ == "__main__":
+
 		oberflaeche = Oberflaeche()

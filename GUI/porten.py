@@ -9,16 +9,17 @@ import viztask
 import vizpopup
 import vizact
 
-import globalVariables
+import GlobalVariables
 
-def porten(tracker):
+def porten(tracker, menubar):
 	
-	if (globalVariables.windowOpen is False):
-		globalVariables.windowOpen = True
+	if (GlobalVariables.windowOpen is False):
+		GlobalVariables.windowOpen = True
 		#Erschaffe VizInfo Box
 		infoBox = vizinfo.add("")
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
+		
 		infoBox.title("Zu beliebige Position porten")
 
 		posiXBox = infoBox.add(viz.TEXTBOX, "X-Koordinate:")
@@ -26,7 +27,29 @@ def porten(tracker):
 		posiZBox = infoBox.add(viz.TEXTBOX, "Z-Koordinate:")
 		portButton1 = infoBox.add(viz.BUTTON_LABEL, "Porten")	
 		
+		menubar.setVisible(viz.OFF)
+		
+	
 
+
+		#man braucht kein doppelklick mehr um den focus
+		#der textboxen zu ändern
+		def updateFocus():
+			print "test"
+			object = viz.pick(0,viz.SCREEN)
+
+			if object == posiXBox:
+				posiXBox.setFocus(viz.ON)
+			elif object == posiYBox:
+				posiYBox.setFocus(viz.ON)
+			elif object == posiZBox:
+				posiZBox.setFocus(viz.ON)
+				
+
+		vizact.onbuttonup(posiXBox,updateFocus)
+		vizact.onbuttonup(posiYBox,updateFocus)
+		vizact.onbuttonup(posiZBox,updateFocus)
+		vizact.ontimer2(0.1, 0, posiXBox.setFocus, viz.ON)
 		
 		def porten2():
 			#Position abfragen und infobox
@@ -34,17 +57,20 @@ def porten(tracker):
 			posiY = posiYBox.get()
 			posiZ = posiZBox.get()
 			infoBox.remove()
+			
+			
 
 			def removePortPanel():
 				checkPointsPanel.remove()
 				okButton.remove()
-				globalVariables.windowOpen = False
+				GlobalVariables.windowOpen = False
 				
 			try:
 				###Kolissionserkennung einbauen###
-				viz.MainView.setPosition(float(posiX), float(posiY), float(posiZ))
-				tracker.setPosition(float(posiX), float(posiY), float(posiZ))
-				globalVariables.windowOpen = False
+				viz.MainView.setPosition(float(posiX), float(posiZ), float(posiY))
+				tracker.setPosition(float(posiX), float(posiZ), float(posiY))
+				GlobalVariables.position = tracker.getPosition()
+				GlobalVariables.windowOpen = False
 			except:
 				#####Noch überarbeiten###
 				checkPointsPanel = vizinfo.InfoPanel("Fehler",align=viz.ALIGN_CENTER,fontSize=25,icon=False,key=None)
