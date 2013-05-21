@@ -2,6 +2,7 @@ import viz
 from JasonEventModule import JEventObj
 from JasonEventModule import JasonEventSender
 import json
+import traceback
 
 ###
 # Parser takes a String representation of the sent JSONObject to collect and forward the
@@ -22,9 +23,30 @@ class Parser(object):
         viz.director(self.sender.run)
         self.mreDict = self.createDicti()
 
+    def pStop(self):
+        self.sender.stop()
+        self.jEventDict = ""
+        self.sender = ""
+        self.mreDict= ""
+
+
         # Method gets the data 'jpacket' for further use
-    def parseJson(self, jpacket):
-        jloadout = json.loads(jpacket)
+    def prepareForParsing(self,data):
+        self.jsonObjList = data.split("\n")[:-1]
+        self.returnMSG = ""
+        for jsonObj in self.jsonObjList:
+           self.returnMSG = self.parseOneJson(jsonObj)
+        return self.returnMSG
+
+
+    def parseOneJson(self, jpacket):
+        try:
+            jloadout = json.loads(jpacket)
+        except ValueError:
+            print "json OBJ could not be loaded"
+            traceback.print_exc()
+            self.sender.resetMovements()
+            return
 
         # Special cases such as 'Checkpoint' that need own parsing/treatment
         if jloadout.has_key("end"):
@@ -54,7 +76,7 @@ class Parser(object):
         # Should the JSONObj be 'all zero' aka no action, just return
 
         if self.moveKey == None and self.rotateKey == None and self.elevKey == None:
-            self.sender.jEventsToSend({})
+            self.sender.resetMovements()
             return
 
             # Push tailored dictionary to next class for posting needed Event

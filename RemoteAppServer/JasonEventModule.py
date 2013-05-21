@@ -42,6 +42,9 @@ class JasonEventSender(object):
         self.shouldIRun = True
         self.lock = threading.Lock()
 
+    def resetMovements(self):
+        with self.lock:
+            self.jEventsToSend = {}
 
     def setJEventsObjToSend(self,dicti):
         with self.lock:

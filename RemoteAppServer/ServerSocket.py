@@ -2,6 +2,7 @@
 __author__ = 'MrLapTop'
 import socket
 import Connector
+import traceback
 
 class Serversocket(object):
 
@@ -34,20 +35,26 @@ class Serversocket(object):
 
     def run_server(self):
         self.open_socket()
-
-        while True:
+        try:
             print "Server is Running"
-            try:
-                 connection, client = self.socket.accept()
+            connection, client = self.socket.accept()
+            print "connection established"
+            while True:
+                try:
+                     data = connection.recv(self.BUFF_SIZE)
+                     print ("Data: % s" % data)
+                     if data:
+                         if self.connector.feedData(data) == "end":
+                             connection.close()
+                             self.connector.cStop()
+                             print "connection closed"
+                             break
+                except Exception:
+                    print "cant recive data"
+                    traceback.print_exc()
+                    continue
+        except Exception:
+            #Exception Handeling missing
+            traceback.print_exc()
+            print ("Something Went wrong with accepting a Client")
 
-                 data = connection.recv(self.BUFF_SIZE)
-
-                 print ("Data: % s" % data)
-                 if data:
-                     if self.connector.feedData(data) == "end":
-                         connection.close()
-                         break
-            except Exception:
-                #Exception Handeling missing
-                print ("Something Went wrong with accepting a Client")
-                continue

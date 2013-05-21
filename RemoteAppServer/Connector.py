@@ -11,4 +11,7 @@ class Connector():
         self.parser = parser
 
     def feedData(self, data):
-        return self.parser.parseJson(data)
+        return self.parser.prepareForParsing(data)
+
+    def cStop(self):
+        self.parser.pStop()
