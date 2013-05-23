@@ -13,6 +13,21 @@ from server import MyServer
 
 """insert new ip and go"""
 
+class RemoteAppLuncher(object):
+    def __init__(self,HostIp):
+        self.jEventRegister = JasonEventRegister()
+        self.jCam = JassonCam(self.jEventRegister)
+        self.jParser = Parser(self.jEventRegister)
+        self.connector = Connector(self.jParser)
+        self.sSocket = Serversocket(str(HostIp),self.connector)
+
+    def lunch(self):
+        self.sSocket.run_server()
+
+
+
+
+
 if __name__ == "__main__":
     jEventRegister = JasonEventRegister()
     jCam = JassonCam(jEventRegister)
