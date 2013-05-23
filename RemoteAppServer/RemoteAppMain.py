@@ -11,7 +11,7 @@ from Parser import Parser
 from Connector import Connector
 from server import MyServer
 
-
+"""insert new ip and go"""
 
 if __name__ == "__main__":
     jEventRegister = JasonEventRegister()

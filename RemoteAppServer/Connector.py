@@ -5,7 +5,7 @@ from Parser import Parser
 # for the incoming data, such as different parsers.
 ###
 
-class Connector():
+class Connector(object):
 
     def __init__(self,parser):
         self.parser = parser
