@@ -23,15 +23,14 @@ class Parser(object):
         viz.director(self.sender.run)
         self.mreDict = self.createDicti()
 
-    def pStop(self):
-        self.sender.stop()
-        self.jEventDict = ""
-        self.sender = ""
-        self.mreDict= ""
 
 
-        # Method gets the data 'jpacket' for further use
-    def prepareForParsing(self,data):
+    # Method gets the data 'jpacket' for further use
+    def prepareForParsing(self,data,connectionIterupted=False):
+        if connectionIterupted:
+            self.sender.resetMovements()
+            return
+
         self.jsonObjList = data.split("\n")[:-1]
         self.returnMSG = ""
         for jsonObj in self.jsonObjList:
@@ -40,11 +39,12 @@ class Parser(object):
 
 
     def parseOneJson(self, jpacket):
+
         try:
             jloadout = json.loads(jpacket)
         except ValueError:
             print "json OBJ could not be loaded"
-            traceback.print_exc()
+            #traceback.print_exc()
             self.sender.resetMovements()
             return
 
@@ -56,9 +56,9 @@ class Parser(object):
         elif jloadout.has_key("nt"):
             return "nt"
 
-            # Create a list for the keys for the JEvent (3 spots)
-            # Strip out paramters from each section and parse out
-            # necessary keystroke depending on pattern (getKey() method)
+        # Create a list for the keys for the JEvent (3 spots)
+        # Strip out paramters from each section and parse out
+        # necessary keystroke depending on pattern (getKey() method)
 
         self.keyToSend = []
         self.move = jloadout["m"]
@@ -84,9 +84,9 @@ class Parser(object):
         self.sender.setJEventsObjToSend(self.makeJEventDict())
 
 
-        # Method will prepare a dictionary of certain syntax
-        # matching what the following classes need for triggering
-        # the correkt events.
+    # Method will prepare a dictionary of certain syntax
+    # matching what the following classes need for triggering
+    # the correkt events.
 
     def makeJEventDict(self):
         self.jEventDict = {}
@@ -110,7 +110,13 @@ class Parser(object):
             return self.mreDict[typeArg][firstArg]
 
 
-            # Set of all possible permutations and matching keys.
+    def pStop(self):
+        self.sender.stop()
+        self.jEventDict = ""
+        self.sender = ""
+        self.mreDict= ""
+
+    # Set of all possible permutations and matching keys.
 
     def createDicti(self):
         self.dicti = {

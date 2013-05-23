@@ -18,7 +18,8 @@ if __name__ == "__main__":
     jCam = JassonCam(jEventRegister)
     jParser = Parser(jEventRegister)
     connector = Connector(jParser)
-    sSocket = Serversocket("141.82.169.30",connector)
+    sSocket = Serversocket("141.82.166.185",connector)
+
 
 
 

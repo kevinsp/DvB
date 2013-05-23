@@ -13,5 +13,8 @@ class Connector():
     def feedData(self, data):
         return self.parser.prepareForParsing(data)
 
+    def connectionInteruppted(self):
+        self.parser.prepareForParsing(None,True)
+
     def cStop(self):
         self.parser.pStop()

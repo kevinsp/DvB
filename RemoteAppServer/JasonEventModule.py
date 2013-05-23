@@ -83,7 +83,7 @@ class JasonEventSender(object):
 class JassonCam():
     #constant definitions
     MOVE_SPEED = 3.0
-    TURN_SPEED = 90.0
+    TURN_SPEED = 50.0
 
     def __init__(self,jasonEventRegister,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
         self.myHandler = jasonEventRegister

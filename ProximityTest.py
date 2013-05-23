@@ -95,12 +95,13 @@ manager.addSensor(sensor)
 
 info = vizinfo.add("Test")
 info.visible(False)
+
 # Register callbacks for proximity sensors
+
 def EnterProximity(e):
-  info.message("HALLO")
+    info.message("HALLO")
 	info.visible(True)
 	info.translate([.5, .5])
-	
 
 def ExitProximity(e):
 	info.visible(False)
