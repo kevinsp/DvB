@@ -24,6 +24,9 @@ def openTextBox(menubar):
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
 		infoBox.title("Setze 3D Text")
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
 
 		textBox = infoBox.add(viz.TEXTBOX, "Text:")
 		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "Ok")	
@@ -34,15 +37,30 @@ def openTextBox(menubar):
 		#Text schreiben und Box + Button löschen
 		def writeText():
 			text = textBox.get()
-			userPosition = viz.MainView.getPosition()
-			userEuler = viz.MainView.getEuler()
-			text3D = viz.addText3D(text, pos = [userPosition[0]-0.2, userPosition[1], userPosition[2] + 0.2])
-			text3D.setScale(0.2, 0.2, 0.2)
-			text3D.color(viz.RED)
-			
 			infoBox.remove()
-			noteList.append([text3D, round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
-			GlobalVariables.windowOpen = False
+			def removeNotePanel():
+				notePanel.remove()
+				okButton.remove()
+				GlobalVariables.windowOpen = False
+				
+			if (text.strip() is not ""):
+				userPosition = viz.MainView.getPosition()
+				userEuler = viz.MainView.getEuler()
+				text3D = viz.addText3D(text, pos = [userPosition[0]-0.2, userPosition[1], userPosition[2] + 0.2])
+				text3D.setScale(0.2, 0.2, 0.2)
+				text3D.color(viz.RED)
+				noteList.append([text3D, round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
+				GlobalVariables.windowOpen = False
+			else:
+				notePanel = vizinfo.InfoPanel("Bitte nur Notizen mit Text eingeben.",align=viz.ALIGN_CENTER,fontSize=15,icon=False,key=None)
+				notePanel.visible(True)
+				#Erschaffe Bestätigungsbutton
+				okButton = viz.addButtonLabel("Ok")
+				okButton.setPosition(0.5,0.425)
+				okButton.setScale(1,1)
+				vizact.onbuttondown(okButton,removeNotePanel)
+				
+
 		vizact.onbuttondown(bestaetigeButton, writeText)	
 	else:
 		pass
@@ -80,6 +98,9 @@ def delete3DNote(menubar):
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
 		infoBox.title("Lösche 3D Text")
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
 
 		textBox = infoBox.add(viz.TEXTBOX, "3D Text Nr:")
 		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "Löschen")		
@@ -106,11 +127,11 @@ def delete3DNote(menubar):
 				else:
 					raise
 			except:
-				notePanel = vizinfo.InfoPanel("Bitte nur Nummern im Bereich\nder verfügbaren 3D Notizen eingeben.",align=viz.ALIGN_CENTER,fontSize=25,icon=False,key=None)
+				notePanel = vizinfo.InfoPanel("Bitte nur Nummern im Bereich\nder verfuegbaren 3D Notizen eingeben.",align=viz.ALIGN_CENTER,fontSize=15,icon=False,key=None)
 				notePanel.visible(True)
 				#Erschaffe Bestätigungsbutton
 				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.40)
+				okButton.setPosition(0.5,0.425)
 				okButton.setScale(1,1)
 				vizact.onbuttondown(okButton,removeNotePanel)
 		vizact.onbuttondown(bestaetigeButton, delete3DNote1)	
@@ -126,6 +147,9 @@ def port3DNote(tracker, menubar):
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
 		infoBox.title("Zu 3D Text porten")
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
 
 		noteBox = infoBox.add(viz.TEXTBOX, "Text Nr:")
 		portButton1 = infoBox.add(viz.BUTTON_LABEL, "Porten")	
@@ -160,11 +184,11 @@ def port3DNote(tracker, menubar):
 				else:
 					raise
 			except:
-				notePanel = vizinfo.InfoPanel("Bitte nur Nummern im Bereich\nder verfügbaren 3D Notizen eingeben.",align=viz.ALIGN_CENTER,fontSize=25,icon=False,key=None)
+				notePanel = vizinfo.InfoPanel("Bitte nur Nummern im Bereich\nder verfuegbaren 3D Notizen eingeben.",align=viz.ALIGN_CENTER,fontSize=15,icon=False,key=None)
 				notePanel.visible(True)
 				#Erschaffe Bestätigungsbutton
 				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.40)
+				okButton.setPosition(0.5,0.425)
 				okButton.setScale(1,1)
 				vizact.onbuttondown(okButton,removeNotePanel)
 				
