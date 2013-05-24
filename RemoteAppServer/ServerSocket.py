@@ -41,7 +41,7 @@ class Serversocket(object):
                     print "Server is Running"
                     connection, client = self.socket.accept()
                     print "connection established"
-                    #connection.settimeout(5)
+                    connection.settimeout(120)
 
                     self.listenToClient(connection,client)
 
@@ -73,6 +73,6 @@ class Serversocket(object):
                 continue
 
         self.connector.connectionInteruppted()
-        #self.connector.shutdown(socket.SHUT_RDWR)
+        #connection.shutdown(socket.SHUT_RDWR)
         connection.close()
 

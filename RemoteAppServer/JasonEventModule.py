@@ -85,8 +85,10 @@ class JassonCam():
     MOVE_SPEED = 3.0
     TURN_SPEED = 50.0
 
-    def __init__(self,jasonEventRegister,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
+    def __init__(self,jasonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
         self.myHandler = jasonEventRegister
+        if view == None:
+            self.view = viz.MainView
 
         #Register funkt with Events
         self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"])
@@ -139,8 +141,8 @@ class JassonCam():
                 if k.move:
                     move[k.index] += k.sign * e.elapsed * self.moveScale
                 else:
-                    viz.MainView.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
-            viz.MainView.setPosition(move,self.moveMode)
+                    self.view.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
+            self.view.setPosition(move,self.moveMode)
             self.moveSet.clear()
 
 
