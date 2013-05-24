@@ -26,12 +26,16 @@ class Serversocket(object):
             if self.socket:
                 self.socket.close()
             # Exception Handeling missing
-            print ("Cant open Socked")
-
+            traceback.print_exc()
+            print ("Cant open Socked, try it again in a few seconds")
+            return -1
+        return 1
 
 
     def run_server(self):
-        self.open_socket()
+        if self.open_socket() == -1:
+            return
+
         while True:
             try:
                     print "Server is Running"
