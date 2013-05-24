@@ -7,6 +7,7 @@ import vizmenu
 import vizinfo
 import viztask
 import vizact
+import vizdlg
 
 import GlobalVariables
 import Notes
@@ -50,25 +51,55 @@ def createCheckpoint(menubar):
 		GlobalVariables.windowOpen = True
 		userPosition = viz.MainView.getPosition() #Frage User Position
 		userEuler = viz.MainView.getEuler()
+		"""
 		#Erschaffe VizInfo Box
 		infoBox = vizinfo.add("")
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
 		infoBox.title("Checkpoint anlegen")
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
+		"""
 
+		"""
 		textBox = infoBox.add(viz.TEXTBOX, "Kommentar:")
-		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "ok")		
+		abbrechenButton = infoBox.add(viz.BUTTON_LABEL, "Abbrechen")
+		
+		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "Ok")		
 		vizact.ontimer2(0.1, 0, textBox.setFocus, viz.ON)
+		"""
+		
 		menubar.setVisible(viz.OFF)
 
-		def checkpointHinzufuegen():
+		def checkpointHinzufuegen(text):
 			#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an	
-			checkPointsList.append([round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), textBox.get(), \
+			checkPointsList.append([round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str (text), \
 			round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
-			infoBox.remove()
-			GlobalVariables.windowOpen = False
+			#infoBox.remove()
+			
+			return True
 		
-		vizact.onbuttondown(bestaetigeButton, checkpointHinzufuegen)	
+#######################		
+		input = vizdlg.InputDialog(prompt='Kommentar zum Checkpoint', length=1.0)
+		viz.link(viz.CenterCenter,input)
+		input.alpha(0.4)
+		input.color(0,0,0)
+		
+		def showdialog():
+			yield input.show()
+				   
+			if input.accepted:
+				checkpointHinzufuegen(input.value)
+			else:
+				pass
+			  
+			GlobalVariables.windowOpen = False
+		   
+		viztask.schedule(showdialog()) 
+		
+##############		
+		#vizact.onbuttondown(bestaetigeButton, checkpointHinzufuegen)	
 	else:
 		pass
 	
@@ -81,10 +112,13 @@ def deleteCheckpoint(menubar):
 		infoBox = vizinfo.add("")
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
-		infoBox.title("Checkpoint löschen")
-
+		infoBox.title("Checkpoint loeschen")
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
+		
 		textBox = infoBox.add(viz.TEXTBOX, "Checkpoint Nr:")
-		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "ok")	
+		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "Ok")	
 		vizact.ontimer2(0.1, 0, textBox.setFocus, viz.ON)
 		menubar.setVisible(viz.OFF)
 		#Checkpoint löschen und Box + Button löschen
@@ -108,7 +142,7 @@ def deleteCheckpoint(menubar):
 				checkPointsPanel.visible(True)
 				#Erschaffe Bestätigungsbutton
 				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.40)
+				okButton.setPosition(0.5,0.425)
 				okButton.setScale(1,1)
 				vizact.onbuttondown(okButton,removeCheckPointsPanel)
 			
@@ -125,6 +159,9 @@ def portCheckPoint(tracker, menubar):
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
 		infoBox.title("Zu Checkpoint porten")
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
 
 		portBox = infoBox.add(viz.TEXTBOX, "Checkpoint Nr:")
 		portButton1 = infoBox.add(viz.BUTTON_LABEL, "Porten")	
@@ -164,7 +201,7 @@ def portCheckPoint(tracker, menubar):
 				checkPointsPanel.visible(True)
 				#Erschaffe Bestätigungsbutton
 				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.40)
+				okButton.setPosition(0.5,0.425)
 				okButton.setScale(1,1)
 				vizact.onbuttondown(okButton,removeCheckPointsPanel)
 				

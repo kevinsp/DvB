@@ -19,6 +19,10 @@ def porten(tracker, menubar):
 		infoBox = vizinfo.add("")
 		infoBox.scale(0.8,1)
 		infoBox.translate(0.65,0.6)
+		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
+		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
+		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
+		
 		
 		infoBox.title("Zu beliebige Position porten")
 
@@ -35,7 +39,6 @@ def porten(tracker, menubar):
 		#man braucht kein doppelklick mehr um den focus
 		#der textboxen zu ändern
 		def updateFocus():
-			print "test"
 			object = viz.pick(0,viz.SCREEN)
 
 			if object == posiXBox:
