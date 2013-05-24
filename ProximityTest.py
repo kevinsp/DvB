@@ -32,9 +32,9 @@ viz.MainWindow.fov(60)
 
 viz.go()
 
-
+"""
 # ADD CAD-Modell
-cad = viz.addChild(r'C:\Users\Informatik\Desktop\VB_PROJEKT\VizardProjekte\CAD_Modelle\CADModellHofner.obj')
+cad = viz.addChild(vizinput.fileOpen())
 #cad = viz.addChild(r'C:\Users\Informatik\Desktop\RRBBB\RRBBB.wrl')
 
 cad.disable(viz.CULL_FACE)
@@ -42,7 +42,7 @@ cad.disable(viz.CULL_FACE)
 cad.setPosition(0,0,60,viz.ABS_GLOBAL)
 #setEuler      Y  X  Z
 cad.setEuler( [0, 0, 0] )
-
+"""
 
 # collision control
 viz.collision(viz.OFF)
@@ -93,15 +93,16 @@ manager = vizproximity.Manager()
 manager.addTarget(target)
 manager.addSensor(sensor)
 
+test = pflanze.getNodeNames()
 info = vizinfo.add("Test")
 info.visible(False)
 
 # Register callbacks for proximity sensors
 
 def EnterProximity(e):
-    info.message("HALLO")
-	info.visible(True)
-	info.translate([.5, .5])
+    info.message(str(test))
+    info.visible(True)
+    info.translate([.8, .5])
 
 def ExitProximity(e):
 	info.visible(False)
