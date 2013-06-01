@@ -13,6 +13,7 @@ import GlobalVariables
 
 
 
+
 #aktiviere/deaktiviere Mauszeiger
 def enableDisableMouse(tracker, link, menubar):
 		
@@ -36,14 +37,33 @@ def enableDisableMouse(tracker, link, menubar):
 	
 # Bewege in der Höhe
 def moveUpAndDown(tracker, direction):
-	if (direction is viz.KEY_SHIFT_L):
-		def nachOben():
-			tracker.setPosition(viz.MainView.getPosition()[0], viz.MainView.getPosition()[1]+0.2,  viz.MainView.getPosition()[2])
-		vizact.whilekeydown(viz.KEY_SHIFT_L, nachOben)
-		GlobalVariables.position = tracker.getPosition()
+	def nachOben():
+		tracker.setPosition(viz.MainView.getPosition()[0], viz.MainView.getPosition()[1]+0.2,  viz.MainView.getPosition()[2])
+	def nachUnten():
+		tracker.setPosition(viz.MainView.getPosition()[0], viz.MainView.getPosition()[1]-0.1,  viz.MainView.getPosition()[2])
+
+	funktion1 = None
+	funktion2 = None
+	
+	if GlobalVariables.variable is True and GlobalVariables.flugModus is False:
+		print "test"
+		vizact.removeEvent(funktion1)
+		vizact.removeEvent(funktion2)
 		
-	elif (direction is viz.KEY_ALT_L):
-		def nachUnten():
-			tracker.setPosition(viz.MainView.getPosition()[0], viz.MainView.getPosition()[1]-0.1,  viz.MainView.getPosition()[2])
-		vizact.whilekeydown(viz.KEY_ALT_L, nachUnten)
-		GlobalVariables.position = tracker.getPosition()
+	if (GlobalVariables.flugModus is True):
+		funktion1 = vizact.whilekeydown(viz.KEY_SHIFT_L, nachOben)
+		funktion2 = vizact.whilekeydown(viz.KEY_ALT_L, nachUnten)
+
+		if (direction is viz.KEY_SHIFT_L):
+			funktion1
+			GlobalVariables.variable = True
+			GlobalVariables.position = tracker.getPosition()
+			
+		elif direction is viz.KEY_ALT_L:
+			funktion2
+			GlobalVariables.variable = True
+			GlobalVariables.position = tracker.getPosition()
+
+	print str(GlobalVariables.variable) +"  "+ str(GlobalVariables.flugModus)
+
+

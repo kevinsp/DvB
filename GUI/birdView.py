@@ -19,8 +19,8 @@ def enableBirdEyeView():
 		BirdEyeView = viz.addView()
 		BirdEyeWindow.setView(BirdEyeView)
 		link = viz.link( viz.MainView, BirdEyeView)
-		link.preEuler([0,90,0])
-		link.postTrans([0,30,0])
+		link.preEuler([0,90,0]) #winkel der cam
+		link.postTrans([0,30,0]) #höhe der view
 		birdEyeViewIsActivated = True
 	else:
 		BirdEyeWindow.remove()

@@ -7,8 +7,9 @@ import vizmenu
 import vizinfo
 import viztask
 import vizact
+import vizdlg
 
-import Checkpoints
+import CheckpointFunktionen
 import GlobalVariables
 
 checkNotesVisible = False
@@ -19,49 +20,60 @@ noteList = []
 def openTextBox(menubar):
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
-		#Erschaffe VizInfo Box
-		infoBox = vizinfo.add("")
-		infoBox.scale(0.8,1)
-		infoBox.translate(0.65,0.6)
-		infoBox.title("Setze 3D Text")
-		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
-		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
-		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
 
-		textBox = infoBox.add(viz.TEXTBOX, "Text:")
-		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "Ok")	
-		vizact.ontimer2(0.1, 0, textBox.setFocus, viz.ON)
 		menubar.setVisible(viz.OFF)
+	
+	
+		#ueberpruefe die Eingabe
 		
-		
-		#Text schreiben und Box + Button löschen
-		def writeText():
-			text = textBox.get()
-			infoBox.remove()
-			def removeNotePanel():
-				notePanel.remove()
-				okButton.remove()
-				GlobalVariables.windowOpen = False
-				
-			if (text.strip() is not ""):
-				userPosition = viz.MainView.getPosition()
-				userEuler = viz.MainView.getEuler()
-				text3D = viz.addText3D(text, pos = [userPosition[0]-0.2, userPosition[1], userPosition[2] + 0.2])
-				text3D.setScale(0.2, 0.2, 0.2)
-				text3D.color(viz.RED)
-				noteList.append([text3D, round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
-				GlobalVariables.windowOpen = False
-			else:
-				notePanel = vizinfo.InfoPanel("Bitte nur Notizen mit Text eingeben.",align=viz.ALIGN_CENTER,fontSize=15,icon=False,key=None)
-				notePanel.visible(True)
-				#Erschaffe Bestätigungsbutton
-				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.425)
-				okButton.setScale(1,1)
-				vizact.onbuttondown(okButton,removeNotePanel)
-				
+		def ueberpruefeEingabe(data):
+			object = viz.pick(0,viz.SCREEN)
+			if object is not input.cancel:
+				if (data.value.strip() is not "" ): #Ist eine Eingabe vorhanden?
+					writeText(data.value)
+					if (checkNotesVisible is True):
+						noteView(False)
+						noteView(False)
+					input.remove()
+					GlobalVariables.windowOpen = False
 
-		vizact.onbuttondown(bestaetigeButton, writeText)	
+				else:
+					data.error = "Bitte nur Text eingeben."
+					input.box.setFocus(viz.ON)
+			else:
+				GlobalVariables.windowOpen = False
+				input.remove()
+	
+		#vizdialog
+		input = vizdlg.InputDialog(title = "Schreibe Text", length=1.0, validate = ueberpruefeEingabe)
+		viz.link(viz.CenterCenter,input)
+		input.alpha(0.4)	
+		input.color(0,0,0)
+		
+		def showdialog():
+			while True:
+				yield input.show()
+					 
+				if input.accepted:
+					break
+				else:
+					break
+				
+		vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
+		viztask.schedule(showdialog()) 
+		
+
+		#Text schreiben und Box + Button löschen
+		def writeText(text):
+			
+			userPosition = viz.MainView.getPosition()
+			userEuler = viz.MainView.getEuler()
+			text3D = viz.addText3D(text.strip(), pos = [userPosition[0]-0.2, userPosition[1], userPosition[2] + 0.2])
+			text3D.setScale(0.2, 0.2, 0.2)
+			text3D.color(viz.RED)
+			noteList.append([text3D, round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
+			GlobalVariables.windowOpen = False
+			
 	else:
 		pass
 	
@@ -77,7 +89,7 @@ def noteView(onViolent):
 			message += str (checkNotesZaehler) + ". " + str (a[0].getMessage()) + "\n"
 			checkNotesZaehler += 1
 		if (GlobalVariables.infoWindowOpen is True):
-			Checkpoints.checkPoints(True)
+			CheckpointFunktionen.checkPoints(True)
 		checkNotesPanel = vizinfo.InfoPanel("Notizen:\n" + message,align=viz.ALIGN_RIGHT_CENTER,fontSize=15,icon=False,key=None)
 		checkNotesVisible = True
 		checkNotesPanel.visible(True)
@@ -93,48 +105,53 @@ def noteView(onViolent):
 def delete3DNote(menubar):
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
-		#Erschaffe VizInfo Box
-		infoBox = vizinfo.add("")
-		infoBox.scale(0.8,1)
-		infoBox.translate(0.65,0.6)
-		infoBox.title("Lösche 3D Text")
-		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
-		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
-		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
-
-		textBox = infoBox.add(viz.TEXTBOX, "3D Text Nr:")
-		bestaetigeButton = infoBox.add(viz.BUTTON_LABEL, "Löschen")		
-		vizact.ontimer2(0.1, 0, textBox.setFocus, viz.ON)
+		
 		menubar.setVisible(viz.OFF)
 
-		#Checkpoint löschen und Box + Button löschen
-		def delete3DNote1():
 
-			noteNummer = textBox.get()
-			infoBox.remove()
-			
-			def removeNotePanel():
-				notePanel.remove()
-				okButton.remove()
+		#ueberpruefe die Eingabe
+		
+		def ueberpruefeEingabe(data):
+			object = viz.pick(0,viz.SCREEN)
+			if object is not input.cancel:
+				try:
+					if (type(int(data.value)) is int and int(data.value) <= len(noteList) and int(data.value )> 0): #Ist die Eingabe im gültigen bereich?
+						noteList[int (data.value)-1][0].remove()
+						del noteList[int (data.value)-1] #Lösche 3D Notiz
+						GlobalVariables.windowOpen = False
+						if (checkNotesVisible is True):
+							noteView(False)
+							noteView(False)
+						input.remove()
+						GlobalVariables.windowOpen = False
+
+					else:
+						data.error = "Bitte nur eine gueltige\nNummer eingeben."
+						input.box.setFocus(viz.ON)
+				except:
+					data.error = "Bitte nur eine gueltige\nNummer eingeben."
+					input.box.setFocus(viz.ON)
+			else:
 				GlobalVariables.windowOpen = False
-				
-					
-			try:
-				if (int(noteNummer)>0):
-					noteList[int (noteNummer)-1].remove()
-					del noteList[int (noteNummer)-1] #Lösche 3D Notiz
-					GlobalVariables.windowOpen = False
+				input.remove()
+	
+		#vizdialog
+		input = vizdlg.InputDialog(title = "Loesche Notiz", length=1.0, validate = ueberpruefeEingabe)
+		viz.link(viz.CenterCenter,input)
+		input.alpha(0.4)	
+		input.color(0,0,0)
+		
+		def showdialog():
+			while True:
+				yield input.show()
+					 
+				if input.accepted:
+					break
 				else:
-					raise
-			except:
-				notePanel = vizinfo.InfoPanel("Bitte nur Nummern im Bereich\nder verfuegbaren 3D Notizen eingeben.",align=viz.ALIGN_CENTER,fontSize=15,icon=False,key=None)
-				notePanel.visible(True)
-				#Erschaffe Bestätigungsbutton
-				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.425)
-				okButton.setScale(1,1)
-				vizact.onbuttondown(okButton,removeNotePanel)
-		vizact.onbuttondown(bestaetigeButton, delete3DNote1)	
+					break
+				
+		vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
+		viztask.schedule(showdialog()) 
 	else:
 		pass
 		
@@ -142,57 +159,55 @@ def delete3DNote(menubar):
 def port3DNote(tracker, menubar):
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
-		#Erschaffe VizInfo Box
-		infoBox = vizinfo.add("")
-		infoBox.scale(0.8,1)
-		infoBox.translate(0.65,0.6)
-		infoBox.title("Zu 3D Text porten")
-		infoBox.bgcolor(GlobalVariables.vizInfoBackgroundColor)
-		infoBox.bordercolor(GlobalVariables.vizInfoBorderColor)
-		infoBox.titlebgcolor(GlobalVariables.vizInfoTitleBackgroundColor)
-
-		noteBox = infoBox.add(viz.TEXTBOX, "Text Nr:")
-		portButton1 = infoBox.add(viz.BUTTON_LABEL, "Porten")	
-		vizact.ontimer2(0.1, 0, noteBox.setFocus, viz.ON)
+		
 		menubar.setVisible(viz.OFF)
 
-		def porten():
-			#Position abfragen und textbox + button entfernen
-			noteNummer = noteBox.get()
-			infoBox.remove()
-			
-			def removeNotePanel():
-				notePanel.remove()
-				okButton.remove()
-				GlobalVariables.windowOpen = False
-			
-			try:
-				if (int(noteNummer)>0): #Prüfe eingabe und porte
-					text = noteList[int(noteNummer)-1]
-					position = text[0].getPosition()
+		#ueberpruefe die Eingabe
 		
-					viz.MainView.setPosition(position[0], position[1], position[2]-0.5)
-					tracker.setPosition(position[0], position[1], position[2]-0.5)
-					
-					viz.MainView.setEuler(text[1], text[2], text[3])
-					tracker.setEuler(text[1], text[2], text[3])
-					GlobalVariables.euler = [text[1], text[2], text[3]]
-					
-					GlobalVariables.position = tracker.getPosition()
-					GlobalVariables.windowOpen = False
+		def ueberpruefeEingabe(data):
+			object = viz.pick(0,viz.SCREEN)
+			if object is not input.cancel:
+				try:
+					if (type(int(data.value)) is int and int(data.value) <= len(noteList) and int(data.value )> 0): #Ist die Eingabe im gültigen bereich?
+						text = noteList[int(data.value)-1][0]
+						position = text.getPosition()
 
+						viz.MainView.setPosition(position[0], position[1], position[2]-0.5)
+						tracker.setPosition(position[0], position[1], position[2]-0.5)
+
+						viz.MainView.setEuler(noteList[int(data.value)-1][1], noteList[int(data.value)-1][2], noteList[int(data.value)-1][3])
+						tracker.setEuler( noteList[int(data.value)-1][1], noteList[int(data.value)-1][2], noteList[int(data.value)-1][3])
+						
+						GlobalVariables.euler = tracker.getEuler()
+						GlobalVariables.position = tracker.getPosition()
+						GlobalVariables.windowOpen = False
+						input.remove()
+					else:
+						data.error = "Bitte nur eine gueltige\nNummer eingeben."
+						input.box.setFocus(viz.ON)
+				except:
+					data.error = "Bitte nur eine gueltige\nNummer eingeben."
+					input.box.setFocus(viz.ON)
+			else:
+				GlobalVariables.windowOpen = False
+				input.remove()
+	
+		#vizdialog
+		input = vizdlg.InputDialog(title = "Porte zu Notiz", length=1.0, validate = ueberpruefeEingabe)
+		viz.link(viz.CenterCenter,input)
+		input.alpha(0.4)	
+		input.color(0,0,0)
+		
+		def showdialog():
+			while True:
+				yield input.show()
+					 
+				if input.accepted:
+					break
 				else:
-					raise
-			except:
-				notePanel = vizinfo.InfoPanel("Bitte nur Nummern im Bereich\nder verfuegbaren 3D Notizen eingeben.",align=viz.ALIGN_CENTER,fontSize=15,icon=False,key=None)
-				notePanel.visible(True)
-				#Erschaffe Bestätigungsbutton
-				okButton = viz.addButtonLabel("Ok")
-				okButton.setPosition(0.5,0.425)
-				okButton.setScale(1,1)
-				vizact.onbuttondown(okButton,removeNotePanel)
+					break
 				
-		vizact.onbuttondown(portButton1, porten)
+		vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
+		viztask.schedule(showdialog()) 
 	else:
 		pass
-

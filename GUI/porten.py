@@ -8,6 +8,7 @@ import vizinfo
 import viztask
 import vizpopup
 import vizact
+import vizdlg
 
 import GlobalVariables
 
@@ -15,6 +16,57 @@ def porten(tracker, menubar):
 	
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
+		
+		menubar.setVisible(False)
+		
+		#ueberpruefe die Eingabe
+		def ueberpruefeEingabe(data):
+			object = viz.pick(0,viz.SCREEN)
+			if object is not input.cancel:
+				coordinates = data.value.split()
+				try:
+					if (type(float(coordinates[0])) is float and type(float(coordinates[1])) is float and type(float(coordinates[2])) is float): #Ist die Eingabe in korrekt?
+						#setze Position
+						viz.MainView.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
+						tracker.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
+						
+						GlobalVariables.position = tracker.getPosition()
+						input.remove()
+						GlobalVariables.windowOpen = False
+
+					else:
+						data.error = "Biite nur Zahlen eingeben."
+						input.box.setFocus(viz.ON)
+				except:
+					data.error = "Biite nur Zahlen eingeben."
+					input.box.setFocus(viz.ON)
+			else:
+				GlobalVariables.windowOpen = False
+				input.remove()	
+		
+		#vizdialog
+		input = vizdlg.InputDialog(title='Porten', prompt = "Die Koordinaten hintereinander eingeben\n \"10.0  5.0  7.5\" (X Z Y)", length=1.0, validate = ueberpruefeEingabe)
+		viz.link(viz.CenterCenter,input)
+		input.alpha(0.4)
+		input.color(0,0,0)
+		
+		def showdialog():
+			yield input.show()
+			while True:
+				if input.accepted:
+					break
+				else:
+					break
+		vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
+		viztask.schedule(showdialog()) 
+		
+		
+		
+		
+		
+		
+		
+		"""
 		#Erschaffe VizInfo Box
 		infoBox = vizinfo.add("")
 		infoBox.scale(0.8,1)
@@ -84,6 +136,7 @@ def porten(tracker, menubar):
 				okButton.setScale(1,1)
 				vizact.onbuttondown(okButton,removePortPanel)
 		vizact.onbuttondown(portButton1, porten2)
+		"""
 	else:
 		pass
 				

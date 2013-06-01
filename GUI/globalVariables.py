@@ -1,9 +1,14 @@
 ﻿import viz
+
 windowOpen = False
 infoWindowOpen = False
 flugModus = False
+showPosi = False
+showIP = False
+variable = False
 position = []
 euler = []
+checkPointsList = []
 
 vizInfoBackgroundColor = [0,0,0,0.4]
 vizInfoBorderColor = [0,0,0,1]
