@@ -213,8 +213,8 @@ class Oberflaeche(object):
 			self.ipTextScreen.visible(False)
 			GlobalVariables.showIP = False
 		
-	#	neu = RemoteAppMain.RemoteAppLuncher(viz.net.getIP, self.tracker)
-	#	viz.director(neu.lunch)
+		neu = RemoteAppMain.RemoteAppLuncher(viz.net.getIP, self.tracker, GlobalVariables.checkPointsList)
+		viz.director(neu.lunch)
 
 	#zeige zurzeitige position
 	def zeigePosition(self):
