@@ -53,13 +53,16 @@ class Serversocket(object):
 
 
     def listenToClient(self,connection,client):
+
         while True:
             try:
                 data = connection.recv(self.BUFF_SIZE)
 
                 print ("Data: % s" % data)
 
-                if self.connector.feedData(data) == "end":
+                self.ans = self.connector.feedData(data)
+
+                if self.ans  == "end":
                     print "connection was interuppted by user"
                     break
 

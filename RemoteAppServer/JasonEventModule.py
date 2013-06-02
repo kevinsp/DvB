@@ -87,6 +87,8 @@ class JassonCam():
 
     def __init__(self,jasonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
         self.myHandler = jasonEventRegister
+        #if the view is diffrent than viz.MainView
+
         if view == None:
             self.view = viz.MainView
         else:

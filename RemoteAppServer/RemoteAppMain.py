@@ -2,7 +2,7 @@ __author__ = 'MrLapTop'
 import viz
 
 from TestClassEmulateJEvents import EmulateJEvents
-import thread
+import sys
 from JasonEventModule import JassonCam
 from JasonEventModule import JasonEventRegister
 from JasonEventModule import JasonEventSender
@@ -10,6 +10,8 @@ from ServerSocket import Serversocket
 from Parser import Parser
 from Connector import Connector
 from server import MyServer
+
+
 
 """insert new ip and go"""
 
