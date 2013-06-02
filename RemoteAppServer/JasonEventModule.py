@@ -89,6 +89,8 @@ class JassonCam():
         self.myHandler = jasonEventRegister
         if view == None:
             self.view = viz.MainView
+        else:
+            self.view = view
 
         #Register funkt with Events
         self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"])

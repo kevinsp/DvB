@@ -14,9 +14,9 @@ from server import MyServer
 """insert new ip and go"""
 
 class RemoteAppLuncher(object):
-    def __init__(self,HostIp,view=None):
+    def __init__(self,HostIp,view=None,checkPointList = None):
         self.jEventRegister = JasonEventRegister()
-        self.jCam = JassonCam(self.jEventRegister,view)
+        self.jCam = JassonCam(self.jEventRegister,view) #
         self.jParser = Parser(self.jEventRegister)
         self.connector = Connector(self.jParser)
         self.sSocket = Serversocket(str(HostIp),self.connector)
