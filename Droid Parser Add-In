@@ -1,0 +1,193 @@
+package ch.aero.RemoteControl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONStringer;
+import org.json.simple.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import android.app.Activity;
+import android.os.Bundle;
+import ch.aero.RemoteControl.Waypoint;
+
+public class MainActivity extends Activity
+{
+  @Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		////////////////////////////////////////////////////////////////////////////
+		//				When adding a Waypoint & updating phonelist				  //
+		////////////////////////////////////////////////////////////////////////////
+
+		String wpListIn = 
+				"{'comment': 'lmao', 'name': 'myPoint', 'eulerZ': 0, 'eulerY': 0, 'eulerX': 0, 'posZ': 2, 'posX': 1, 'posY': 3};" +
+				"{'comment': 'coon', 'name': 'yourPoint', 'eulerZ': 0, 'eulerY': 0, 'eulerX': 0, 'posZ': 4, 'posX': 3, 'posY': 5};" +
+				"{'comment': 'fegit', 'name': 'hisPoint', 'eulerZ': 0, 'eulerY': 0, 'eulerX': 0, 'posZ': 7, 'posX': 6, 'posY': 8}";
+
+		// Convert Stringsequence to WaypointList of Waypoint-Type
+
+		wpListIn = wpListIn.replace("'", "\"");
+		String[] wpList = wpListIn.split(";");
+		try
+		{
+			List<Waypoint> waypoints = new ArrayList<Waypoint>();
+			for (String wp : wpList)
+			{
+				JSONObject j = (JSONObject)new JSONParser().parse(wp);
+				waypoints.add(new Waypoint(
+								(String) j.get("name"), 
+								Float.parseFloat((String) j.get("posX")), 
+								Float.parseFloat((String) j.get("posY")), 
+								Float.parseFloat((String) j.get("posZ")), 
+								Float.parseFloat((String) j.get("eulerX")), 
+								Float.parseFloat((String) j.get("eulerY")), 
+								Float.parseFloat((String) j.get("eulerZ")), 
+								(String) j.get("comment")));
+			}
+		}
+		catch (ParseException e) {}
+
+
+
+		////////////////////////////////////////////////////////////////////////////
+		//				When sending request for delete or create				  //
+		////////////////////////////////////////////////////////////////////////////
+
+
+		// 	Request for creation/deletion
+		// 			vvvvvv
+
+		int i = 0;
+		String name = "myFirstPoint";
+		String comment = "moar desu~~~";
+		JSONObject jWaypoint = new JSONObject();
+		JSONObject jcomment = new JSONObject();
+		
+		jcomment.put("c", comment);
+		jWaypoint.put(name, jcomment);
+		if (0 == i) 	// Obv Placeholder for "delete/create" | 0 del/1 crt 
+			jWaypoint.put("wp", 0);
+		else if (1 == i)
+			jWaypoint.put("wp", 1);
+
+		
+		JSONStringer jstringer = new JSONStringer();
+		jstringer = makePackage(jWaypoint, jstringer);
+		pw.println(jstringer);
+		pw.flush();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*
+		try
+		{
+			Socket sock = new Socket("82.149.69.160", 57891);
+			is = new DataInputStream(sock.getInputStream());
+	        os = new DataOutputStream(sock.getOutputStream());
+	        pw = new PrintWriter(os);
+
+	        // Controller App calls this when new Events occur
+	        int[] valArr = {1,0,0,0,-1};
+	        sendJ(valArr);
+	        //sendJEnd();
+
+	        //Controller App will call this when shutting down
+	        closeStreams();
+		}
+		catch (UnknownHostException e) {}
+		catch (IOException e) {}
+		catch (JSONException e) {}
+
+
+		TextView text = new TextView(this);
+		text.setText("$up");
+		setContentView(text);
+	}
+
+	public void sendJ(int[] valArr) throws JSONException
+	{
+		JSONObject jsend = fillJson(valArr);
+        jstringer = new JSONStringer();
+		jstringer = makePackage(jsend, jstringer);
+        pw.println(jstringer);
+        pw.flush();
+	}
+
+	public void sendJEnd() throws JSONException
+	{
+		JSONObject jsend = new JSONObject();
+		jsend.put("end", 1);
+		jstringer = new JSONStringer();
+		jstringer = makePackage(jsend, jstringer);
+		pw.println(jstringer);
+		pw.flush();
+	}
+
+	public JSONObject fillJson(int[] valArr) throws JSONException
+	{
+		JSONObject all = new JSONObject();
+		JSONObject move = new JSONObject();
+		JSONObject rot = new JSONObject();
+
+		move.put("a", valArr[0]);
+		move.put("b", valArr[1]);
+
+		rot.put("x", valArr[2]);
+		rot.put("y", valArr[3]);
+
+		all.put("m", move);
+		all.put("r", rot);
+		all.put("e", valArr[4]);
+
+		return all;
+	}
+
+	public JSONStringer makePackage(JSONObject jsend, JSONStringer jstringer) throws JSONException
+	{
+		if (jsend != null)
+	    {
+	        Iterator<String> itKeys = jsend.keys();
+	        if(itKeys.hasNext())
+	        	jstringer.object();
+	        while (itKeys.hasNext()) 
+	        {
+	            String k = itKeys.next();
+	            jstringer.key(k).value(jsend.get(k));
+	            Log.e("keys " + k, "value " + jsend.get(k).toString());
+	        }         
+	    }
+		jstringer.endObject();
+		
+		return jstringer;
+	}
+
+	public void closeStreams()
+	{
+		try
+		{
+			if (is != null)
+				is.close();
+			if (os != null)
+				os.close();
+		}
+		catch (IOException e){}
+		*/
+	}
+}
