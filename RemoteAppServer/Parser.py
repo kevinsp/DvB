@@ -29,7 +29,7 @@ class Parser(object):
     def prepareForParsing(self,data,connectionIterupted=False):
         if connectionIterupted:
             self.sender.resetMovements()
-            return
+            return ""
 
         self.jsonObjList = data.split("\n")[:-1]
         self.returnMSG = ""
@@ -41,35 +41,32 @@ class Parser(object):
     def parseOneJson(self, jpacket):
 
         try:
-            jloadout = json.loads(jpacket)
+            self.jloadout = json.loads(jpacket)
         except ValueError:
             print "json OBJ could not be loaded"
-            #traceback.print_exc()
             self.sender.resetMovements()
-            return
+            return ""
 
-        # Special cases such as 'Checkpoint' that need own parsing/treatment
-        if jloadout.has_key("end"):
-            return "end"
-        elif jloadout.has_key("cp"):
-            return "cp"
-        elif jloadout.has_key("nt"):
-            return "nt"
+        # Special cases such as 'Waypoint' that need own parsing/treatment
+        if self.jloadout.has_key("end"):
+            return self.jloadout
+        elif self.jloadout.has_key("wp"):
+            return self.parseWaypoint(self.jloadout)
 
         # Create a list for the keys for the JEvent (3 spots)
         # Strip out paramters from each section and parse out
         # necessary keystroke depending on pattern (getKey() method)
 
         self.keyToSend = []
-        self.move = jloadout["m"]
+        self.move = self.jloadout["m"]
         self.moveKey = self.getKey("m",self.move["a"],self.move["b"])
         self.keyToSend.append(self.moveKey)
 
-        self.rotate = jloadout["r"]
+        self.rotate = self.jloadout["r"]
         self.rotateKey = self.getKey("r",self.rotate["x"],self.rotate["y"])
         self.keyToSend.append(self.rotateKey)
 
-        self.elev = jloadout["e"]
+        self.elev = self.jloadout["e"]
         self.elevKey = self.getKey("e",self.elev)
         self.keyToSend.append(self.elevKey)
 
@@ -77,11 +74,22 @@ class Parser(object):
 
         if self.moveKey == None and self.rotateKey == None and self.elevKey == None:
             self.sender.resetMovements()
-            return
+            return ""
 
             # Push tailored dictionary to next class for posting needed Event
 
         self.sender.setJEventsObjToSend(self.makeJEventDict())
+        return ""
+
+    def parseWaypoint(self, jwaypoint):
+        # if jwaypoint["wp"] == 0:    <- Zero if Delte existing, 1 if create new one
+            # delteWaypoint(jwaypoint.keys()[0])
+        # else:
+            # createWaypoint(jwaypoint.keys()[0], jwaypoint.keys()[0]["c"]) <- crtWp(name, comment)
+        # wpListStringed = ""
+        # for wp in waypointList:
+        #    wpListStringed += str(wp.__dict__) + ";"
+        return # wpListStringed
 
 
     # Method will prepare a dictionary of certain syntax

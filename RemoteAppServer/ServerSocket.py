@@ -62,9 +62,14 @@ class Serversocket(object):
 
                 self.ans = self.connector.feedData(data)
 
-                if self.ans  == "end":
+                if self.ans.__contains__("end"):
                     print "connection was interuppted by user"
                     break
+                elif self.ans.__contains__("wp"):
+                    print "created user waypoint. sending back list"
+                    connection.sendall(str(self.ans))
+                else:
+                    connection.sendall("")
 
             except socket.timeout:
                     print "connection timeout"
