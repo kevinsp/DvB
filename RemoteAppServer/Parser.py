@@ -17,24 +17,28 @@ import traceback
 
 class Parser(object):
 
-    def __init__(self, jasonEventRegister):
+    def __init__(self, jasonEventRegister,wayPointList):
         self.jEventReg = jasonEventRegister
         self.sender = JasonEventSender()
         viz.director(self.sender.run)
         self.mreDict = self.createDicti()
+        self.wayPointList = wayPointList
 
 
 
     # Method gets the data 'jpacket' for further use
     def prepareForParsing(self,data,connectionIterupted=False):
+
         if connectionIterupted:
             self.sender.resetMovements()
             return ""
 
         self.jsonObjList = data.split("\n")[:-1]
+
         self.returnMSG = ""
         for jsonObj in self.jsonObjList:
-           self.returnMSG = self.parseOneJson(jsonObj)
+
+            self.returnMSG = self.parseOneJson(jsonObj)
         return self.returnMSG
 
 
@@ -49,7 +53,8 @@ class Parser(object):
 
         # Special cases such as 'Waypoint' that need own parsing/treatment
         if self.jloadout.has_key("end"):
-            return self.jloadout
+            #moeglichkeit zum performance test
+            return "end"
         elif self.jloadout.has_key("wp"):
             return self.parseWaypoint(self.jloadout)
 
@@ -82,14 +87,21 @@ class Parser(object):
         return ""
 
     def parseWaypoint(self, jwaypoint):
-        # if jwaypoint["wp"] == 0:    <- Zero if Delte existing, 1 if create new one
-            # delteWaypoint(jwaypoint.keys()[0])
-        # else:
-            # createWaypoint(jwaypoint.keys()[0], jwaypoint.keys()[0]["c"]) <- crtWp(name, comment)
-        # wpListStringed = ""
-        # for wp in waypointList:
-        #    wpListStringed += str(wp.__dict__) + ";"
-        return # wpListStringed
+
+        self.wpValue = jwaypoint["wp"]
+        if self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
+            self.wayPointList.delteWaypoint(jwaypoint["name"])
+        elif self.wpValue == 1 :
+            print "Server : Successfully created"
+            #self.wayPointList.createWaypoint(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
+        elif self.wpValue == 2:
+            pass
+
+        wpListStringed = ""
+        for wp in self.wayPointList:
+           wpListStringed += str(wp.__dict__) + ";"
+
+        return wpListStringed
 
 
     # Method will prepare a dictionary of certain syntax

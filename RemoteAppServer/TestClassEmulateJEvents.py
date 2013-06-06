@@ -7,6 +7,11 @@ class JEventObj(object):
     def __init__(self,dicti):
         self.__dict__.update(dicti)
 
+class ClientSocket(object):
+
+    def __init__(self,hostIp,hostPort=57891):
+        pass
+
 class EmulateJEvents():
     def __init__(self,jEHandler,dicti):
         """
@@ -51,8 +56,11 @@ class EmulateJEvents():
             vizactEObj.setEnabled(False)
 
 
+
+
     def sendJEvent(self,eventID,jEObj):
         #This command allows us to send events to the main script thread from different threads.
         # The event is saved in a list, which the main thread processes at the beginning of every frame.
         #Callbackers wich are rigistert to the spezific event, will be noteifide and the jEObj will be passed to them
         viz.postEvent(eventID,jEObj)
+

@@ -3,6 +3,7 @@ import viz
 
 from TestClassEmulateJEvents import EmulateJEvents
 import sys
+
 from JasonEventModule import JassonCam
 from JasonEventModule import JasonEventRegister
 from JasonEventModule import JasonEventSender
@@ -10,6 +11,10 @@ from ServerSocket import Serversocket
 from Parser import Parser
 from Connector import Connector
 from server import MyServer
+
+#sys.path.append(r"..\GUI")
+
+
 
 
 
@@ -19,7 +24,7 @@ class RemoteAppLuncher(object):
     def __init__(self,HostIp,view=None,checkPointList = None):
         self.jEventRegister = JasonEventRegister()
         self.jCam = JassonCam(self.jEventRegister,view) #
-        self.jParser = Parser(self.jEventRegister)
+        self.jParser = Parser(self.jEventRegister,checkPointList)
         self.connector = Connector(self.jParser)
         self.sSocket = Serversocket(str(HostIp),self.connector)
 
@@ -35,7 +40,7 @@ if __name__ == "__main__":
     jCam = JassonCam(jEventRegister)
     jParser = Parser(jEventRegister)
     connector = Connector(jParser)
-    sSocket = Serversocket("141.82.169.93",connector)
+    sSocket = Serversocket("141.82.163.203",connector)
 
 
 
