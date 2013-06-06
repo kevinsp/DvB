@@ -12,7 +12,7 @@ import vizdlg
 
 import GlobalVariables
 
-def porten(tracker, menubar):
+def porten(menubar):
 	
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
@@ -28,7 +28,7 @@ def porten(tracker, menubar):
 					if (type(float(coordinates[0])) is float and type(float(coordinates[1])) is float and type(float(coordinates[2])) is float): #Ist die Eingabe in korrekt?
 						#setze Position
 						viz.MainView.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
-						tracker.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
+						GlobalVariables.tracker.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
 						
 						GlobalVariables.position = tracker.getPosition()
 						input.remove()

@@ -1,11 +1,13 @@
 """Danke, dass Sie sich für unsere Software entschieden haben.
 \nHier die wichtigsten Shortcuts zum bedienen des Programmes:
-c:   Anzeigen der bereits gesetzten Checkpoints
-n:   Anzeigen der bereits gesetzten 3D Notizen
-v:   Anzeigen der Vogelperspektive
-f:   Flugmodus aktivieren/deaktivieren
-h:   Anzeigen dieser Hilfe
-p:   Anzeigend er aktuellen Position"""
+c:     Anzeigen der bereits gesetzten Checkpoints
+n:     Anzeigen der bereits gesetzten 3D Notizen
+v:     Anzeigen der Vogelperspektive
+f:     Flugmodus aktivieren/deaktivieren
+h:     Anzeigen dieser Hilfe
+p:     Anzeigen der aktuellen Position
++ -:   Erhöhen/Verringern der Bewegungsgeschwindigkeit 1-40
+* /:   Erhöhen/Verringern der Fluggeschwindigkeit 0.2-10"""
 
 
 
@@ -37,7 +39,6 @@ import GlobalVariables
 
 
 
-
 #viz.go(viz.FULLSCREEN) 
 viz.go()
 
@@ -48,12 +49,13 @@ modelIsLoaded = False
 class Oberflaeche(object):
 	
 	def __init__(self):
-		
+		self.model = None
+
 		viz.MainWindow.fov(60)
 		viz.collision(viz.ON)
 		self.beginZ = viz.MainView.getPosition()[1]
 
-		#viz.window.setFullscreen(True)
+	#	viz.window.setFullscreen(True)
 		viz.addChild('sky_day.osgb')
 		
 		
@@ -90,7 +92,6 @@ class Oberflaeche(object):
 
 		#Theme
 		viz.setTheme(GlobalVariables.darkTheme)
-
 		
 		#Positionsangabe
 		self.textScreen = viz.addText('',viz.SCREEN) 
@@ -109,12 +110,13 @@ class Oberflaeche(object):
 		self.ipTextScreen.setBackdropColor([0,0,0])
 		
 		#Flugmodus angabe
-		self.flugModusTextScreen = viz.addText("", viz.SCREEN)
-		self.flugModusTextScreen.setScale(0.3,0.3,0)
-		self.flugModusTextScreen.alignment(viz.ALIGN_RIGHT_TOP)
-		self.flugModusTextScreen.setPosition([0.99,0.75,0])
-		self.flugModusTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
-		self.flugModusTextScreen.setBackdropColor([0,0,0])
+		self.midTextScreen = viz.addText("", viz.SCREEN)
+		self.midTextScreen.setScale(0.3,0.3,0)
+		self.midTextScreen.alignment(viz.ALIGN_CENTER_CENTER)
+	#	self.midTextScreen.setPosition([0.99,0.75,0])
+		self.midTextScreen.setPosition([0.5,0.5,0])
+		self.midTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
+		self.midTextScreen.setBackdropColor([0,0,0])
 		
 		""" lieber panel oder textscreen???
 		self.checkPointTextScreen = viz.addText("Checkpoints:\n", viz.SCREEN)
@@ -132,12 +134,12 @@ class Oberflaeche(object):
 		viz.mouse(viz.ON)
 		viz.mouse.setTrap()
 		
-		self.tracker = vizcam.addWalkNavigate(moveScale=2.0)
-		self.tracker.setPosition([0,1.8,0])
-		self.link = viz.link(self.tracker,viz.MainView)
+		global variable
+		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
+		GlobalVariables.tracker.setPosition([0,1.8,0])
+		self.link = viz.link(GlobalVariables.tracker,viz.MainView)
 		viz.mouse.setVisible(False)
-		
-		
+
 
 		"""
 		#Erstes Model laden
@@ -165,15 +167,15 @@ class Oberflaeche(object):
 		#Note Buttons
 		vizact.onbuttondown(self.buttonNotizEinfuegen, Notes.openTextBox, self.menubar)
 		vizact.onbuttondown(self.deleteNoteButton, Notes.delete3DNote, self.menubar)
-		vizact.onbuttondown(self.notePortButton, Notes.port3DNote, self.tracker, self.menubar)
+		vizact.onbuttondown(self.notePortButton, Notes.port3DNote, self.menubar)
 
 		#Checkpoints Buttons
 		vizact.onbuttondown(self.checkPointSetzen, CheckpointFunktionen.createCheckpoint, self.menubar)
 		vizact.onbuttondown(self.checkPointLoeschen, CheckpointFunktionen.deleteCheckpoint, self.menubar)
-		vizact.onbuttondown(self.checkPortButton, CheckpointFunktionen.portCheckPoint, self.tracker, self.menubar)
+		vizact.onbuttondown(self.checkPortButton, CheckpointFunktionen.portCheckPoint, self.menubar)
 
 		#Port Button
-		vizact.onbuttondown(self.beliebigPortButton, Porten.porten, self.tracker, self.menubar)
+		vizact.onbuttondown(self.beliebigPortButton, Porten.porten, self.menubar)
 		
 	
 		#Optionen Buttons
@@ -182,17 +184,22 @@ class Oberflaeche(object):
 		vizact.onbuttondown(self.AndroidAppButton, self.startAndroid)
 	
 		#Shortcuts
-		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, self.tracker, self.link, self.menubar)
+		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, GlobalVariables.tracker, self.link, self.menubar)
 		vizact.onkeydown("c", CheckpointFunktionen.checkPoints, False)
 		vizact.onkeydown("v", BirdView.enableBirdEyeView)
 		vizact.onkeydown("n", Notes.noteView, False)
 		vizact.onkeydown("f", self.flugModusOnOff)
 		vizact.onkeydown("p", self.zeigePosition)
+		vizact.onkeydown(viz.KEY_KP_ADD, self.speedUp)
+		vizact.onkeydown(viz.KEY_KP_SUBTRACT, self.speedDown)
+		vizact.onkeydown(viz.KEY_KP_DIVIDE, self.flySpeedDown)
+		vizact.onkeydown(viz.KEY_KP_MULTIPLY, self.flySpeedUp)
 	
 		#Hoch und runter
 	
-		vizact.onkeydown(viz.KEY_SHIFT_L, MouseAndMovement.moveUpAndDown, self.tracker,  viz.KEY_SHIFT_L)
-		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, self.tracker, viz.KEY_ALT_L)
+		vizact.onkeydown(viz.KEY_SHIFT_L, MouseAndMovement.moveUpAndDown,  viz.KEY_SHIFT_L)
+		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, viz.KEY_ALT_L)
+		
 		#Slider
 		vizact.onslider( self.alphaSlider, self.setAlpha )
 
@@ -200,8 +207,9 @@ class Oberflaeche(object):
 	
 	#Setze Alphawert
 	def setAlpha(self, slider):
-		self.alphaSlider.message( str('%.2f'%(slider)) )
-		self.model.alpha(slider)
+		if self.model is not None:
+			self.alphaSlider.message( str('%.2f'%(slider)) )
+			self.model.alpha(slider)
 	
 	def startAndroid(self):
 		self.ipTextScreen.message(str(viz.net.getIP()))
@@ -213,7 +221,7 @@ class Oberflaeche(object):
 			self.ipTextScreen.visible(False)
 			GlobalVariables.showIP = False
 		
-		neu = RemoteAppMain.RemoteAppLuncher(viz.net.getIP, self.tracker, GlobalVariables.checkPointsList)
+		neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
 		viz.director(neu.lunch)
 
 	#zeige zurzeitige position
@@ -256,14 +264,60 @@ class Oberflaeche(object):
 			GlobalVariables.flugModus = False
 			viz.collision(viz.ON)
 			GlobalVariables.position = viz.MainView.getPosition()
-			self.tracker.setPosition(viz.MainView.getPosition()[0], self.beginZ, viz.MainView.getPosition()[2])
+			GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], self.beginZ, viz.MainView.getPosition()[2])
+			self.midTextScreen.message("Flugmodus: OFF")
+			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
 			
 		else:
 			GlobalVariables.flugModus = True
-			#self.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
-			viz.collision(viz.OFF)
-		self.flugModusTextScreen.message("Flugmodus: " + str(GlobalVariables.flugModus))
+			
 
+			GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
+			viz.collision(viz.OFF)
+			self.midTextScreen.message("Flugmodus: ON")
+			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+
+	#erhöhe bewegugnsgeschwindigkeit
+	def speedUp(self):
+		if(GlobalVariables.moveSpeed<40):
+			GlobalVariables.moveSpeed += 1
+			position = viz.MainView.getPosition()
+			euler = viz.MainView.getEuler()
+			GlobalVariables.tracker.remove()
+			GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
+			viz.link(GlobalVariables.tracker, viz.MainView)
+			GlobalVariables.tracker.setPosition(position)
+			GlobalVariables.tracker.setEuler(euler)
+			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
+			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+		
+	#verringere bewegeungsgeschwindigkeit
+	def speedDown(self):		
+		if(GlobalVariables.moveSpeed>1):
+			GlobalVariables.moveSpeed -=1
+			position = viz.MainView.getPosition()
+			euler = viz.MainView.getEuler()
+			GlobalVariables.tracker.remove()
+			GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
+			viz.link(GlobalVariables.tracker, viz.MainView)
+			GlobalVariables.tracker.setPosition(position)
+			GlobalVariables.tracker.setEuler(euler)
+			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
+			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+			
+	#erhöhe Fluggeschwindigkeit
+	def flySpeedUp(self):
+		if GlobalVariables.flySpeed <9.8:
+			GlobalVariables.flySpeed +=0.2
+		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
+		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+		
+	#verringere Fluggeschwindigkeit
+	def flySpeedDown(self):
+		if GlobalVariables.flySpeed>0.2:
+			GlobalVariables.flySpeed -=0.2
+		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
+		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
 if __name__ == "__main__":
 
 		oberflaeche = Oberflaeche()

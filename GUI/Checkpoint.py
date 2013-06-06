@@ -9,8 +9,9 @@ class Checkpoint(object):
 		self.posZ = posZ
 		self.posY = posY
 		self.name = name
-		self.comment = comment
 		self.eulerX = eulerX
 		self.eulerZ = eulerZ
 		self.eulerY = eulerY
+		self.comment = comment
+
 		

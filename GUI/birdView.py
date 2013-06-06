@@ -8,11 +8,13 @@ import vizinfo
 import viztask
 
 birdEyeViewIsActivated = False
+birdEyeWindow = None
 
 #Vogelperspektive
 def enableBirdEyeView():
 	global birdEyeViewIsActivated
 	global BirdEyeWindow
+	
 	if not (birdEyeViewIsActivated):
 		BirdEyeWindow = viz.addWindow()
 		BirdEyeWindow.fov(60)
