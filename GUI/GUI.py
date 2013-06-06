@@ -1,4 +1,4 @@
-"""Danke, dass Sie sich für unsere Software entschieden haben.
+"""Danke, dass Sie sich fuer unsere Software entschieden haben.
 \nHier die wichtigsten Shortcuts zum bedienen des Programmes:
 c:     Anzeigen der bereits gesetzten Checkpoints
 n:     Anzeigen der bereits gesetzten 3D Notizen
@@ -6,8 +6,8 @@ v:     Anzeigen der Vogelperspektive
 f:     Flugmodus aktivieren/deaktivieren
 h:     Anzeigen dieser Hilfe
 p:     Anzeigen der aktuellen Position
-+ -:   Erhöhen/Verringern der Bewegungsgeschwindigkeit 1-40
-* /:   Erhöhen/Verringern der Fluggeschwindigkeit 0.2-10"""
++ -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 1-40
+* /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.2-10"""
 
 
 
