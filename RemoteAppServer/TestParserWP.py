@@ -42,6 +42,7 @@ class AndroidEmu(object):
         return str(self.dictReq).replace("'","\"")
 
 if __name__ == "__main__":
+    """
     wpListIn =  []
     wpListIn.append(Checkpoint(1,2,3,"Hans",0,0,0,"FUCK"))
     wpListIn.append(Checkpoint(1,2,3,"Peter",0,0,0,"BLA"))
@@ -59,3 +60,7 @@ if __name__ == "__main__":
 
     viz.director(remoteLuncher.lunch)
     viz.director(androidHandy.run)
+    """ # Für lokal test
+
+    androidEmu = AndroidEmu("141.82.173.74",57891)
+    androidEmu.run()

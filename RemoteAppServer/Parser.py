@@ -3,6 +3,9 @@ from JasonEventModule import JEventObj
 from JasonEventModule import JasonEventSender
 import json
 import traceback
+import sys
+sys.path.append(r"..\GUI")
+from CheckpointFunktionen import *
 
 ###
 # Parser takes a String representation of the sent JSONObject to collect and forward the
@@ -90,14 +93,14 @@ class Parser(object):
 
         self.wpValue = jwaypoint["wp"]
         if self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
-            self.wayPointList.delteWaypoint(jwaypoint["name"])
+            CheckpointFunktionen.deleteCheckpointAndroid(jwaypoint["name"])
         elif self.wpValue == 1 :
             print "Server : Successfully created"
-            #self.wayPointList.createWaypoint(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
+            CheckpointFunktionen.createCheckpointAndroid(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
         elif self.wpValue == 2:
             pass
 
-        wpListStringed = ""
+        wpListStringed = "wp;"
         for wp in self.wayPointList:
            wpListStringed += str(wp.__dict__) + ";"
 
