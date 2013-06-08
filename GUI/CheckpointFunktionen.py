@@ -316,11 +316,15 @@ def createCheckpointAndroid(name="", comment=""):
 	checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), name,\
 	round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3), comment)
 	GlobalVariables.checkPointsList.append(checkpoint)
+	checkPoints(False)
+	checkPoints(False)
 	
 def deleteCheckpointAndroid(checkpointNummer):
 	try:
-		if (type(int(checkpointNummer)) is int and len(GlobalVariables.checkPointsList) >= int(checkpointNummer) and int(checkpointNummer) >0 ): #Ist die Eingabe in Listenlänge?
+		if (len(GlobalVariables.checkPointsList) >= int(checkpointNummer) and int(checkpointNummer) >0 ): #Ist die Eingabe in Listenlänge?
 			del GlobalVariables.checkPointsList[int (checkpointNummer)-1] #Lösche Checkpoint
+			checkPoints(False)
+			checkPoints(False)
 		else:
 			return False
 	except:

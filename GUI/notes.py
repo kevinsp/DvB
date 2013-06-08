@@ -148,7 +148,7 @@ def noteView(onViolent):
 
 
 		myPanel.addItem(group)
-		viz.link(viz.RightCenter)
+#		viz.link(viz.RightCenter)
 		
 		checkNotesVisible = True
 		GlobalVariables.infoWindowOpen = True
