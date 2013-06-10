@@ -18,8 +18,6 @@ commentWindowOpenNr = -1 #Nr des offenen Kommentar Fensters
 moveSpeed = 2.0 #Bewegungsgeschwindigkeit
 tracker = 0 #tracker
 flySpeed = 0.2 #fluggeschwindigkeit
-serverIsRunning = False #Läuft der Server?
-
 
 vizInfoBackgroundColor = [0,0,0,0.4]
 vizInfoBorderColor = [0,0,0,1]
