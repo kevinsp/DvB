@@ -21,12 +21,29 @@ flySpeed = 0.2 #fluggeschwindigkeit
 serverIsRunning = False #Läuft der Server?
 
 
+
+###Proximity Variablen###
+variable1 = False
+variable2 = False
+variable3 = False
+variable4 = False
+variable5 = False
+variable6 = False
+###					 ###
+
+
+
+
+
+
 vizInfoBackgroundColor = [0,0,0,0.4]
 vizInfoBorderColor = [0,0,0,1]
 vizInfoTitleBackgroundColor = [0,0,0,0.7]
 
 
 
+
+#Menuetheme
 darkTheme = viz.getTheme()			###   R, G, B, Alpha
 darkTheme.borderColor = (0,0,0,1) #Farbe der Borders
 darkTheme.backColor = (0,0,0,0.4) #Hintergrund MenüButtons

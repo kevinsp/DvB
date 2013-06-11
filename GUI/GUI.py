@@ -129,16 +129,6 @@ class Oberflaeche(object):
 		self.link = viz.link(GlobalVariables.tracker,viz.MainView)
 		viz.mouse.setVisible(False)
 
-
-		"""
-		#Erstes Model laden
-		self.model = viz.addChild(r'C:\Users\pasca_000\Downloads\CADModellHofner(1).obj')
-		modelIsLoaded = True
-		self.model.disable(viz.CULL_FACE)
-		self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
-		self.model.setEuler([0,0,0])
-		"""
-
 		#Boden laden
 		self.ground1 = viz.addChild('ground.osgb')
 		self.ground2 = viz.addChild('ground.osgb')
@@ -148,7 +138,6 @@ class Oberflaeche(object):
 		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 
-		
 		#Button Definition
 		vizact.onbuttondown(self.buttonDateiOeffnen, self.setModel)
 		vizact.onbuttondown(self.buttonModelEntfernen, self.deleteModel)
@@ -165,7 +154,6 @@ class Oberflaeche(object):
 
 		#Port Button
 		vizact.onbuttondown(self.beliebigPortButton, Porten.porten, self.menubar)
-		
 	
 		#Optionen Buttons
 		vizact.onbuttondown(self.AndroidAppButton, self.startAndroid)
@@ -184,14 +172,11 @@ class Oberflaeche(object):
 		vizact.onkeydown(viz.KEY_KP_MULTIPLY, self.flySpeedUp)
 	
 		#Hoch und runter
-	
 		vizact.onkeydown(viz.KEY_SHIFT_L, MouseAndMovement.moveUpAndDown,  viz.KEY_SHIFT_L)
 		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, viz.KEY_ALT_L)
 		
-		#Slider
+		#Progressbar Alphawert
 		vizact.onslider( self.alphaSlider, self.setAlpha )
-
-		
 	
 	#Setze Alphawert
 	def setAlpha(self, slider):
@@ -200,7 +185,6 @@ class Oberflaeche(object):
 			self.model.alpha(slider)
 	
 	def startAndroid(self):
-		
 		if GlobalVariables.serverIsRunning is False: #starte nur einen Server, wenn noch keiner laeuft
 			self.ipTextScreen.message(str(viz.net.getIP()))
 			neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
@@ -209,7 +193,7 @@ class Oberflaeche(object):
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
-			######Server muss noch angehalten werden######
+			neu.shutdown() #beende Server
 		
 
 	#zeige zurzeitige position
@@ -237,7 +221,6 @@ class Oberflaeche(object):
 			self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
 			self.model.setEuler([0,0,0])
 			viz.collision(viz.ON)
-
 			modelIsLoaded = True
 			
 	#Loesche Model		
@@ -258,8 +241,6 @@ class Oberflaeche(object):
 			
 		else:
 			GlobalVariables.flugModus = True
-			
-
 			GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
 			viz.collision(viz.OFF)
 			self.midTextScreen.message("Flugmodus: ON")
@@ -278,7 +259,8 @@ class Oberflaeche(object):
 			GlobalVariables.tracker.setEuler(euler)
 			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
 			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-		
+			viz.postEvent(viz.getEventID(VIEW_CHANGED_EVENT), GlobalVariables.tracker)		
+			
 	#verringere bewegeungsgeschwindigkeit
 	def speedDown(self):		
 		if(GlobalVariables.moveSpeed>1):
@@ -292,7 +274,8 @@ class Oberflaeche(object):
 			GlobalVariables.tracker.setEuler(euler)
 			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
 			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-			
+			viz.postEvent(viz.getEventID(VIEW_CHANGED_EVENT), GlobalVariables.tracker)		
+
 	#erhöhe Fluggeschwindigkeit
 	def flySpeedUp(self):
 		if GlobalVariables.flySpeed <9.8:
