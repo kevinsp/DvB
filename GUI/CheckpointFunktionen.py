@@ -92,16 +92,37 @@ def checkPoints(onViolent):
 		commentPanel = vizdlg.Panel(theme = blackTheme, fontSize=13, align=viz.ALIGN_CENTER_CENTER, background=False, border=False)
 		viz.link(viz.CenterCenter, commentPanel)
 
+
+		#Mache den zeilenumbruch für das Kommentar
+		def makeCommentary(position):
+				comment = str(GlobalVariables.checkPointsList[position+(10*(GlobalVariables.teillisteCheckpoint-1))].comment)
+				comment = comment.split(" ")
+				counter = 0
+				commentGesamt = ""
+				while counter < len(comment):
+					commentGesamt += " "+comment[counter]
+					
+					letzterUmbruch = commentGesamt.rfind("\n")
+					differenz = len(commentGesamt)-letzterUmbruch
+					
+					if differenz > 30:
+						commentGesamt += "\n"
+					counter+=1
+				return commentGesamt
+
+
+		#Zeige Kommentar an
 		def showComment(position):
 			global commentView
 			if GlobalVariables.commentWindowOpen is False:
 				GlobalVariables.commentWindowOpen = True
-				commentView = commentPanel.addItem(viz.addText(str(GlobalVariables.checkPointsList[position+(10*(GlobalVariables.teillisteCheckpoint-1))].comment)))
+				commentView = commentPanel.addItem(viz.addText(makeCommentary(position)))
 				commentPanel.visible(True)
 				GlobalVariables.commentWindowOpenNr = position
+				
 			elif GlobalVariables.commentWindowOpen is True and position is not GlobalVariables.commentWindowOpenNr:
 				commentPanel.removeItem(commentView)
-				commentView = commentPanel.addItem(viz.addText(str(GlobalVariables.checkPointsList[position+(10*(GlobalVariables.teillisteCheckpoint-1))].comment)))
+				commentView = commentPanel.addItem(viz.addText(makeCommentary(position)))
 				GlobalVariables.commentWindowOpenNr = position
 
 			else:

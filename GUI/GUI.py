@@ -193,7 +193,7 @@ class Oberflaeche(object):
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
-			neu.shutdown() #beende Server
+		#	neu.shutdown() #beende Server
 		
 
 	#zeige zurzeitige position
