@@ -75,15 +75,18 @@ class Serversocket(object):
             except socket.timeout:
                     print "connection timeout"
                     break
+            except socket.error as sError:
+                    print sError.message
+                    break
 
             except Exception:
-
                 print "cant recive data"
                 traceback.print_exc()
                 errorCounter += 1
                 if errorCounter < 5:
                     continue
                 else:
+                    print "connection cloesd after 5 errors"
                     break
 
         self.connector.connectionInteruppted()
