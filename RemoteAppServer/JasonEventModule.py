@@ -95,7 +95,7 @@ class JassonCam():
             self.view = view
 
         #Register funkt with Events
-        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"])
+        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"],VIEW_CHANGED_EVENT=["onViewChanged"])
 
         #Movement/turn speeds
         self.moveScale = self.MOVE_SPEED * moveScale
@@ -150,3 +150,5 @@ class JassonCam():
             self.moveSet.clear()
 
 
+    def onViewChanged(self,newView):
+        self.view = newView
