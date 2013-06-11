@@ -35,7 +35,7 @@ import BirdView
 import Porten
 import RemoteAppMain
 import GlobalVariables
-import SettingPanel
+#from RemoteAppMain import RemoteAppLuncher
 
 
 
@@ -59,7 +59,7 @@ class Oberflaeche(object):
 		viz.addChild('sky_day.osgb')
 		
 		
-		#Menuebar
+		#Menübar
 		self.menubar = vizmenu.add()
 		self.menubar.setVisible(False)
 
@@ -77,14 +77,13 @@ class Oberflaeche(object):
 		self.notePortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen porten")
 		self.beliebigPortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Porten")
 
-		#Einfuegen DropDown
+		#EinfÃ¼gen DropDown
 		self.EinfuegenMenu = self.menubar.add("Einfügen")
 		self.buttonNotizEinfuegen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Notiz")
 
 		#Optionen DropDown
 		self.OptionenMenu = self.menubar.add("Optionen")
 		self.AndroidAppButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Android")
-		self.settingButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Einstellungen")
 
 		#Alphaslider
 		self.alphaSlider = self.AnsichtsMenu.add(viz.PROGRESS_BAR, "1.00", "Alphawert")
@@ -114,16 +113,28 @@ class Oberflaeche(object):
 		self.midTextScreen = viz.addText("", viz.SCREEN)
 		self.midTextScreen.setScale(0.3,0.3,0)
 		self.midTextScreen.alignment(viz.ALIGN_CENTER_CENTER)
+	#	self.midTextScreen.setPosition([0.99,0.75,0])
 		self.midTextScreen.setPosition([0.5,0.5,0])
 		self.midTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
 		self.midTextScreen.setBackdropColor([0,0,0])
+		
+		""" lieber panel oder textscreen???
+		self.checkPointTextScreen = viz.addText("Checkpoints:\n", viz.SCREEN)
+		self.checkPointTextScreen.setScale(0.3,0.3,0)
+		self.checkPointTextScreen.alignment(viz.ALIGN_LEFT_CENTER)
+		self.checkPointTextScreen.setPosition([0.85,0.5,0])
 
+		self.checkPointTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
+		self.checkPointTextScreen.setBackdropColor([0,0,0])
+		self.checkPointTextScreen.visible(True)
+		"""
 
 
 		#Steuerung
 		viz.mouse(viz.ON)
 		viz.mouse.setTrap()
 		
+		global variable
 		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
 		GlobalVariables.tracker.setPosition([0,1.8,0])
 		self.link = viz.link(GlobalVariables.tracker,viz.MainView)
@@ -168,8 +179,9 @@ class Oberflaeche(object):
 		
 	
 		#Optionen Buttons
+		#neu = RemoteAppMain.RemoteAppLuncher("141.82.171.254", self.tracker)
+		#viz.director(neu.lunch)
 		vizact.onbuttondown(self.AndroidAppButton, self.startAndroid)
-		vizact.onbuttondown(self.settingButton, SettingPanel.oeffneSettingPanel, self.menubar)
 	
 		#Shortcuts
 		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, GlobalVariables.tracker, self.link, self.menubar)
@@ -200,17 +212,17 @@ class Oberflaeche(object):
 			self.model.alpha(slider)
 	
 	def startAndroid(self):
+		self.ipTextScreen.message(str(viz.net.getIP()))
 		
-		if GlobalVariables.serverIsRunning is False: #starte nur einen Server, wenn noch keiner laeuft
-			self.ipTextScreen.message(str(viz.net.getIP()))
-			neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
-			viz.director(neu.lunch)
-			GlobalVariables.serverIsRunning = True
+		if (GlobalVariables.showIP is False):
+			self.ipTextScreen.visible(True)
+			GlobalVariables.showIP = True
 		else:
-			GlobalVariables.serverIsRunning = False
-			self.ipTextScreen.message("")
-			######Server muss noch angehalten werden######
+			self.ipTextScreen.visible(False)
+			GlobalVariables.showIP = False
 		
+		neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
+		viz.director(neu.lunch)
 
 	#zeige zurzeitige position
 	def zeigePosition(self):

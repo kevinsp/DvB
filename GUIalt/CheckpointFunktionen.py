@@ -142,21 +142,18 @@ def createCheckpoint(menubar=None):
 		def checkpointHinzufuegen(data):
 			object = viz.pick(0,viz.SCREEN)
 			
-			if object is input.accept:
-				if len(str(data.value).split("//")[0])<=15:
-					#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an	
-						if (len(str(data.value).split("//"))==1):#wenn kein kommentar eingegeben wurde
-							checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
-							round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3))
-						else:#wenn ein kommentar eingegeben wurde
-							checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
-							round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3), str(data.value).split("//")[1])	
-							
-						GlobalVariables.checkPointsList.append(checkpoint)
-						GlobalVariables.windowOpen = False		
-						input.remove()
-				else:
-					data.error = "Bitte den Namen nicht laenger\nals 15 Zeichen machen."
+			if object is input.accept and len(str(data.value).split("//")[0])<15:
+				#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an	
+				
+					if (len(str(data.value).split("//"))==1):
+						checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
+						round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3))
+					else:
+						checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
+						round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3), str(data.value).split("//")[1])						
+					GlobalVariables.checkPointsList.append(checkpoint)
+					GlobalVariables.windowOpen = False		
+					input.remove()
 					
 				
 			elif object is input.cancel:
@@ -174,7 +171,7 @@ def createCheckpoint(menubar=None):
 
 
 		#vizdialog
-		input = vizdlg.InputDialog(title='Neuer Checkpoint', prompt="Eingabeformat:\n\"Name//Kommentar\"",length=1.0, validate = checkpointHinzufuegen)
+		input = vizdlg.InputDialog(title='Neuer Checkpoint', prompt="\"Name//Kommentar\"",length=1.0, validate = checkpointHinzufuegen)
 		viz.link(viz.CenterCenter,input)
 		input.alpha(0.4)
 		input.color(0,0,0)

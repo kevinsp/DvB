@@ -29,7 +29,7 @@ def openTextBox(menubar):
 		def ueberpruefeEingabe(data):
 			object = viz.pick(0,viz.SCREEN)
 			if object is input.accept:
-				if (data.value.strip() is not "" and len(str(data.value).strip())<=15): #Ist eine Eingabe vorhanden und nciht zu lange?
+				if (data.value.strip() is not "" ): #Ist eine Eingabe vorhanden?
 					writeText(data.value)
 					if (checkNotesVisible is True):
 						noteView(False)
@@ -38,7 +38,7 @@ def openTextBox(menubar):
 					GlobalVariables.windowOpen = False
 
 				else:
-					data.error = "Bitte nur Text eingeben mit\nmaximal 15 Zeichen."
+					data.error = "Bitte nur Text eingeben."
 					input.box.setFocus(viz.ON)
 			
 			elif object is input.cancel:
@@ -74,7 +74,6 @@ def openTextBox(menubar):
 			text3D = viz.addText3D(text.strip(), pos = [userPosition[0]-0.2, userPosition[1], userPosition[2] + 0.2])
 			text3D.setScale(0.2, 0.2, 0.2)
 			text3D.color(viz.RED)
-			
 			GlobalVariables.noteList.append([text3D, round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
 			GlobalVariables.windowOpen = False
 			
@@ -112,7 +111,7 @@ def noteView(onViolent):
 		blackTheme.highBackColor = (0.2,0.2,0.2,.2)
 
 			
-		myPanel = vizdlg.Panel(theme = blackTheme, fontSize=13, align=viz.ALIGN_RIGHT_CENTER, background=False, border=False)
+		myPanel = vizdlg.Panel(theme = blackTheme, fontSize=13, align=viz.ALIGN_CENTER_TOP, background=False, border=False)
 		
 		#PanelButtons
 		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0)
@@ -149,7 +148,7 @@ def noteView(onViolent):
 
 
 		myPanel.addItem(group)
-		viz.link(viz.RightCenter, myPanel)
+#		viz.link(viz.RightCenter)
 		
 		checkNotesVisible = True
 		GlobalVariables.infoWindowOpen = True
