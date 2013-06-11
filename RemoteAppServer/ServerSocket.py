@@ -57,6 +57,9 @@ class Serversocket(object):
         while True:
             try:
                 data = connection.recv(self.BUFF_SIZE)
+                if not data:
+                    print "connection interuppted"
+                    break
 
                 print ("Data: % s" % data)
 
