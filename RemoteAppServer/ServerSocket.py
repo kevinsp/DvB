@@ -76,7 +76,7 @@ class Serversocket(object):
                     print "connection timeout"
                     break
             except socket.error as sError:
-                    print sError.message
+                    print sError
                     break
 
             except Exception:
