@@ -53,7 +53,7 @@ class Serversocket(object):
 
 
     def listenToClient(self,connection,client):
-
+        errorCounter = 0
         while True:
             try:
                 data = connection.recv(self.BUFF_SIZE)
@@ -77,9 +77,14 @@ class Serversocket(object):
                     break
 
             except Exception:
+
                 print "cant recive data"
                 traceback.print_exc()
-                continue
+                errorCounter += 1
+                if errorCounter < 5:
+                    continue
+                else:
+                    break
 
         self.connector.connectionInteruppted()
         connection.shutdown(socket.SHUT_RDWR)

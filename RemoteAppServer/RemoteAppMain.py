@@ -38,9 +38,10 @@ class RemoteAppLuncher(object):
 if __name__ == "__main__":
     jEventRegister = JasonEventRegister()
     jCam = JassonCam(jEventRegister)
-    jParser = Parser(jEventRegister)
+    waypointList = []
+    jParser = Parser(jEventRegister,waypointList)
     connector = Connector(jParser)
-    sSocket = Serversocket("141.82.163.203",connector)
+    sSocket = Serversocket("141.82.169.142",connector)
 
 
 

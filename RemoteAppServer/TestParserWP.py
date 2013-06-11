@@ -14,17 +14,18 @@ class AndroidEmu(object):
         self.PORT = hostPort
         self.BUF_SIZE = 1024
 
-    def run(self):
+    def run(self,n):
         c = socket.socket()           # Neuer Socket
         c.connect((self.HOST, self.PORT))       # Verbindung zum Server aufbauen
-
-        while True:
+        counter = 0
+        while counter < n:
 
             c.sendall(self.createRequestCreateCp()+ "\n")
             print "Client: " + c.recv(self.BUF_SIZE)
 
             c.sendall("{\"end\":0}\n" )
-            break
+            counter += 1
+
         c.close()
 
     def createRequest(self):
@@ -62,5 +63,5 @@ if __name__ == "__main__":
     viz.director(androidHandy.run)
     """ # Für lokal test
 
-    androidEmu = AndroidEmu("141.82.173.74",57891)
-    androidEmu.run()
+    androidEmu = AndroidEmu("169.254.219.20",57891)
+    androidEmu.run(1)
