@@ -368,8 +368,8 @@ def createCheckpointAndroid(name="", comment=""):
 	userPosition = viz.MainView.getPosition() #Frage User Position
 	userEuler = viz.MainView.getEuler()			#Frage User Kamerawinkel
 	#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an	
-	checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), name,\
-	round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3), comment)
+	checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(name),\
+	round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3), str(comment))
 	GlobalVariables.checkPointsList.append(checkpoint)
 	checkPoints(False)
 	checkPoints(False)
