@@ -41,7 +41,7 @@ if __name__ == "__main__":
     waypointList = []
     jParser = Parser(jEventRegister,waypointList)
     connector = Connector(jParser)
-    sSocket = Serversocket("141.82.169.142",connector)
+    sSocket = Serversocket("127.0.0.1",connector)
 
 
 

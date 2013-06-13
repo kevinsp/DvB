@@ -5,7 +5,8 @@ import json
 import traceback
 import sys
 sys.path.append(r"..\GUI")
-from CheckpointFunktionen import *
+from CheckpointFunktionen import createCheckpointAndroid
+from CheckpointFunktionen import deleteCheckpointAndroid
 
 ###
 # Parser takes a String representation of the sent JSONObject to collect and forward the
@@ -93,10 +94,10 @@ class Parser(object):
 
         self.wpValue = jwaypoint["wp"]
         if self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
-            CheckpointFunktionen.deleteCheckpointAndroid(jwaypoint["name"])
+            deleteCheckpointAndroid(jwaypoint["name"])
         elif self.wpValue == 1 :
             print "Server : Successfully created"
-            CheckpointFunktionen.createCheckpointAndroid(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
+            createCheckpointAndroid(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
         elif self.wpValue == 2:
             pass
 

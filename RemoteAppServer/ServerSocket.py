@@ -40,9 +40,9 @@ class Serversocket(object):
 
         while True:
             try:
-                    print "Server is Running"
+                    print "Server: Server is Running"
                     connection, client = self.socket.accept()
-                    print "connection established"
+                    print "Server: connection established"
                     connection.settimeout(120)
 
                     self.listenToClient(connection,client)
@@ -61,38 +61,38 @@ class Serversocket(object):
                 data = connection.recv(self.BUFF_SIZE)
 
                 if not data:
-                    print "connection interuppted"
+                    print "Server: connection interuppted"
                     break
 
-                print ("Data: % s" % data)
+                print ("Server: Data := % s" % data)
 
                 self.ans = self.connector.feedData(data)
 
                 if self.ans == "end":
-                    print "connection was interuppted by user"
+                    print "Server: connection was interuppted by user"
                     break
                 elif self.ans == "":
                     pass
                 else:
-                    print "created user waypoint. sending back list"
-                    connection.sendall(self.ans)
+                    print "Server: sending back list"
+                    print "Server: " + str(connection.sendall(self.ans))
 
 
             except socket.timeout:
-                    print "connection timeout"
+                    print "Server: connection timeout"
                     break
             except socket.error as sError:
                     print sError
                     break
 
             except Exception:
-                print "cant recive data"
+                print "Server : cant recive data"
                 traceback.print_exc()
                 errorCounter += 1
                 if errorCounter < 5:
                     continue
                 else:
-                    print "connection cloesd after 5 errors"
+                    print "Server: connection cloesd after 5 errors"
                     break
 
         self.connector.connectionInteruppted()

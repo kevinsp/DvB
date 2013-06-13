@@ -20,13 +20,10 @@ class AndroidEmu(object):
         counter = 0
         while counter < n:
 
-            c.sendall(self.createRequest()+ "\n")
-
+            c.sendall(self.createRequestCreateCp()+ "\n")
             print "Client: " + str(c.recv(self.BUF_SIZE))
-
-            c.sendall("{\"end\":0}\n" )
             counter += 1
-
+        c.sendall("{\"end\":0}\n" )
         c.close()
 
     def createRequest(self):
@@ -64,5 +61,5 @@ if __name__ == "__main__":
     viz.director(androidHandy.run)
     """ # Für lokal test
 
-    androidEmu = AndroidEmu("141.82.163.175",57891)
+    androidEmu = AndroidEmu("141.82.167.16",57891)
     androidEmu.run(1)
