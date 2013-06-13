@@ -75,7 +75,11 @@ class Serversocket(object):
                     pass
                 else:
                     print "Server: sending back list"
-                    print "Server: " + str(connection.sendall(self.ans))
+                    helperList = list(self.chunks(self.ans,5))
+
+                    for partList in helperList:
+                        connection.sendall("".join(partList))
+
 
 
             except socket.timeout:
@@ -99,4 +103,8 @@ class Serversocket(object):
         connection.shutdown(socket.SHUT_RDWR)
         connection.close()
 
-
+    def chunks(self,list, n):
+        """ Yield successive n-sized chunks from list.
+        """
+        for i in xrange(0, len(list), n):
+            yield list[i:i+n]

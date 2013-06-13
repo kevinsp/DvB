@@ -3,7 +3,7 @@ import socket
 from RemoteAppMain import RemoteAppLuncher
 import viz
 import sys
-
+import pprint
 sys.path.append(r"..\GUI")
 from Checkpoint import Checkpoint
 
@@ -18,11 +18,22 @@ class AndroidEmu(object):
         c = socket.socket()           # Neuer Socket
         c.connect((self.HOST, self.PORT))       # Verbindung zum Server aufbauen
         counter = 0
+        printString = ""
         while counter < n:
 
             c.sendall(self.createRequestCreateCp()+ "\n")
-            print "Client: " + str(c.recv(self.BUF_SIZE))
+
+            while True:
+                ans = c.recv(self.BUF_SIZE)
+                if ans.__contains__("(\"(/^_^\)\")"):
+                    printString += ans + "\n"
+                    break
+                else:
+                    printString += ans + "\n"
+
             counter += 1
+        print(printString)
+        print(len(printString.split(";"))-2)
         c.sendall("{\"end\":0}\n" )
         c.close()
 
@@ -39,6 +50,7 @@ class AndroidEmu(object):
                             "c"     : "test1"
         }
         return str(self.dictReq).replace("'","\"")
+
 
 if __name__ == "__main__":
     """
@@ -61,5 +73,5 @@ if __name__ == "__main__":
     viz.director(androidHandy.run)
     """ # Für lokal test
 
-    androidEmu = AndroidEmu("141.82.167.16",57891)
-    androidEmu.run(1)
+    androidEmu = AndroidEmu("192.168.56.1",57891)
+    androidEmu.run(5)
