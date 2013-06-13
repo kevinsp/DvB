@@ -4,9 +4,11 @@ import socket
 import viz
 import traceback
 
+
+
 class Serversocket(object):
 
-    def __init__(self,hostip,connector,backlog=1,port=57891,buff_size=1024):
+    def __init__(self,hostip,connector,backlog=1,port=57891,buff_size=4096):
         self.HOSTIP = hostip
         self.PORT = port
         self.BUFF_SIZE = buff_size
@@ -57,6 +59,7 @@ class Serversocket(object):
         while True:
             try:
                 data = connection.recv(self.BUFF_SIZE)
+
                 if not data:
                     print "connection interuppted"
                     break
@@ -95,4 +98,5 @@ class Serversocket(object):
         self.connector.connectionInteruppted()
         connection.shutdown(socket.SHUT_RDWR)
         connection.close()
+
 

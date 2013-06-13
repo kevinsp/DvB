@@ -101,10 +101,11 @@ class Parser(object):
             pass
 
         wpListStringed = "wp;"
+        endTag = "(\"(/^_^\)\")"
         for wp in self.wayPointList:
            wpListStringed += str(wp.__dict__) + ";"
 
-        return wpListStringed
+        return wpListStringed + endTag
 
 
     # Method will prepare a dictionary of certain syntax

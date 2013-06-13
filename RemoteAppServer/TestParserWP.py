@@ -22,7 +22,7 @@ class AndroidEmu(object):
 
             c.sendall(self.createRequest()+ "\n")
 
-            print "Client: " + str(c.recv(self.BUF_SIZE)) + "BLUB"
+            print "Client: " + str(c.recv(self.BUF_SIZE))
 
             c.sendall("{\"end\":0}\n" )
             counter += 1
@@ -64,5 +64,5 @@ if __name__ == "__main__":
     viz.director(androidHandy.run)
     """ # Für lokal test
 
-    androidEmu = AndroidEmu("141.82.162.251",57891)
+    androidEmu = AndroidEmu("141.82.163.175",57891)
     androidEmu.run(1)
