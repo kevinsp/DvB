@@ -95,7 +95,7 @@ class Parser(object):
         self.wpValue = jwaypoint["wp"]
         if self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
             deleteCheckpointAndroid(jwaypoint["name"])
-        elif self.wpValue == 1 :
+        elif self.wpValue == 3 :
             print "Server : Successfully created"
             createCheckpointAndroid(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
         elif self.wpValue == 2:

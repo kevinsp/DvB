@@ -41,14 +41,14 @@ class AndroidEmu(object):
 
     def createRequest(self):
         self.dictReq =  {   "wp"    : 2,
-                            "name"  : "test",
+                            "name"  : 'test2',
                             "c"     : "test1"
                         }
         return str(self.dictReq).replace("'","\"")
 
     def createRequestCreateCp(self):
         self.dictReq =  {   "wp"    : 1,
-                            "name"  : "test",
+                            "name"  : 'test2',
                             "c"     : "test1"
         }
         return str(self.dictReq).replace("'","\"")
@@ -75,5 +75,5 @@ if __name__ == "__main__":
     viz.director(androidHandy.run)
     """ # Für lokal test
 
-    androidEmu = AndroidEmu("192.168.56.1",57891)
-    androidEmu.run(1000)
+    androidEmu = AndroidEmu("141.82.163.175",57891)
+    androidEmu.run(1)

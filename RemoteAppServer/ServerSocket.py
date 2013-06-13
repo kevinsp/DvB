@@ -42,6 +42,7 @@ class Serversocket(object):
             try:
                     print "Server: Server is Running"
                     connection, client = self.socket.accept()
+                    #connection.sendall("yoyooy\n");
                     print "Server: connection established"
                     connection.settimeout(120)
 
@@ -78,7 +79,7 @@ class Serversocket(object):
                     helperList = list(self.chunks(self.ans,5))
 
                     for partList in helperList:
-                        connection.sendall("".join(partList))
+                        connection.sendall("".join(partList)+ "\n")
 
 
 
