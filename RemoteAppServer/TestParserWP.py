@@ -18,9 +18,9 @@ class AndroidEmu(object):
         c = socket.socket()           # Neuer Socket
         c.connect((self.HOST, self.PORT))       # Verbindung zum Server aufbauen
         counter = 0
-        printString = ""
-        while counter < n:
 
+        while counter < n:
+            printString = ""
             c.sendall(self.createRequestCreateCp()+ "\n")
 
             while True:
@@ -31,9 +31,11 @@ class AndroidEmu(object):
                 else:
                     printString += ans + "\n"
 
+            print(printString)
+            print(len(printString.split(";"))-2)
+
             counter += 1
-        print(printString)
-        print(len(printString.split(";"))-2)
+
         c.sendall("{\"end\":0}\n" )
         c.close()
 
@@ -74,4 +76,4 @@ if __name__ == "__main__":
     """ # Für lokal test
 
     androidEmu = AndroidEmu("192.168.56.1",57891)
-    androidEmu.run(5)
+    androidEmu.run(1000)
