@@ -19,7 +19,7 @@ moveSpeed = 2.0 #Bewegungsgeschwindigkeit
 tracker = 0 #tracker
 flySpeed = 0.2 #fluggeschwindigkeit
 serverIsRunning = False #Läuft der Server?
-
+nurEinmalSetzen = False
 
 
 ###Proximity Variablen###

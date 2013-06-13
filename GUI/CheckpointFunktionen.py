@@ -64,19 +64,26 @@ def checkPoints(onViolent):
 
 		#zirkulierendes "Liste"
 		def teillisteVerringernErhoehen(wert):
-			if GlobalVariables.teillisteCheckpoint == 1 and wert == -1:
-				GlobalVariables.teillisteCheckpoint = GlobalVariables.gesamtTeillisteCheckpoint
-			elif GlobalVariables.teillisteCheckpoint == GlobalVariables.gesamtTeillisteCheckpoint and wert == 1:
-				GlobalVariables.teillisteCheckpoint = 1
-			else:
-				GlobalVariables.teillisteCheckpoint = GlobalVariables.teillisteCheckpoint+wert
-			checkPoints(False)
-			checkPoints(False)
+			
+			if checkPointsVisible: 
+				if GlobalVariables.teillisteCheckpoint == 1 and wert == -1:
+					GlobalVariables.teillisteCheckpoint = GlobalVariables.gesamtTeillisteCheckpoint
+				elif GlobalVariables.teillisteCheckpoint == GlobalVariables.gesamtTeillisteCheckpoint and wert == 1:
+					GlobalVariables.teillisteCheckpoint = 1
+				else:
+					GlobalVariables.teillisteCheckpoint = GlobalVariables.teillisteCheckpoint+wert
+				checkPoints(False)
+				checkPoints(False)
 
 		#Button action
 		vizact.onbuttondown(zurueck,teillisteVerringernErhoehen, -1)
 		vizact.onbuttondown(naechste, teillisteVerringernErhoehen, 1)
-	
+		
+		if GlobalVariables.nurEinmalSetzen is False:
+			vizact.onkeydown(viz.KEY_LEFT, teillisteVerringernErhoehen, -1)
+			vizact.onkeydown(viz.KEY_RIGHT, teillisteVerringernErhoehen, 1)
+			GlobalVariables.nurEinmalSetzen = True
+		
 		#Add row to myPanel
 		myPanel.addItem(row)
 
@@ -131,18 +138,21 @@ def checkPoints(onViolent):
 				checkPoints(False)
 				checkPoints(False)
 
-	
-		def test(position):		
+		showCommentary = vizpopup.Item('Zeige Kommentar')
+		porteZuCheckpoint = vizpopup.Item('Springe zu')
+		mymenu = vizpopup.Menu('Main',[showCommentary, porteZuCheckpoint])		
 
-			showCommentary = vizpopup.Item('Zeige Kommentar')
-			mymenu = vizpopup.Menu('Main',[showCommentary])		
+		#Zeige subMenu an
+		def subMenu(position):		
 			vizpopup.onMenuItem(showCommentary, showComment, position)
+			vizpopup.onMenuItem(porteZuCheckpoint, portCheckPoint, checkPointNummer=position)
 			vizpopup.display(mymenu)
+			
 			
 		#belege die ganzen Buttons mit comment anzeigen funktionen
 		i=0
 		for a in checkpointButtons:
-			vizact.onbuttondown(checkpointButtons[i], test, i)
+			vizact.onbuttondown(checkpointButtons[i], subMenu, i)
 			i+=1
 			
 		viz.link(viz.RightCenter,myPanel)
@@ -173,7 +183,10 @@ def createCheckpoint(menubar=None):
 			
 			if object is input.accept:
 				if len(str(data.value).split("//")[0])<=15:
-					#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an	
+					#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an
+					i = 0
+					while i <25:
+						i+=1
 						if (len(str(data.value).split("//"))==1):#wenn kein kommentar eingegeben wurde
 							checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
 							round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3))
@@ -227,7 +240,7 @@ def createCheckpoint(menubar=None):
 		pass
 	
 #Lösche Checkpoint
-def deleteCheckpoint(menubar=None):
+def deleteCheckpoint(menubar=None, position=None):
 	global fensterOpen	
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
@@ -258,7 +271,7 @@ def deleteCheckpoint(menubar=None):
 				input.remove()
 		
 		#vizdialog
-		input = vizdlg.InputDialog(title = "Loesche Checkpoint", length=1.0, validate = ueberpruefeEingabe)
+		input = vizdlg.InputDialog(title = "Loesche Checkpoint", prompt="\"Checkpointnummer\"", length=1.0, validate = ueberpruefeEingabe)
 		viz.link(viz.CenterCenter,input)
 		input.alpha(0.4)	
 		input.color(0,0,0)
@@ -279,63 +292,71 @@ def deleteCheckpoint(menubar=None):
 		pass
 
 #Zu Checkpoints porten
-def portCheckPoint(menubar):
+def portCheckPoint(menubar=None, checkPointNummer = None):
+	
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
-		menubar.setVisible(False)
+		if menubar is not None:
+			menubar.setVisible(False)
+			
+		def porteCheckpoint(checkPointNummer):
+				point = GlobalVariables.checkPointsList[int(checkPointNummer)-1]
+				
+				#Setze Position
+				viz.MainView.setPosition(point.posX, point.posZ, point.posY)
+				GlobalVariables.tracker.setPosition(point.posX, point.posZ, point.posY)
+				
+				#Setze Winkel
+				viz.MainView.setEuler(point.eulerX,point.eulerZ, point.eulerY)
+				GlobalVariables.tracker.setEuler(point.eulerX, point.eulerZ, point.eulerY)
+				
+				GlobalVariables.euler = GlobalVariables.tracker.getEuler()
+				GlobalVariables.position = GlobalVariables.tracker.getPosition()
+				GlobalVariables.windowOpen = False	
+			
 		
-		#ueberpruefe die Eingabe
-		
-		def ueberpruefeEingabe(data):
-			object = viz.pick(0,viz.SCREEN)
-			if object is not input.cancel:
-				try:
-					if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): #Ist die Eingabe in Listenlänge?
-						porteCheckpoint(data.value)
-						input.remove()
-						GlobalVariables.windowOpen = False
+		if checkPointNummer is None:
+			#ueberpruefe die Eingabe
+			
+			def ueberpruefeEingabe(data):
+				object = viz.pick(0,viz.SCREEN)
+				if object is not input.cancel:
+					try:
+						if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): #Ist die Eingabe in Listenlänge?
+							porteCheckpoint(data.value)
+							input.remove()
+							GlobalVariables.windowOpen = False
 
-					else:
+						else:
+							data.error = "Biite nur Zahlen im Bereich der \nverfuegbaren Checkpoints."
+							input.box.setFocus(viz.ON)
+					except:
 						data.error = "Biite nur Zahlen im Bereich der \nverfuegbaren Checkpoints."
 						input.box.setFocus(viz.ON)
-				except:
-					data.error = "Biite nur Zahlen im Bereich der \nverfuegbaren Checkpoints."
-					input.box.setFocus(viz.ON)
-			else:
-				GlobalVariables.windowOpen = False
-				input.remove()	
-		
-		#vizdialog
-		input = vizdlg.InputDialog(title='Porte zu Checkpoint', length=1.0, validate = ueberpruefeEingabe)
-		viz.link(viz.CenterCenter,input)
-		input.alpha(0.4)
-		input.color(0,0,0)
-		
-		def showdialog():
-			yield input.show()
-			while True:
-				if input.accepted:
-					break
 				else:
-					break
-		vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
-		viztask.schedule(showdialog()) 
-		
-		def porteCheckpoint(checkPointNummer):
-			point = GlobalVariables.checkPointsList[int(checkPointNummer)-1]
+					GlobalVariables.windowOpen = False
+					input.remove()	
 			
-			#Setze Position
-			viz.MainView.setPosition(point.posX, point.posZ, point.posY)
-			GlobalVariables.tracker.setPosition(point.posX, point.posZ, point.posY)
+			#vizdialog
+			input = vizdlg.InputDialog(title='Porte zu Checkpoint', length=1.0, validate = ueberpruefeEingabe)
+			viz.link(viz.CenterCenter,input)
+			input.alpha(0.4)
+			input.color(0,0,0)
 			
-			#Setze Winkel
-			viz.MainView.setEuler(point.eulerX,point.eulerZ, point.eulerY)
-			GlobalVariables.tracker.setEuler(point.eulerX, point.eulerZ, point.eulerY)
+			def showdialog():
+				yield input.show()
+				while True:
+					if input.accepted:
+						break
+					else:
+						break
+			vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
+			viztask.schedule(showdialog()) 
 			
-			GlobalVariables.euler = tracker.getEuler()
-			GlobalVariables.position = tracker.getPosition()
-			GlobalVariables.windowOpen = False
 			
+		else:
+			porteCheckpoint(checkPointNummer)
+
 #######		Android Funktionen 		#########
 
 def getCheckpointsAndroid():

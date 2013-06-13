@@ -259,7 +259,7 @@ class Oberflaeche(object):
 			GlobalVariables.tracker.setEuler(euler)
 			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
 			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-			viz.postEvent(viz.getEventID(VIEW_CHANGED_EVENT), GlobalVariables.tracker)		
+			viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)		
 			
 	#verringere bewegeungsgeschwindigkeit
 	def speedDown(self):		
@@ -274,7 +274,7 @@ class Oberflaeche(object):
 			GlobalVariables.tracker.setEuler(euler)
 			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
 			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-			viz.postEvent(viz.getEventID(VIEW_CHANGED_EVENT), GlobalVariables.tracker)		
+			viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)		
 
 	#erhöhe Fluggeschwindigkeit
 	def flySpeedUp(self):
