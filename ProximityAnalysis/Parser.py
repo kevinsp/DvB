@@ -32,24 +32,29 @@ class Parser(object):
 		self.bracketCloseCounter = 0
 		self.lineCounter = 0
 		self.nameCounter = 0
+		self.blockLineList = []
+		self.blockStarts = []
+		self.blockEnds = []
 		with open(self.inputFile, 'r') as eingabe:
 			for zeile in eingabe:
 				self.lineCounter += 1
 				zeile = zeile.strip()
-				if zeile.startswith('Name "'):
+				'''if zeile.startswith('Name "'):
 					self.nameCounter += 1
-					print(str(self.lineCounter)+' '),
+					print(str(self.lineCounter)+' '),'''
 				if zeile.endswith('{'):
 					self.bracketOpenCounter += 1
+					self.blockStarts.append(self.lineCounter)
 					#print(zeile.split('{')[0].strip())
 				if zeile.endswith('}'):
 					self.bracketCloseCounter += 1
-				if self.bracketCloseCounter == self.bracketOpenCounter - 1:
-					print('Counter gleich -1 '+zeile+' Zeile: '+str(self.lineCounter))
-				if self.bracketCloseCounter == self.bracketOpenCounter - 2:
-					print('Counter gleich -2 '+zeile+' Zeile: '+str(self.lineCounter))
+					self.blockEnds.append(self.lineCounter)
+					self.blockLineList.append((self.blockStarts.pop(),self.blockEnds.pop()))
+				#if self.bracketCloseCounter == (self.bracketOpenCounter - 1):
+					#self.blockLineList.append(())
+					#print('Counter gleich -1 '+zeile+' Zeile: '+str(self.lineCounter))
 		#print(str(self.bracketCloseCounter)+' close and open '+str(self.bracketOpenCounter))
-		print(str(self.nameCounter)+' Zeilen')
+		print(self.blockLineList)
 	
 	def preSortOld(self, inputFile):
 		osgt = ''
