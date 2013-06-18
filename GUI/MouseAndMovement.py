@@ -15,23 +15,23 @@ import GlobalVariables
 
 
 #aktiviere/deaktiviere Mauszeiger
-def enableDisableMouse(tracker, link, menubar):
+def enableDisableMouse(menubar):
 		
 	if viz.mouse.getVisible():
 		viz.mouse(viz.ON)
-		tracker.setEuler(GlobalVariables.euler)
-		if (GlobalVariables.flugModus is False):
-			tracker.setPosition(GlobalVariables.position[0], 1.82, GlobalVariables.position[2])
-		else:
-			tracker.setPosition(GlobalVariables.position)
-		link.enable()
+		GlobalVariables.tracker.setEuler(GlobalVariables.euler)
+	#	if (GlobalVariables.flugModus is False):
+	#		GlobalVariables.tracker.setPosition(GlobalVariables.position[0], 1.82, GlobalVariables.position[2])
+	#	else:
+		GlobalVariables.tracker.setPosition(GlobalVariables.position)
+		GlobalVariables.link.enable()
 		viz.mouse.setVisible(False)
 		menubar.setVisible(False)
 	else:
 		viz.mouse(viz.OFF)
-		GlobalVariables.euler = tracker.getEuler()
-		GlobalVariables.position = tracker.getPosition()
-		link.disable()
+		GlobalVariables.euler = GlobalVariables.tracker.getEuler()
+		GlobalVariables.position = GlobalVariables.tracker.getPosition()
+		GlobalVariables.link.disable()
 		viz.mouse.setVisible(True)
 		menubar.setVisible(True)
 	

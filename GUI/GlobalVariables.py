@@ -1,4 +1,5 @@
 ﻿import viz
+import vizdlg
 
 windowOpen = False
 infoWindowOpen = False
@@ -14,13 +15,15 @@ gesamtTeillisteCheckpoint = 1 #Nr der maximalen Teillisten in checkpoints
 teillisteNote = 1 #Nr der Teilliste, welche gerade angezeigt wird (Note)
 gesamtTeillisteNote = 1 #Nr der maximalen Teillisten in Notes
 commentWindowOpen = False #Ist das Kommentar Fenster offen (checkpoints)
-commentWindowOpenNr = -1 #Nr des offenen Kommentar Fensters
 moveSpeed = 2.0 #Bewegungsgeschwindigkeit
 tracker = 0 #tracker
+link = 0 #link
 flySpeed = 0.2 #fluggeschwindigkeit
 serverIsRunning = False #Läuft der Server?
 nurEinmalSetzen = False
-
+positionWhichIsActivated = -1 #position, welcher kommentar gerade angezeigt wird
+commentPanel = vizdlg.Panel(fontSize=13, align=viz.ALIGN_CENTER_CENTER, background=False, border=False) #Panel des Kommentars
+commentView = None				#Das Kommentar
 
 ###Proximity Variablen###
 variable1 = False
@@ -40,6 +43,21 @@ vizInfoBackgroundColor = [0,0,0,0.4]
 vizInfoBorderColor = [0,0,0,1]
 vizInfoTitleBackgroundColor = [0,0,0,0.7]
 
+#checkpointPanelTheme
+blackTheme = viz.getTheme()
+blackTheme.borderColor = (0.1,0.1,0.1,.2)
+blackTheme.backColor = (0.4,0.4,0.4,.2)
+blackTheme.lightBackColor = (0.6,0.6,0.6,.2)
+blackTheme.darkBackColor = (0.2,0.2,0.2,.2)
+blackTheme.highBackColor = (0.2,0.2,0.2,.2)
+
+#angewähltesLabel Theme
+gewaehltTheme = viz.getTheme()
+gewaehltTheme.borderColor = (0,0,0,1)
+gewaehltTheme.backColor = (0,0,0,1)
+gewaehltTheme.lightBackColor = (0,0,0,1)
+gewaehltTheme.darkBackColor = (0,0,0,1)
+gewaehltTheme.highBackColor = (0,0,0,1)
 
 
 

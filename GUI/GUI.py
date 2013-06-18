@@ -126,7 +126,7 @@ class Oberflaeche(object):
 		
 		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
 		GlobalVariables.tracker.setPosition([0,1.8,0])
-		self.link = viz.link(GlobalVariables.tracker,viz.MainView)
+		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView)
 		viz.mouse.setVisible(False)
 
 		#Boden laden
@@ -160,7 +160,7 @@ class Oberflaeche(object):
 		vizact.onbuttondown(self.settingButton, SettingPanel.oeffneSettingPanel, self.menubar)
 	
 		#Shortcuts
-		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, GlobalVariables.tracker, self.link, self.menubar)
+		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, self.menubar)
 		vizact.onkeydown("c", CheckpointFunktionen.checkPoints, False)
 		vizact.onkeydown("v", BirdView.enableBirdEyeView)
 		vizact.onkeydown("n", Notes.noteView, False)
@@ -235,13 +235,13 @@ class Oberflaeche(object):
 			GlobalVariables.flugModus = False
 			viz.collision(viz.ON)
 			GlobalVariables.position = viz.MainView.getPosition()
-			GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], self.beginZ, viz.MainView.getPosition()[2])
+			#GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], self.beginZ, viz.MainView.getPosition()[2])
 			self.midTextScreen.message("Flugmodus: OFF")
 			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
 			
 		else:
 			GlobalVariables.flugModus = True
-			GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
+			#GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
 			viz.collision(viz.OFF)
 			self.midTextScreen.message("Flugmodus: ON")
 			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
@@ -254,7 +254,7 @@ class Oberflaeche(object):
 			euler = viz.MainView.getEuler()
 			GlobalVariables.tracker.remove()
 			GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
-			viz.link(GlobalVariables.tracker, viz.MainView)
+			GlobalVariables.link = viz.link(GlobalVariables.tracker, viz.MainView)
 			GlobalVariables.tracker.setPosition(position)
 			GlobalVariables.tracker.setEuler(euler)
 			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
@@ -269,7 +269,7 @@ class Oberflaeche(object):
 			euler = viz.MainView.getEuler()
 			GlobalVariables.tracker.remove()
 			GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
-			viz.link(GlobalVariables.tracker, viz.MainView)
+			GlobalVariables.link = viz.link(GlobalVariables.tracker, viz.MainView)
 			GlobalVariables.tracker.setPosition(position)
 			GlobalVariables.tracker.setEuler(euler)
 			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
@@ -278,17 +278,18 @@ class Oberflaeche(object):
 
 	#erhöhe Fluggeschwindigkeit
 	def flySpeedUp(self):
-		if GlobalVariables.flySpeed <9.8:
+		if 0.2 < GlobalVariables.flySpeed <9.8:
 			GlobalVariables.flySpeed +=0.2
 		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
 		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
 		
 	#verringere Fluggeschwindigkeit
 	def flySpeedDown(self):
-		if GlobalVariables.flySpeed>0.2:
+		if 9.8 > GlobalVariables.flySpeed>0.2:
 			GlobalVariables.flySpeed -=0.2
 		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
 		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+		
 if __name__ == "__main__":
 
 		oberflaeche = Oberflaeche()

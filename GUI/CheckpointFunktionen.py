@@ -16,20 +16,19 @@ import Notes
 
 checkPointsVisible = False
 myPanel = vizdlg.Panel()
-commentPanel = vizdlg.Panel()
+
+
 
 #Checkpointliste Fenster
 def checkPoints(onViolent):
 	global checkPointsVisible	
 	global myPanel
-	global commentPanel
+
 
 	if not checkPointsVisible: 	#Falls Checkboxfenster nicht 
-		message = ""			# sichtbar, checkpoints auslesen und ausgeben
-		checkPointZaehler = 1
-		
+								# sichtbar, checkpoints auslesen und ausgeben
+		checkPointZaehler = 1		
 		checkpointsPanelList = []#Liste für die icons zum kommentar aufplopen nebend er checkpointliste
-
 
 		#Berechnung der Gesamtteillisten
 		if len(GlobalVariables.checkPointsList) >= 10:
@@ -46,17 +45,12 @@ def checkPoints(onViolent):
 		if (GlobalVariables.infoWindowOpen is True):
 			Notes.noteView(True)	#Schließe noteView, wenn offen
 
-		blackTheme = viz.getTheme()
-		blackTheme.borderColor = (0.1,0.1,0.1,.2)
-		blackTheme.backColor = (0.4,0.4,0.4,.2)
-		blackTheme.lightBackColor = (0.6,0.6,0.6,.2)
-		blackTheme.darkBackColor = (0.2,0.2,0.2,.2)
-		blackTheme.highBackColor = (0.2,0.2,0.2,.2)
-
-			
-		myPanel = vizdlg.Panel(theme = blackTheme, fontSize=13, align=viz.ALIGN_RIGHT_CENTER, background=False, border=False)
+		myPanel = vizdlg.Panel(theme = GlobalVariables.blackTheme, fontSize=13, align=viz.ALIGN_RIGHT_CENTER, background=False, border=False)
 		
 		#PanelButtons
+		rowCommentDelete = vizdlg.Panel(border=False,background=False,margin=0)
+		commentDelete = rowCommentDelete.addItem(viz.addButtonLabel("x"))
+		
 		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0)
 		zurueck = row.addItem(viz.addButtonLabel("Zurueck"))
 		teillisteView = row.addItem(viz.addText(str(GlobalVariables.teillisteCheckpoint) + "/" + str(GlobalVariables.gesamtTeillisteCheckpoint)))
@@ -64,20 +58,31 @@ def checkPoints(onViolent):
 
 		#zirkulierendes "Liste"
 		def teillisteVerringernErhoehen(wert):
-			
 			if checkPointsVisible: 
 				if GlobalVariables.teillisteCheckpoint == 1 and wert == -1:
 					GlobalVariables.teillisteCheckpoint = GlobalVariables.gesamtTeillisteCheckpoint
+					GlobalVariables.positionWhichIsActivated = -1
 				elif GlobalVariables.teillisteCheckpoint == GlobalVariables.gesamtTeillisteCheckpoint and wert == 1:
 					GlobalVariables.teillisteCheckpoint = 1
+					GlobalVariables.positionWhichIsActivated = -1
+
 				else:
 					GlobalVariables.teillisteCheckpoint = GlobalVariables.teillisteCheckpoint+wert
+					GlobalVariables.positionWhichIsActivated = -1
+
 				checkPoints(False)
 				checkPoints(False)
+		#Kommentar wegmachen
+		def deleteComment():
+			if GlobalVariables.commentView is not None:
+				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
+				
+			
 
 		#Button action
 		vizact.onbuttondown(zurueck,teillisteVerringernErhoehen, -1)
 		vizact.onbuttondown(naechste, teillisteVerringernErhoehen, 1)
+		vizact.onbuttondown(commentDelete, deleteComment)
 		
 		if GlobalVariables.nurEinmalSetzen is False:
 			vizact.onkeydown(viz.KEY_LEFT, teillisteVerringernErhoehen, -1)
@@ -85,19 +90,29 @@ def checkPoints(onViolent):
 			GlobalVariables.nurEinmalSetzen = True
 		
 		#Add row to myPanel
+		myPanel.addItem(rowCommentDelete)
 		myPanel.addItem(row)
+		
 
 		rowlist = [] #liste mit den rows
 		checkpointButtons = []	#liste mit den buttons
 		buttonZaehler = 0
 		for a in message:
 			checkpointButtons.append(viz.addButtonLabel(message[buttonZaehler]))
-			myPanel.addItem(checkpointButtons[buttonZaehler]) #füge die checkpointbuttons ins panel ein
+			if GlobalVariables.positionWhichIsActivated == buttonZaehler:
+				buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, margin=0)
+				
+			else:
+				buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, background = False, margin=0)
+
+			buttonRow.addItem(checkpointButtons[buttonZaehler])
+			rowlist.append(buttonRow)
+			myPanel.addItem(rowlist[buttonZaehler]) #füge die checkpointbuttonrows ins panel ein
 			buttonZaehler+=1
 
 		#Panel für die Kommentare
-		commentPanel = vizdlg.Panel(theme = blackTheme, fontSize=13, align=viz.ALIGN_CENTER_CENTER, background=False, border=False)
-		viz.link(viz.CenterCenter, commentPanel)
+		
+		viz.link(viz.CenterCenter, GlobalVariables.commentPanel)
 
 
 		#Mache den zeilenumbruch für das Kommentar
@@ -120,23 +135,25 @@ def checkPoints(onViolent):
 
 		#Zeige Kommentar an
 		def showComment(position):
-			global commentView
+			
 			if GlobalVariables.commentWindowOpen is False:
 				GlobalVariables.commentWindowOpen = True
-				commentView = commentPanel.addItem(viz.addText(makeCommentary(position)))
-				commentPanel.visible(True)
-				GlobalVariables.commentWindowOpenNr = position
+				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position)))
+				print GlobalVariables.commentPanel.getItems()
+				GlobalVariables.commentPanel.visible(True)
+				GlobalVariables.positionWhichIsActivated = position
 				
-			elif GlobalVariables.commentWindowOpen is True and position is not GlobalVariables.commentWindowOpenNr:
-				commentPanel.removeItem(commentView)
-				commentView = commentPanel.addItem(viz.addText(makeCommentary(position)))
-				GlobalVariables.commentWindowOpenNr = position
-
+			elif GlobalVariables.commentWindowOpen is True and position is not GlobalVariables.positionWhichIsActivated:
+				print GlobalVariables.commentPanel.getItems()
+				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
+				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position)))
+				GlobalVariables.positionWhichIsActivated = position
 			else:
 				GlobalVariables.commentWindowOpen = False
-				commentPanel.visible(False)
-				checkPoints(False)
-				checkPoints(False)
+				GlobalVariables.commentPanel.visible(False)
+			checkPoints(False)
+			checkPoints(False)
+				
 
 		showCommentary = vizpopup.Item('Zeige Kommentar')
 		porteZuCheckpoint = vizpopup.Item('Springe zu')
@@ -152,7 +169,7 @@ def checkPoints(onViolent):
 		#belege die ganzen Buttons mit comment anzeigen funktionen
 		i=0
 		for a in checkpointButtons:
-			vizact.onbuttondown(checkpointButtons[i], subMenu, i)
+			vizact.onbuttonup(checkpointButtons[i], subMenu, i)
 			i+=1
 			
 		viz.link(viz.RightCenter,myPanel)
@@ -184,9 +201,7 @@ def createCheckpoint(menubar=None):
 			if object is input.accept:
 				if len(str(data.value).split("//")[0])<=15:
 					#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an
-					i = 0
-					while i <25:
-						i+=1
+
 						if (len(str(data.value).split("//"))==1):#wenn kein kommentar eingegeben wurde
 							checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
 							round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3))
@@ -400,6 +415,7 @@ def porteCheckpointAndroid(checkpointNummer):
 			
 			GlobalVariables.euler = tracker.getEuler()
 			GlobalVariables.position = tracker.getPosition()
+			return True
 		else:
 			return False
 	except:
