@@ -61,14 +61,10 @@ def checkPoints(onViolent):
 			if checkPointsVisible: 
 				if GlobalVariables.teillisteCheckpoint == 1 and wert == -1:
 					GlobalVariables.teillisteCheckpoint = GlobalVariables.gesamtTeillisteCheckpoint
-					GlobalVariables.positionWhichIsActivated = -1
 				elif GlobalVariables.teillisteCheckpoint == GlobalVariables.gesamtTeillisteCheckpoint and wert == 1:
 					GlobalVariables.teillisteCheckpoint = 1
-					GlobalVariables.positionWhichIsActivated = -1
-
 				else:
 					GlobalVariables.teillisteCheckpoint = GlobalVariables.teillisteCheckpoint+wert
-					GlobalVariables.positionWhichIsActivated = -1
 
 				checkPoints(False)
 				checkPoints(False)
@@ -76,7 +72,7 @@ def checkPoints(onViolent):
 		def deleteComment():
 			if GlobalVariables.commentView is not None:
 				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
-				
+				GlobalVariables.positionWhichIsActivated = -1
 			
 
 		#Button action
@@ -99,9 +95,10 @@ def checkPoints(onViolent):
 		buttonZaehler = 0
 		for a in message:
 			checkpointButtons.append(viz.addButtonLabel(message[buttonZaehler]))
-			if GlobalVariables.positionWhichIsActivated == buttonZaehler:
+			print str(GlobalVariables.positionWhichIsActivated)
+			print str(buttonZaehler+(10*(GlobalVariables.teillisteCheckpoint-1)))
+			if GlobalVariables.positionWhichIsActivated == (buttonZaehler+(10*(GlobalVariables.teillisteCheckpoint-1))) and GlobalVariables.commentWindowOpen is True:
 				buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, margin=0)
-				
 			else:
 				buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, background = False, margin=0)
 
@@ -139,18 +136,18 @@ def checkPoints(onViolent):
 			if GlobalVariables.commentWindowOpen is False:
 				GlobalVariables.commentWindowOpen = True
 				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position)))
-				print GlobalVariables.commentPanel.getItems()
 				GlobalVariables.commentPanel.visible(True)
 				GlobalVariables.positionWhichIsActivated = position
 				
 			elif GlobalVariables.commentWindowOpen is True and position is not GlobalVariables.positionWhichIsActivated:
-				print GlobalVariables.commentPanel.getItems()
 				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
 				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position)))
 				GlobalVariables.positionWhichIsActivated = position
 			else:
 				GlobalVariables.commentWindowOpen = False
 				GlobalVariables.commentPanel.visible(False)
+				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
+
 			checkPoints(False)
 			checkPoints(False)
 				
@@ -201,7 +198,9 @@ def createCheckpoint(menubar=None):
 			if object is input.accept:
 				if len(str(data.value).split("//")[0])<=15:
 					#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an
-
+					i= 0
+					while i<25:
+						i+=1
 						if (len(str(data.value).split("//"))==1):#wenn kein kommentar eingegeben wurde
 							checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(data.value).split("//")[0],\
 							round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3))
@@ -391,7 +390,7 @@ def createCheckpointAndroid(name="", comment=""):
 	
 def deleteCheckpointAndroid(checkpointNummer):
 	try:
-		if (len(GlobalVariables.checkPointsList) >= int(checkpointNummer) and int(checkpointNummer) >0 ): #Ist die Eingabe in Listenlänge?
+		if (len(GlobalVariables.checkPointsList) > int(checkpointNummer) and int(checkpointNummer) >=0 ): #Ist die Eingabe in Listenlänge?
 			del GlobalVariables.checkPointsList[int (checkpointNummer)-1] #Lösche Checkpoint
 			print "test"
 			checkPoints(False)
@@ -403,7 +402,7 @@ def deleteCheckpointAndroid(checkpointNummer):
 		
 def porteCheckpointAndroid(checkpointNummer):
 
-		#if (type(int(checkpointNummer)) is int and len(GlobalVariables.checkPointsList) >= int(checkpointNummer) and int(checkpointNummer) >0 ): #Ist die Eingabe in Listenlänge?
+		if (type(int(checkpointNummer)) is int and len(GlobalVariables.checkPointsList) > int(checkpointNummer) and int(checkpointNummer) >=0 ): #Ist die Eingabe in Listenlänge?
 			point = GlobalVariables.checkPointsList[int(checkpointNummer)-1]
 			
 			#Setze Position
