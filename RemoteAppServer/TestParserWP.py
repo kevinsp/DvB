@@ -7,6 +7,7 @@ import pprint
 sys.path.append(r"..\GUI")
 from Checkpoint import Checkpoint
 
+import doctest
 class AndroidEmu(object):
 
     def __init__(self,hostIp,hostPort):
@@ -14,66 +15,101 @@ class AndroidEmu(object):
         self.PORT = hostPort
         self.BUF_SIZE = 1024
 
-    def run(self,n):
+    def run(self,loop,wpNumm,name,commentar,id=None):
         c = socket.socket()           # Neuer Socket
         c.connect((self.HOST, self.PORT))       # Verbindung zum Server aufbauen
         counter = 0
+        printString = ""
+        while counter < loop:
 
-        while counter < n:
-            printString = ""
-            c.sendall(self.createRequestCreateCp()+ "\n")
+            c.sendall(self.createRequest(wpNumm,name,commentar,id)+ "\n")
 
             while True:
                 ans = c.recv(self.BUF_SIZE)
-                if ans.__contains__("(\"(/^_^\)\")"):
-                    printString += ans + "\n"
+                if self.containsEnd(ans):
+                    printString += ans
                     break
                 else:
-                    printString += ans + "\n"
-
-            print(printString)
-            print(len(printString.split(";"))-2)
+                    printString += ans
 
             counter += 1
+
+        print(printString)
+        print(len(printString.split(";"))-2)
 
         c.sendall("{\"end\":0}\n" )
         c.close()
 
-    def createRequest(self):
-        self.dictReq =  {   "wp"    : 2,
-                            "name"  : 'test2',
-                            "c"     : "test1"
-                        }
-        return str(self.dictReq).replace("'","\"")
+        return [printString,len(printString.split(";"))-2]
 
-    def createRequestCreateCp(self):
-        self.dictReq =  {   "wp"    : 1,
-                            "name"  : 'test2',
-                            "c"     : "test1"
-        }
-        return str(self.dictReq).replace("'","\"")
+    def containsEnd(self,ans):
+        if ans.__contains__("(\"(/^_^\)\")"):
+            return True
+        else:
+            return False
+
+    def createRequest(self,wpNumm,name,comment,id):
+        if id == None:
+            dictReq = {"wp" : wpNumm , "name" : str(name), "c" : str(comment)}
+        else:
+            dictReq = {"wp" : wpNumm , "id" : id, "c" : str(comment)}
+        return str(dictReq).replace("'","\"")
 
 
 if __name__ == "__main__":
+
     """
-    wpListIn =  []
-    wpListIn.append(Checkpoint(1,2,3,"Hans",0,0,0,"FUCK"))
-    wpListIn.append(Checkpoint(1,2,3,"Peter",0,0,0,"BLA"))
-    wpListIn.append(Checkpoint(1,2,3,"GUSTAV",0,0,0,"FICKMICH"))
-        #{'comment': 'lmao', 'name': 'myPoint', 'eulerZ': 0, 'eulerY': 0, 'eulerX': 0, 'posZ': 2, 'posX': 1, 'posY': 3};" \
-        #        "{'comment': 'coon', 'name': 'yourPoint', 'eulerZ': 0, 'eulerY': 0, 'eulerX': 0, 'posZ': 4, 'posX': 3, 'posY': 5};" \
-        #        "{'comment': 'fegit', 'name': 'hisPoint', 'eulerZ': 0, 'eulerY': 0, 'eulerX': 0, 'posZ': 7, 'posX': 6, 'posY': 8}"
+    testing the communication for handling Cp
+    wp -> is a Number between 0-3
+            0 delete cp
+            1 port to cp
+            2 request
+            3 create cp
+    name -> name/id for cp
+    comment -> comment for cp
 
-    remoteLuncher = RemoteAppLuncher("127.0.0.1",None,wpListIn)
-    androidHandy = AndroidEmu("127.0.0.1",57891)
+        prepare for Testing
+    >>>androidEmu = AndroidEmu("141.82.163.248",57891)
 
-    viz.go()
-    viz.addChild('piazza.osgb')
-    viz.collision(viz.ON)
+        request the cp list from the server
+    >>>ans,anz=androidEmu.run(1,2,"n","n")
+    >>>print (ans)
+    >>>anz == 0
+    True
 
-    viz.director(remoteLuncher.lunch)
-    viz.director(androidHandy.run)
-    """ # Für lokal test
+        create a checkpoint
+    >>>ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")
+    >>>print (ans)
+    >>>anz == 1
+    True
 
-    androidEmu = AndroidEmu("141.82.163.175",57891)
-    androidEmu.run(1)
+    #port to checkpoint
+    >>>ans,anz=androidEmu.run(1,1,"0","n")
+    >>>print (ans)
+    >>>ans == ""
+    True
+    >>>anz == 1
+    True
+
+    #delete checkpoint
+    >>>ans,anz=androidEmu.run(1,0,"0","n")
+    >>>print (ans)
+    >>>anz == 0
+    True
+
+    """
+    #doctest.testmod()
+
+    androidEmu = AndroidEmu("141.82.163.248",57891)
+
+    """request the cp list from the server"""
+    #ans,anz=androidEmu.run(1,2,"n","n")
+
+    """create a checkpoint"""
+    #ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")
+
+    """port to checkpoint"""
+    #ans,anz=androidEmu.run(1,1,None,"n",0)
+
+    """delete checkpoint"""
+    ans,anz=androidEmu.run(1,0,"0","n",0)

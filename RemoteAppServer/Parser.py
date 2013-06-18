@@ -7,6 +7,7 @@ import sys
 sys.path.append(r"..\GUI")
 from CheckpointFunktionen import createCheckpointAndroid
 from CheckpointFunktionen import deleteCheckpointAndroid
+from CheckpointFunktionen import porteCheckpointAndroid
 
 ###
 # Parser takes a String representation of the sent JSONObject to collect and forward the
@@ -27,7 +28,7 @@ class Parser(object):
         viz.director(self.sender.run)
         self.mreDict = self.createDicti()
         self.wayPointList = wayPointList
-
+        self.msgEndTag = "(\"(/^_^\)\")"
 
 
     # Method gets the data 'jpacket' for further use
@@ -53,7 +54,7 @@ class Parser(object):
         except ValueError:
             print "json OBJ could not be loaded"
             self.sender.resetMovements()
-            return ""
+            return "" #return value "" signels that there is nothing to be send back to the client
 
         # Special cases such as 'Waypoint' that need own parsing/treatment
         if self.jloadout.has_key("end"):
@@ -94,19 +95,25 @@ class Parser(object):
 
         self.wpValue = jwaypoint["wp"]
         if self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
-            deleteCheckpointAndroid(jwaypoint["name"])
-        elif self.wpValue == 3 :
-            print "Server : Successfully created"
+            deleteCheckpointAndroid(jwaypoint["id"])
+        elif self.wpValue == 3:
+            print "Server : Cp Successfully created"
             createCheckpointAndroid(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
+        elif self.wpValue == 1:
+            print "Server: Beam me Up"
+
+            porteCheckpointAndroid(jwaypoint["id"])
+            return ["wp;",self.msgEndTag]
         elif self.wpValue == 2:
             pass
 
         wpListStringed =["wp;"]
 
-        for wp in self.wayPointList:
-           wpListStringed.append( str(wp.__dict__) + ";")
+        for cpId,wp in enumerate(self.wayPointList):
+            wp.__dict__["id"] = cpId
+            wpListStringed.append( str(wp.__dict__) + ";")
 
-        wpListStringed.append("(\"(/^_^\)\")")
+        wpListStringed.append(self.msgEndTag)
 
         return wpListStringed
 

@@ -393,6 +393,7 @@ def deleteCheckpointAndroid(checkpointNummer):
 	try:
 		if (len(GlobalVariables.checkPointsList) >= int(checkpointNummer) and int(checkpointNummer) >0 ): #Ist die Eingabe in Listenlänge?
 			del GlobalVariables.checkPointsList[int (checkpointNummer)-1] #Lösche Checkpoint
+			print "test"
 			checkPoints(False)
 			checkPoints(False)
 		else:
@@ -401,9 +402,9 @@ def deleteCheckpointAndroid(checkpointNummer):
 		return False
 		
 def porteCheckpointAndroid(checkpointNummer):
-	try:
-		if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): #Ist die Eingabe in Listenlänge?
-			point = GlobalVariables.checkPointsList[int(checkPointNummer)-1]
+
+		#if (type(int(checkpointNummer)) is int and len(GlobalVariables.checkPointsList) >= int(checkpointNummer) and int(checkpointNummer) >0 ): #Ist die Eingabe in Listenlänge?
+			point = GlobalVariables.checkPointsList[int(checkpointNummer)-1]
 			
 			#Setze Position
 			viz.MainView.setPosition(point.posX, point.posZ, point.posY)
@@ -413,11 +414,7 @@ def porteCheckpointAndroid(checkpointNummer):
 			viz.MainView.setEuler(point.eulerX,point.eulerZ, point.eulerY)
 			GlobalVariables.tracker.setEuler(point.eulerX, point.eulerZ, point.eulerY)
 			
-			GlobalVariables.euler = tracker.getEuler()
-			GlobalVariables.position = tracker.getPosition()
-			return True
-		else:
-			return False
-	except:
-		return False
+			GlobalVariables.euler = GlobalVariables.tracker.getEuler()
+			GlobalVariables.position = GlobalVariables.tracker.getPosition()
+
 		

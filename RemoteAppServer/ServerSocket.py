@@ -65,7 +65,7 @@ class Serversocket(object):
                     print "Server: connection interuppted"
                     break
 
-                print ("Server: Data := % s" % data)
+                print ("Server: Data-> % s" % data)
 
                 self.ans = self.connector.feedData(data)
 
@@ -91,7 +91,7 @@ class Serversocket(object):
                     break
 
             except Exception:
-                print "Server : cant recive data"
+                print "Server: cant recive data"
                 traceback.print_exc()
                 errorCounter += 1
                 if errorCounter < 5:
