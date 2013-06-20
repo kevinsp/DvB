@@ -146,9 +146,9 @@ class Parser(object):
 
     def pShutdown(self):
         self.sender.stop()
-        self.jEventDict = ""
-        self.sender = ""
-        self.mreDict= ""
+        self.jEventDict = None
+        self.sender = None
+        self.mreDict= None
 
     # Set of all possible permutations and matching keys.
 

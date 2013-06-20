@@ -103,7 +103,7 @@ if __name__ == "__main__":
     androidEmu = AndroidEmu("141.82.165.194",57891)
 
     """request the cp list from the server"""
-    #ans,anz=androidEmu.run(1,2,"n","n")
+    ans,anz=androidEmu.run(1,2,"n","n")
 
     """create a checkpoint"""
     #ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")

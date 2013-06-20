@@ -32,7 +32,7 @@ class RemoteAppLuncher(object):
         self.sSocket.run_server()
 
     def shutdown(self):
-        self.connector.cStop()
+        self.connector.cShutdown()
 
 
 
