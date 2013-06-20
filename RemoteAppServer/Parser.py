@@ -144,7 +144,7 @@ class Parser(object):
             return self.mreDict[typeArg][firstArg]
 
 
-    def pStop(self):
+    def pShutdown(self):
         self.sender.stop()
         self.jEventDict = ""
         self.sender = ""

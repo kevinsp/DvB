@@ -31,6 +31,8 @@ class RemoteAppLuncher(object):
     def lunch(self):
         self.sSocket.run_server()
 
+    def shutdown(self):
+        self.connector.cStop()
 
 
 

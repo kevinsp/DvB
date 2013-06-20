@@ -16,5 +16,5 @@ class Connector(object):
     def connectionInteruppted(self):
         self.parser.prepareForParsing(None,True)
 
-    def cStop(self):
-        self.parser.pStop()
+    def cShutdown(self):
+        self.parser.pShutdown()
