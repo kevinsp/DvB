@@ -20,9 +20,6 @@ def enableDisableMouse(menubar):
 	if viz.mouse.getVisible():
 		viz.mouse(viz.ON)
 		GlobalVariables.tracker.setEuler(GlobalVariables.euler)
-	#	if (GlobalVariables.flugModus is False):
-	#		GlobalVariables.tracker.setPosition(GlobalVariables.position[0], 1.82, GlobalVariables.position[2])
-	#	else:
 		GlobalVariables.tracker.setPosition(GlobalVariables.position)
 		GlobalVariables.link.enable()
 		viz.mouse.setVisible(False)

@@ -17,8 +17,6 @@ import Notes
 checkPointsVisible = False
 myPanel = vizdlg.Panel()
 
-
-
 #Checkpointliste Fenster
 def checkPoints(onViolent):
 	global checkPointsVisible	
@@ -73,6 +71,8 @@ def checkPoints(onViolent):
 			if GlobalVariables.commentView is not None:
 				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
 				GlobalVariables.positionWhichIsActivated = -1
+				checkPoints(False)
+				checkPoints(False)
 			
 
 		#Button action
@@ -89,14 +89,12 @@ def checkPoints(onViolent):
 		myPanel.addItem(rowCommentDelete)
 		myPanel.addItem(row)
 		
-
+		
 		rowlist = [] #liste mit den rows
 		checkpointButtons = []	#liste mit den buttons
 		buttonZaehler = 0
 		for a in message:
 			checkpointButtons.append(viz.addButtonLabel(message[buttonZaehler]))
-			print str(GlobalVariables.positionWhichIsActivated)
-			print str(buttonZaehler+(10*(GlobalVariables.teillisteCheckpoint-1)))
 			if GlobalVariables.positionWhichIsActivated == (buttonZaehler+(10*(GlobalVariables.teillisteCheckpoint-1))) and GlobalVariables.commentWindowOpen is True:
 				buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, margin=0)
 			else:
@@ -108,7 +106,6 @@ def checkPoints(onViolent):
 			buttonZaehler+=1
 
 		#Panel für die Kommentare
-		
 		viz.link(viz.CenterCenter, GlobalVariables.commentPanel)
 
 
@@ -153,17 +150,19 @@ def checkPoints(onViolent):
 				
 
 		showCommentary = vizpopup.Item('Zeige Kommentar')
+		deleteCheckpointSub = vizpopup.Item('Loesche Checkpoint')
 		porteZuCheckpoint = vizpopup.Item('Springe zu')
-		mymenu = vizpopup.Menu('Main',[showCommentary, porteZuCheckpoint])		
+		mymenu = vizpopup.Menu('Main',[showCommentary, deleteCheckpointSub, porteZuCheckpoint])		
 
 		#Zeige subMenu an
 		def subMenu(position):		
 			vizpopup.onMenuItem(showCommentary, showComment, position)
+			vizpopup.onMenuItem(deleteCheckpointSub, deleteCheckpointAndroid, position)
 			vizpopup.onMenuItem(porteZuCheckpoint, portCheckPoint, checkPointNummer=position)
 			vizpopup.display(mymenu)
 			
 			
-		#belege die ganzen Buttons mit comment anzeigen funktionen
+		#belege die ganzen Buttons mit submenu anzeigen funktionen
 		i=0
 		for a in checkpointButtons:
 			vizact.onbuttonup(checkpointButtons[i], subMenu, i)
@@ -184,7 +183,6 @@ def checkPoints(onViolent):
 #Checkpoint erstellen/speichern
 def createCheckpoint(menubar=None):
 	global checkPointsVisible
-	
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
 		userPosition = viz.MainView.getPosition() #Frage User Position
@@ -193,8 +191,7 @@ def createCheckpoint(menubar=None):
 			menubar.setVisible(viz.OFF)
 
 		def checkpointHinzufuegen(data):
-			object = viz.pick(0,viz.SCREEN)
-			
+			object = viz.pick(0,viz.SCREEN)			
 			if object is input.accept:
 				if len(str(data.value).split("//")[0])<=15:
 					#Füge Checkpoint zur Liste auf 3 Nachkommastellen gerundet an
@@ -213,24 +210,26 @@ def createCheckpoint(menubar=None):
 						input.remove()
 				else:
 					data.error = "Bitte den Namen nicht laenger\nals 15 Zeichen machen."
-					
+					input.box.setFocus(viz.ON)
+
 				
 			elif object is input.cancel:
 				GlobalVariables.windowOpen = False		
 				input.remove()
 			
 			else:
-				vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
-						
+				data.error = ""
+				input.box.setFocus(viz.ON)
+				
+
 			#akutalisiere die Liste, wenn sie angezeigt wird
 			if (checkPointsVisible is True):
 				checkPoints(False)
 				checkPoints(False)
-			
-
 
 		#vizdialog
-		input = vizdlg.InputDialog(title='Neuer Checkpoint', prompt="Eingabeformat:\n\"Name//Kommentar\"",length=1.0, validate = checkpointHinzufuegen)
+		
+		input = vizdlg.InputDialog(title='Neuer Checkpoint', prompt="Eingabeformat:\n\"Name//Kommentar\"", length=1.0, validate = checkpointHinzufuegen)
 		viz.link(viz.CenterCenter,input)
 		input.box.overflow(viz.OVERFLOW_SHRINK)
 		input.box.setLength(4)
@@ -240,21 +239,19 @@ def createCheckpoint(menubar=None):
 		def showdialog():
 			yield input.show()
 			
-			while True:	   
+			while True:	 
 				if input.accepted:
-
 					break
 				else:
 					break
 					
-		vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON) #Fokus auf Textfeld
+		input.box.setFocus(viz.ON)#Fokus auf Textfeld
 		viztask.schedule(showdialog()) 
 
 	else:
 		pass
-	
 #Lösche Checkpoint
-def deleteCheckpoint(menubar=None, position=None):
+def deleteCheckpoint(menubar=None):
 	global fensterOpen	
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
@@ -264,7 +261,7 @@ def deleteCheckpoint(menubar=None, position=None):
 		#ueberpruefe die Eingabe
 		def ueberpruefeEingabe(data):
 			object = viz.pick(0,viz.SCREEN)
-			if object is not input.cancel:
+			if object is input.accept:
 				try:
 					if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): #Ist die Eingabe in Listenlänge?
 						del GlobalVariables.checkPointsList[int (data.value)-1] #Lösche Checkpoint
@@ -280,12 +277,15 @@ def deleteCheckpoint(menubar=None, position=None):
 				except:
 					data.error = "Biite nur Zahlen im Bereich der \nverfuegbaren Checkpoints."
 					input.box.setFocus(viz.ON)
-			else:
+			elif object is input.cancel:
 				GlobalVariables.windowOpen = False
 				input.remove()
+			else:
+				data.error=""
+				input.box.setFocus(viz.ON)
 		
 		#vizdialog
-		input = vizdlg.InputDialog(title = "Loesche Checkpoint", prompt="\"Checkpointnummer\"", length=1.0, validate = ueberpruefeEingabe)
+		input = vizdlg.InputDialog(title = "Loesche Checkpoint", prompt="Checkpointnummer eingeben", length=1.0, validate = ueberpruefeEingabe)
 		viz.link(viz.CenterCenter,input)
 		input.alpha(0.4)	
 		input.color(0,0,0)
@@ -334,7 +334,7 @@ def portCheckPoint(menubar=None, checkPointNummer = None):
 			
 			def ueberpruefeEingabe(data):
 				object = viz.pick(0,viz.SCREEN)
-				if object is not input.cancel:
+				if object is input.accept:
 					try:
 						if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): #Ist die Eingabe in Listenlänge?
 							porteCheckpoint(data.value)
@@ -347,12 +347,15 @@ def portCheckPoint(menubar=None, checkPointNummer = None):
 					except:
 						data.error = "Biite nur Zahlen im Bereich der \nverfuegbaren Checkpoints."
 						input.box.setFocus(viz.ON)
-				else:
+				elif object is input.cancel:
 					GlobalVariables.windowOpen = False
 					input.remove()	
+				else:
+					data.error=""
+					input.box.setFocus(viz.ON)
 			
 			#vizdialog
-			input = vizdlg.InputDialog(title='Porte zu Checkpoint', length=1.0, validate = ueberpruefeEingabe)
+			input = vizdlg.InputDialog(title='Porte zu Checkpoint', prompt="Checkpointnummer eingeben", length=1.0, validate = ueberpruefeEingabe)
 			viz.link(viz.CenterCenter,input)
 			input.alpha(0.4)
 			input.color(0,0,0)
@@ -364,7 +367,7 @@ def portCheckPoint(menubar=None, checkPointNummer = None):
 						break
 					else:
 						break
-			vizact.ontimer2(0.1, 0, input.box.setFocus, viz.ON)
+			input.box.setFocus(viz.ON)
 			viztask.schedule(showdialog()) 
 			
 			
@@ -392,7 +395,6 @@ def deleteCheckpointAndroid(checkpointNummer):
 	try:
 		if (len(GlobalVariables.checkPointsList) > int(checkpointNummer) and int(checkpointNummer) >=0 ): #Ist die Eingabe in Listenlänge?
 			del GlobalVariables.checkPointsList[int (checkpointNummer)-1] #Lösche Checkpoint
-			print "test"
 			checkPoints(False)
 			checkPoints(False)
 		else:

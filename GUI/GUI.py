@@ -63,32 +63,33 @@ class Oberflaeche(object):
 		self.menubar = vizmenu.add()
 		self.menubar.setVisible(False)
 
-		#Bearbeiten
-		self.BearbeitenMenu = self.menubar.add("Bearbeiten")
-		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Datei öffnen")
+		#Model
+		self.BearbeitenMenu = self.menubar.add("Model")
+		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Datei oeffnen")
 		self.buttonModelEntfernen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Model entfernen")
 
-		#Ansicht DropDown
-		self.AnsichtsMenu = self.menubar.add("Ansicht")
-		self.checkPointSetzen = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Checkpoint setzen")
-		self.checkPointLoeschen = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Checkpoint löschen")
-		self.checkPortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint porten")
-		self.deleteNoteButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Lösche 3D Notiz")
-		self.notePortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen porten")
-		self.beliebigPortButton = self.AnsichtsMenu.add(viz.BUTTON_LABEL, "Porten")
-
+		#Funktionen DropDown
+		self.FunktionenMenu = self.menubar.add("Funktionen")
+		self.checkPointLoeschen = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Checkpoint loeschen")
+		self.checkPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint porten")
+		self.deleteNoteButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Loesche 3D Notiz")
+		self.notePortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen porten")
+		self.beliebigPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Porten")
+		#Alphaslider
+		self.alphaSlider = self.FunktionenMenu.add(viz.PROGRESS_BAR, "1.00", "Alphawert")
+		self.alphaSlider.set(1.0)
+		
 		#Einfuegen DropDown
 		self.EinfuegenMenu = self.menubar.add("Einfügen")
+		self.checkPointSetzen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Checkpoint setzen")
 		self.buttonNotizEinfuegen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Notiz")
 
 		#Optionen DropDown
 		self.OptionenMenu = self.menubar.add("Optionen")
-		self.AndroidAppButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Android")
+		self.AndroidAppButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Android Server")
 		self.settingButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Einstellungen")
 
-		#Alphaslider
-		self.alphaSlider = self.AnsichtsMenu.add(viz.PROGRESS_BAR, "1.00", "Alphawert")
-		self.alphaSlider.set(1.0)
+
 
 
 		#Theme
@@ -139,25 +140,25 @@ class Oberflaeche(object):
 		self.checkPointsPanel.visible(True)
 
 		#Button Definition
-		vizact.onbuttondown(self.buttonDateiOeffnen, self.setModel)
-		vizact.onbuttondown(self.buttonModelEntfernen, self.deleteModel)
+		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModel)
+		vizact.onbuttonup(self.buttonModelEntfernen, self.deleteModel)
 
 		#Note Buttons
-		vizact.onbuttondown(self.buttonNotizEinfuegen, Notes.openTextBox, self.menubar)
-		vizact.onbuttondown(self.deleteNoteButton, Notes.delete3DNote, self.menubar)
-		vizact.onbuttondown(self.notePortButton, Notes.port3DNote, self.menubar)
+		vizact.onbuttonup(self.buttonNotizEinfuegen, Notes.openTextBox, self.menubar)
+		vizact.onbuttonup(self.deleteNoteButton, Notes.delete3DNote, self.menubar)
+		vizact.onbuttonup(self.notePortButton, Notes.port3DNote, self.menubar)
 
 		#Checkpoints Buttons
-		vizact.onbuttondown(self.checkPointSetzen, CheckpointFunktionen.createCheckpoint, self.menubar)
-		vizact.onbuttondown(self.checkPointLoeschen, CheckpointFunktionen.deleteCheckpoint, self.menubar)
-		vizact.onbuttondown(self.checkPortButton, CheckpointFunktionen.portCheckPoint, self.menubar)
+		vizact.onbuttonup(self.checkPointSetzen, CheckpointFunktionen.createCheckpoint, self.menubar)
+		vizact.onbuttonup(self.checkPointLoeschen, CheckpointFunktionen.deleteCheckpoint, self.menubar)
+		vizact.onbuttonup(self.checkPortButton, CheckpointFunktionen.portCheckPoint, self.menubar)
 
 		#Port Button
-		vizact.onbuttondown(self.beliebigPortButton, Porten.porten, self.menubar)
+		vizact.onbuttonup(self.beliebigPortButton, Porten.porten, self.menubar)
 	
 		#Optionen Buttons
-		vizact.onbuttondown(self.AndroidAppButton, self.startAndroid)
-		vizact.onbuttondown(self.settingButton, SettingPanel.oeffneSettingPanel, self.menubar)
+		vizact.onbuttonup(self.AndroidAppButton, self.startAndroid)
+		vizact.onbuttonup(self.settingButton, SettingPanel.oeffneSettingPanel, self.menubar)
 	
 		#Shortcuts
 		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, self.menubar)

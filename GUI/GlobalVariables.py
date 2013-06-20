@@ -43,7 +43,7 @@ vizInfoBackgroundColor = [0,0,0,0.4]
 vizInfoBorderColor = [0,0,0,1]
 vizInfoTitleBackgroundColor = [0,0,0,0.7]
 
-#checkpointPanelTheme
+#anzeige von checkpoints/Note Theme
 blackTheme = viz.getTheme()
 blackTheme.borderColor = (0.1,0.1,0.1,.2)
 blackTheme.backColor = (0.4,0.4,0.4,.2)
