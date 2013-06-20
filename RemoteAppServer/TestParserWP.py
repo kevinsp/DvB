@@ -100,16 +100,16 @@ if __name__ == "__main__":
     """
     #doctest.testmod()
 
-    androidEmu = AndroidEmu("141.82.163.248",57891)
+    androidEmu = AndroidEmu("141.82.165.194",57891)
 
     """request the cp list from the server"""
     #ans,anz=androidEmu.run(1,2,"n","n")
 
     """create a checkpoint"""
-    #ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")
+    ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")
 
     """port to checkpoint"""
     #ans,anz=androidEmu.run(1,1,None,"n",0)
 
     """delete checkpoint"""
-    ans,anz=androidEmu.run(1,0,"0","n",0)
+    #ans,anz=androidEmu.run(1,0,"0","n",0)
