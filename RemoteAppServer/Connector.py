@@ -18,3 +18,4 @@ class Connector(object):
 
     def cShutdown(self):
         self.parser.pShutdown()
+        return True

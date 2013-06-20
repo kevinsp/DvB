@@ -3,7 +3,7 @@ __author__ = 'MrLapTop'
 import socket
 import viz
 import traceback
-
+import errno
 
 
 class Serversocket(object):
@@ -15,6 +15,7 @@ class Serversocket(object):
         self.BACKLOG = backlog
         self.socket = None
         self.connector = connector
+        self.shoudIRun = True
 
     def open_socket(self):
         try:
@@ -38,26 +39,38 @@ class Serversocket(object):
         if self.open_socket() == -1:
             return
 
-        while True:
+        print "Server: Server is Running"
+        self.socket.setblocking(0)
+        while self.shoudIRun:
             try:
-                    print "Server: Server is Running"
+
                     connection, client = self.socket.accept()
                     #connection.sendall("yoyooy\n");
                     print "Server: connection established"
+
                     connection.settimeout(120)
 
                     self.listenToClient(connection,client)
+
+            except socket.error, e:
+                #exception if no connection was detected
+                if e.args[0] == errno.EWOULDBLOCK:
+                    print "No Connection was found waiting for 5 sec"
+                    viz.waittime(5)
+                else:
+                    print e
 
             except Exception:
                     #Exception Handeling missing
                     traceback.print_exc()
                     print ("Something Went wrong with accepting a Client")
 
+        print "Server: Shutdown"
 
 
     def listenToClient(self,connection,client):
         errorCounter = 0
-        while True:
+        while self.shoudIRun:
             try:
                 data = connection.recv(self.BUFF_SIZE)
 
@@ -81,14 +94,16 @@ class Serversocket(object):
                     for partList in helperList:
                         connection.sendall("".join(partList)+ "\n")
 
-
-
             except socket.timeout:
                     print "Server: connection timeout"
                     break
-            except socket.error as sError:
-                    print sError
-                    break
+            except socket.error as e:
+                    if e.args[0] == errno.EWOULDBLOCK:
+                        #no data was found
+                        continue
+                    else:
+                        print e
+                        break
 
             except Exception:
                 print "Server: cant recive data"
@@ -100,9 +115,10 @@ class Serversocket(object):
                     print "Server: connection cloesd after 5 errors"
                     break
 
-        self.connector.connectionInteruppted()
         connection.shutdown(socket.SHUT_RDWR)
         connection.close()
+        if self.shoudIRun:
+            self.connector.connectionInteruppted()
 
     def chunks(self,list, n):
         """ Yield successive n-sized chunks from list.
