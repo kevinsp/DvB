@@ -45,11 +45,12 @@ viz.go()
 
 
 modelIsLoaded = False
-
 class Oberflaeche(object):
 	
 	def __init__(self):
+		self.neu = None
 		self.model = None
+		self.thread = None
 
 		viz.MainWindow.fov(60)
 		viz.collision(viz.ON)
@@ -80,7 +81,7 @@ class Oberflaeche(object):
 		self.alphaSlider.set(1.0)
 		
 		#Einfuegen DropDown
-		self.EinfuegenMenu = self.menubar.add("Einfügen")
+		self.EinfuegenMenu = self.menubar.add("Einfuegen")
 		self.checkPointSetzen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Checkpoint setzen")
 		self.buttonNotizEinfuegen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Notiz")
 
@@ -188,13 +189,14 @@ class Oberflaeche(object):
 	def startAndroid(self):
 		if GlobalVariables.serverIsRunning is False: #starte nur einen Server, wenn noch keiner laeuft
 			self.ipTextScreen.message(str(viz.net.getIP()))
-			neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
-			viz.director(neu.lunch)
+			self.neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
+			self.thread = viz.director(self.neu.lunch)
 			GlobalVariables.serverIsRunning = True
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
-		#	neu.shutdown() #beende Server
+			self.neu.shutdown() #beende Server
+			
 		
 
 	#zeige zurzeitige position
@@ -279,14 +281,14 @@ class Oberflaeche(object):
 
 	#erhöhe Fluggeschwindigkeit
 	def flySpeedUp(self):
-		if 0.2 < GlobalVariables.flySpeed <9.8:
+		if GlobalVariables.flySpeed <=9.8:
 			GlobalVariables.flySpeed +=0.2
 		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
 		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
 		
 	#verringere Fluggeschwindigkeit
 	def flySpeedDown(self):
-		if 9.8 > GlobalVariables.flySpeed>0.2:
+		if GlobalVariables.flySpeed>0.2:
 			GlobalVariables.flySpeed -=0.2
 		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
 		vizact.ontimer2(1, 0, self.midTextScreen.message, "")

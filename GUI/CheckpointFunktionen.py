@@ -394,7 +394,7 @@ def createCheckpointAndroid(name="", comment=""):
 def deleteCheckpointAndroid(checkpointNummer):
 	try:
 		if (len(GlobalVariables.checkPointsList) > int(checkpointNummer) and int(checkpointNummer) >=0 ): #Ist die Eingabe in Listenlänge?
-			del GlobalVariables.checkPointsList[int (checkpointNummer)-1] #Lösche Checkpoint
+			del GlobalVariables.checkPointsList[int (checkpointNummer)] #Lösche Checkpoint
 			checkPoints(False)
 			checkPoints(False)
 		else:
@@ -405,7 +405,7 @@ def deleteCheckpointAndroid(checkpointNummer):
 def porteCheckpointAndroid(checkpointNummer):
 
 		if (type(int(checkpointNummer)) is int and len(GlobalVariables.checkPointsList) > int(checkpointNummer) and int(checkpointNummer) >=0 ): #Ist die Eingabe in Listenlänge?
-			point = GlobalVariables.checkPointsList[int(checkpointNummer)-1]
+			point = GlobalVariables.checkPointsList[int(checkpointNummer)]
 			
 			#Setze Position
 			viz.MainView.setPosition(point.posX, point.posZ, point.posY)
