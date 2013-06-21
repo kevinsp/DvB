@@ -26,11 +26,11 @@ class AndroidEmu(object):
 
             while True:
                 ans = c.recv(self.BUF_SIZE)
+                printString += ans
+
                 if self.containsEnd(ans):
-                    printString += ans
                     break
-                else:
-                    printString += ans
+
 
             counter += 1
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     androidEmu = AndroidEmu("141.82.165.194",57891)
 
     """request the cp list from the server"""
-    ans,anz=androidEmu.run(1,2,"n","n")
+    #ans,anz=androidEmu.run(1,2,"n","n")
 
     """create a checkpoint"""
     #ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")
@@ -112,4 +112,4 @@ if __name__ == "__main__":
     #ans,anz=androidEmu.run(1,1,None,"n",0)
 
     """delete checkpoint"""
-    #ans,anz=androidEmu.run(1,0,"0","n",0)
+    ans,anz=androidEmu.run(1,0,"0","n",0)

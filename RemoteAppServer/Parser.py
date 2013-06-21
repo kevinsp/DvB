@@ -94,18 +94,22 @@ class Parser(object):
     def parseWaypoint(self, jwaypoint):
 
         self.wpValue = jwaypoint["wp"]
-        if self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
+        # 1 -> porten
+        if self.wpValue == 1:
+            print "Server: Beam me Up"
+            porteCheckpointAndroid(jwaypoint["id"])
+            return ["wp;",self.msgEndTag]
+        # 0 -> delete a cp
+        elif self.wpValue == 0:    #<- Zero if Delte existing, 1 if create new one
             deleteCheckpointAndroid(jwaypoint["id"])
+        # 2 -> just send the cp back
+        elif self.wpValue == 2:
+            pass
+        # 3 -> create a cp
         elif self.wpValue == 3:
             print "Server : Cp Successfully created"
             createCheckpointAndroid(jwaypoint["name"], jwaypoint["c"]) #<- crtWp(name, comment)
-        elif self.wpValue == 1:
-            print "Server: Beam me Up"
 
-            porteCheckpointAndroid(jwaypoint["id"])
-            return ["wp;",self.msgEndTag]
-        elif self.wpValue == 2:
-            pass
 
         wpListStringed =["wp;"]
 
