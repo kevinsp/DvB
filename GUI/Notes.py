@@ -10,6 +10,7 @@ import vizact
 import vizdlg
 import vizpopup
 
+import Note
 import CheckpointFunktionen
 import GlobalVariables
 
@@ -71,7 +72,7 @@ def openTextBox(menubar):
 		
 		
 		
-		#Text schreiben und Box + Button löschen
+		#Text schreiben 
 		def writeText(text):
 			userPosition = viz.MainView.getPosition()
 			userEuler = viz.MainView.getEuler()
@@ -79,7 +80,8 @@ def openTextBox(menubar):
 			text3D.setScale(0.2, 0.2, 0.2)
 			text3D.color(viz.RED)
 			
-			GlobalVariables.noteList.append([text3D, round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3)])
+			GlobalVariables.noteList.append([text3D, Note.Note(userPosition[0]-0.2, userPosition[1], userPosition[2] + 0.2, text3D.getMessage(), \
+											round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3))])
 			GlobalVariables.windowOpen = False
 			
 	else:
@@ -100,15 +102,15 @@ def noteView(onViolent):
 			GlobalVariables.gesamtTeillisteNote = (len(GlobalVariables.noteList)/10)+1
 		
 		while(checkNotesZaehler <=10 and checkNotesZaehler <= (len(GlobalVariables.noteList))-(10*(GlobalVariables.teillisteNote-1))):
-			objekt = GlobalVariables.noteList[checkNotesZaehler-1+(10*(GlobalVariables.teillisteNote-1))]
-			message.append(str (checkNotesZaehler+(10*(GlobalVariables.teillisteNote-1))) + ". "+ str (objekt[0].getMessage()) +"\n")
+			objekt = GlobalVariables.noteList[checkNotesZaehler-1+(10*(GlobalVariables.teillisteNote-1))][1]
+			message.append(str (checkNotesZaehler+(10*(GlobalVariables.teillisteNote-1))) + ". "+ str (objekt.name) +"\n")
 			checkNotesZaehler += 1
 
 		
 		if (GlobalVariables.infoWindowOpen is True):
 			CheckpointFunktionen.checkPoints(True)
 			
-		myPanel = vizdlg.Panel(theme = GlobalVariables.blackTheme, fontSize=13, align=viz.ALIGN_RIGHT_CENTER, background=False, border=False)
+		myPanel = vizdlg.Panel(theme = GlobalVariables.blackTheme, fontSize=17, align=viz.ALIGN_RIGHT_CENTER, background=False, border=False)
 		
 		#PanelButtons
 		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0)
@@ -148,7 +150,7 @@ def noteView(onViolent):
 			buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, background = False, margin=0)
 			buttonRow.addItem(noteButtons[buttonZaehler])
 			rowlist.append(buttonRow)
-			myPanel.addItem(rowlist[buttonZaehler]) #füge die checkpointbuttonrows ins panel ein
+			myPanel.addItem(rowlist[buttonZaehler]) #füge die notebuttonrows ins panel ein
 			buttonZaehler+=1
 
 
@@ -261,14 +263,13 @@ def port3DNote(menubar=None, position=None):
 			if object is input.accept:
 				try:
 					if (type(int(data.value)) is int and int(data.value) <= len(GlobalVariables.noteList) and int(data.value )> 0): #Ist die Eingabe im gültigen bereich?
-						text = GlobalVariables.noteList[int(data.value)][0]
-						position = text.getPosition()
+						text = GlobalVariables.noteList[int(data.value)-1][1]
 
-						viz.MainView.setPosition(position[0], position[1], position[2]-0.5)
-						GlobalVariables.tracker.setPosition(position[0], position[1], position[2]-0.5)
+						viz.MainView.setPosition(text.posX, text.posZ, text.posY-0.5)
+						GlobalVariables.tracker.setPosition(text.posX, text.posZ, text.posY-0.5)
 
-						viz.MainView.setEuler(GlobalVariables.noteList[int(data.value)-1][1], GlobalVariables.noteList[int(data.value)-1][2], GlobalVariables.noteList[int(data.value)-1][3])
-						GlobalVariables.tracker.setEuler( GlobalVariables.noteList[int(data.value)-1][1], GlobalVariables.noteList[int(data.value)-1][2], GlobalVariables.noteList[int(data.value)-1][3])
+						viz.MainView.setEuler(text.eulerX, text.eulerZ, text.eulerY)
+						GlobalVariables.tracker.setEuler(text.eulerX, text.eulerZ, text.eulerY)
 						
 						GlobalVariables.euler = GlobalVariables.tracker.getEuler()
 						GlobalVariables.position = GlobalVariables.tracker.getPosition()
@@ -307,14 +308,13 @@ def port3DNote(menubar=None, position=None):
 			viztask.schedule(showdialog()) 
 		else:
 			if (int(position) < len(GlobalVariables.noteList) and int(position)>= 0): #Ist die Eingabe im gültigen bereich?
-				text = GlobalVariables.noteList[int(position)][0]
-				positionXYZ = text.getPosition()
+				text = GlobalVariables.noteList[int(position)][1]
 
-				viz.MainView.setPosition(positionXYZ[0], positionXYZ[1], positionXYZ[2]-0.5)
-				GlobalVariables.tracker.setPosition(positionXYZ[0], positionXYZ[1], positionXYZ[2]-0.5)
+				viz.MainView.setPosition(text.posX, text.posZ, text.posY-0.5)
+				GlobalVariables.tracker.setPosition(text.posX, text.posZ, text.posY-0.5)
 
-				viz.MainView.setEuler(GlobalVariables.noteList[int(position)][1], GlobalVariables.noteList[int(position)][2], GlobalVariables.noteList[int(position)][3])
-				GlobalVariables.tracker.setEuler(GlobalVariables.noteList[int(position)][1], GlobalVariables.noteList[int(position)][2], GlobalVariables.noteList[int(position)][3])
+				viz.MainView.setEuler(text.eulerX, text.eulerZ, text.eulerY)
+				GlobalVariables.tracker.setEuler(text.eulerX, text.eulerZ, text.eulerY)
 						
 				GlobalVariables.euler = GlobalVariables.tracker.getEuler()
 				GlobalVariables.position = GlobalVariables.tracker.getPosition()

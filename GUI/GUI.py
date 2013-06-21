@@ -38,8 +38,7 @@ import GlobalVariables
 import SettingPanel
 
 
-
-#viz.go(viz.FULLSCREEN) 
+#viz.go(viz.QUAD_BUFFER)
 viz.go()
 
 
@@ -56,9 +55,12 @@ class Oberflaeche(object):
 		viz.collision(viz.ON)
 		self.beginZ = viz.MainView.getPosition()[1]
 
-	#	viz.window.setFullscreen(True)
+		#viz.window.setFullscreen(True)
 		viz.addChild('sky_day.osgb')
 		
+		viz.setOption('viz.fullscreen',1)
+		viz.fov(40.0,1.333)
+		viz.setOption('viz.stereo', viz.QUAD_BUFFER)
 		
 		#Menuebar
 		self.menubar = vizmenu.add()

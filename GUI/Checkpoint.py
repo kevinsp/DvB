@@ -2,7 +2,7 @@
 
 class Checkpoint(object):
 
-    def __init__(self, posX, posZ, posY, name, eulerX, eulerZ, eulerY, comment=""):
+    def __init__(self, posX=0, posZ=1.82, posY=0, name="test", eulerX=0, eulerZ=0, eulerY=0, comment=""):
         self.posX = posX
         self.posZ = posZ
         self.posY = posY

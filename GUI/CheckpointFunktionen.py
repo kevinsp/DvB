@@ -132,13 +132,13 @@ def checkPoints(onViolent):
 			
 			if GlobalVariables.commentWindowOpen is False:
 				GlobalVariables.commentWindowOpen = True
-				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position)))
+				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position), fontSize=25))
 				GlobalVariables.commentPanel.visible(True)
 				GlobalVariables.positionWhichIsActivated = position
 				
 			elif GlobalVariables.commentWindowOpen is True and position is not GlobalVariables.positionWhichIsActivated:
 				GlobalVariables.commentPanel.removeItem(GlobalVariables.commentView)
-				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position)))
+				GlobalVariables.commentView = GlobalVariables.commentPanel.addItem(viz.addText(makeCommentary(position), fontSize=25))
 				GlobalVariables.positionWhichIsActivated = position
 			else:
 				GlobalVariables.commentWindowOpen = False
