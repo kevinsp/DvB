@@ -7,6 +7,9 @@ class Parser(object):
 		self.createInfoBlocks()
 		print self.infoBlocks
 	
+	def getInfoBlocks(self):
+		return self.infoBlocks
+	
 	'''
 	extract bracket structure from file
 	when a bracket opens/closes, save line number to blockStarts/blockEnds
@@ -45,6 +48,9 @@ class Parser(object):
 						break
 					infoCounter += 1
 			self.infoBlocks.append((block,blockString))
+			
+	def parseInfoBlocks(self):
+		pass
 			
 
 
