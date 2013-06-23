@@ -88,7 +88,7 @@ source = [0.3,0.3,0.3]
 #Sensor Objekt..
 
 
-pflanze = viz.addChild('')
+pflanze = viz.addChild('plant.osgb')
 
 
 pflanze.setPosition(0.3,0.3,0.3)

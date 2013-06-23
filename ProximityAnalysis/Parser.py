@@ -5,7 +5,8 @@ class Parser(object):
 		self.inputFile = inputFile
 		self.initializeSort()
 		self.createInfoBlocks()
-		print self.infoBlocks
+		self.parseInfoBlocks()
+		print(self.infoList)
 	
 	def getInfoBlocks(self):
 		return self.infoBlocks
@@ -36,7 +37,7 @@ class Parser(object):
 				self.lineCounter += 1
 				
 	def createInfoBlocks(self):
-		self.infoBlocks = []
+		self.infoBlocks = {}
 		for block in self.blockLineList:
 			blockBoundaries = self.fileText[block[0]:block[1]]
 			blockString = []
@@ -47,10 +48,27 @@ class Parser(object):
 					if infoCounter == 1:
 						break
 					infoCounter += 1
-			self.infoBlocks.append((block,blockString))
+			self.infoBlocks[block] = blockString
 			
 	def parseInfoBlocks(self):
-		pass
+		self.infoList = {}
+		for el in self.infoBlocks:
+			infos = []
+			blockList = self.infoBlocks[el]
+			info = blockList[0]
+			for info in blockList:
+				if info.find('Name') >= 0 and info.find('"') >= 0:
+					infos.append(('blockName',info[info.index('"')+1:info.index('"',info.index('"')+1)]))
+				if info.find('UniqueID') >= 0:
+					infos.append(('ID',info[info.index(' ')+1:]))
+				continue
+			if info.find('Array') >= 0:
+				infos.append(('blockName','Array'))
+				infos.append(('arrayList',blockList[1:]))
+			if info.find('Matrix') >= 0:
+				infos.append(('blockName','Matrix'))
+				infos.append(('matrixList',blockList[1:]))
+			self.infoList[el] = infos
 			
 
 
