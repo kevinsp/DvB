@@ -4,6 +4,7 @@ sys.path.append(r"..\GUI")
 from Checkpoint import Checkpoint
 from Note import Note
 
+#START
 from xml.etree import ElementTree
 from xml.dom import minidom
 try:
@@ -68,12 +69,6 @@ def loadXml(filepath):
     input_file.close()
     return returnList
 
-def prettify(elem):
-    """Return a pretty-printed XML string for the Element.
-    """
-    rough_string = ElementTree.tostring(elem, 'utf-8')
-    reparsed = minidom.parseString(rough_string)
-    return reparsed.toprettyxml(indent="  ")
 """
     This methode takes a list and fills it with my Object.
     @myList - the List i want to be filled
@@ -88,6 +83,14 @@ def buildMyObjList(myList,filepath,consti):
         obj.update(elm.__dict__)
         myList.append(obj)
 
+#ENDE
+
+def prettify(elem):
+    """Return a pretty-printed XML string for the Element.
+    """
+    rough_string = ElementTree.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    return reparsed.toprettyxml(indent="  ")
 
 # posX, posZ, posY, name, eulerX, eulerZ, eulerY, comment=""
 cp1 = Checkpoint(0,0,0,"Blub",0,0,0,"FUCK")
