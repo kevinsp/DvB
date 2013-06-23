@@ -2,6 +2,7 @@ __author__ = 'MrLapTop'
 import sys
 sys.path.append(r"..\GUI")
 from Checkpoint import Checkpoint
+from Note import Note
 
 from xml.etree import ElementTree
 from xml.dom import minidom
@@ -13,49 +14,59 @@ except ImportError:
     from xml.etree.ElementTree import SubElement
 # posX, posZ, posY, name, eulerX, eulerZ, eulerY, comment=""
 
-
-def saveCp(cpList):
-    output_file = open("cpXml.xml","w")
-    checkpoints = Element("checkpoints")
-    for cp in cpList:
-        helperDict = dict(cp.__dict__)
+"""This class is an Obj that holds data"""
+class dummyObj(object):
+    #the overgiven dict will be convortet into membervarbs (of the createt dummyObj)
+    def __init__(self,dicti):
+        self.__dict__.update(dicti)
+"""
+    Mehtode to save Membervarbs to xml file.
+    @elementList - list with obj that you want to save
+    @filepath - path where you will find the xml file after running this methode
+"""
+def saveXml(elementList,filepath):
+    output_file = open(str(filepath),"w")
+    root = Element("root")
+    for element in elementList:
+        helperDict = dict(element.__dict__)
         #print helperDict
-        checkpoint = SubElement(checkpoints,"checkpoint")
+        subelement = SubElement(root,"Subelement")
         for key,value in helperDict.iteritems():
             name = str(key)
             typi = type(value).__name__
-            checkpointAttr = SubElement(checkpoint,name,attrTyp = typi)
+            checkpointAttr = SubElement(subelement,name,attrTyp = typi)
             checkpointAttr.text = str(value)
 
-    output_file.write(ElementTree.tostring(checkpoints))
+    output_file.write(ElementTree.tostring(root))
     output_file.close()
-    #print prettify(checkpoints)
-
-def loadCp():
-    input_file = open ("cpXml.xml","r")
+    #print prettify(root)
+"""
+    Methode to Load form Xml file. Return value is a list with dummyObj.
+    @filepath - file diraytory to the file where you want to load from
+"""
+def loadXml(filepath):
+    input_file = open (str(filepath),"r")
     document = ElementTree.parse(input_file)
-    cpList = []
-    checkpoints = document.getroot()
+    returnList = []
+    root = document.getroot()
 
-    for checkpoint in checkpoints:
+    for Subelement in root:
         helperDict = dict()
-        for checkpointAttr in checkpoint:
-            attrTyp = checkpointAttr.attrib["attrTyp"]
+        for subElementAttr in Subelement:
+            attrTyp = subElementAttr.attrib["attrTyp"]
             attrTypConv = ""
 
             if attrTyp == "str":
-                attrTypConv = str(checkpointAttr.text)
+                attrTypConv = str(subElementAttr.text)
             elif attrTyp == "int":
-                attrTypConv = int(checkpointAttr.text)
+                attrTypConv = int(subElementAttr.text)
 
-            helperDict[str(checkpointAttr.tag)] = attrTypConv
+            helperDict[str(subElementAttr.tag)] = attrTypConv
             #print helperDict
-        cp = Checkpoint(0,0,0,"_",0,0,0,"_")
-        print cp.__dict__
-        print cp.__dict__.update(helperDict)
-        cpList.append()
+
+        returnList.append(dummyObj(helperDict))
     input_file.close()
-    return cpList
+    return returnList
 
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
@@ -63,11 +74,43 @@ def prettify(elem):
     rough_string = ElementTree.tostring(elem, 'utf-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
+"""
+    This methode takes a list and fills it with my Object.
+    @myList - the List i want to be filled
+    @filepath - file diraytory to the file where you want to load from
+    @consti - the name of the constructor i want to have. example "MyObj()" where MyObj is the obj you want
+"""
+def buildMyObjList(myList,filepath,consti):
+    loadList = loadXml(filepath)
+    #transforms the dummyObj into your obj
+    for elm in loadList:
+        obj = eval(consti) # replace this, with the obj you want
+        obj.update(elm.__dict__)
+        myList.append(obj)
 
 
 # posX, posZ, posY, name, eulerX, eulerZ, eulerY, comment=""
 cp1 = Checkpoint(0,0,0,"Blub",0,0,0,"FUCK")
+cp2 = Checkpoint(1,1,1,"Noob",1,1,1,"OHla")
+nt1 = Note(0,0,0,"Blue",0,0,0)
+nt2 = Note(1,1,1,"Red",1,1,1)
 
-saveCp([cp1])
-cpList = loadCp()
-print cpList[0].__dict__ == cp1.__dict__
+cpList = [cp1,cp2]
+ntList = [nt1,nt2]
+
+saveXml(ntList,"noteXml.xml")
+saveXml(cpList,"cpXml.xml")
+
+myListCP = []
+buildMyObjList(myListCP,"cpXml.xml","Checkpoint()")
+print "Cp1 and xmListCP[0] are equal?"
+print  myListCP[0].__dict__ == cp1.__dict__
+
+myListNT= []
+buildMyObjList(myListNT,"noteXml.xml","Note()")
+print "nt1 and xmListNT[0] are equal?"
+print nt1.__dict__ == myListNT[0].__dict__
+
+
+
+

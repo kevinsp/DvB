@@ -4,7 +4,7 @@
 
 
 class Note(object):
-	def __init__(self, posX, posZ, posY, name, eulerX, eulerZ, eulerY):
+	def __init__(self, posX=0, posZ=0, posY=0, name="_", eulerX=0, eulerZ=0, eulerY=0):
 		self.posX = posX
 		self.posZ = posZ
 		self.posY = posY

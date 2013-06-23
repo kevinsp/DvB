@@ -14,5 +14,5 @@ class Checkpoint(object):
 
     def update(self,dicti):
         for key,value in dicti.iteritems():
-            setattr(self,key,value)
+           setattr(self,key,value)
 
