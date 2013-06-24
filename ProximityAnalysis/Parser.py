@@ -1,4 +1,4 @@
-﻿
+﻿from CADinfoClass import CADinfoClass
 
 class Parser(object):
 	def __init__(self, inputFile):
@@ -6,6 +6,7 @@ class Parser(object):
 		self.initializeSort()
 		self.createInfoBlocks()
 		self.parseInfoBlocks()
+		self.defineCenterPosition()
 		print(self.infoList)
 	
 	def getInfoBlocks(self):
@@ -55,21 +56,75 @@ class Parser(object):
 		for el in self.infoBlocks:
 			infos = []
 			blockList = self.infoBlocks[el]
-			info = blockList[0]
-			for info in blockList:
-				if info.find('Name') >= 0 and info.find('"') >= 0:
-					infos.append(('blockName',info[info.index('"')+1:info.index('"',info.index('"')+1)]))
-				if info.find('UniqueID') >= 0:
-					infos.append(('ID',info[info.index(' ')+1:]))
+			firstInfo = blockList[0]
+			for infoEl in blockList:
+				if infoEl.find('Name ') >= 0 and infoEl.find('"') >= 0:
+					infos.append(('blockName',infoEl[infoEl.index('"')+1:infoEl.index('"',infoEl.index('"')+1)]))
+				if infoEl.find('UniqueID ') >= 0:
+					infos.append(('uniqueID',infoEl[infoEl.index(' ')+1:]))
 				continue
-			if info.find('Array') >= 0:
+			if firstInfo.find('Array ') >= 0:
 				infos.append(('blockName','Array'))
-				infos.append(('arrayList',blockList[1:]))
-			if info.find('Matrix') >= 0:
+				infos.append(('arrayList',self.convertListToVector(blockList[1:])))
+				infos.append(('arrayID',firstInfo[firstInfo.index('ArrayID ')+len('ArrayID')+1:firstInfo.index(' ',firstInfo.index('ArrayID ')+len('ArrayID')+2)]))
+			if firstInfo.find('Matrix ') >= 0:
 				infos.append(('blockName','Matrix'))
-				infos.append(('matrixList',blockList[1:]))
+				infos.append(('matrixList',self.convertListToVector(blockList[1:])))
 			self.infoList[el] = infos
 			
+	def defineCenterPosition(self):
+		for el in self.infoList:
+			info = self.infoList[el]
+			for listEl in info:
+				if listEl[0] == 'arrayList':
+					vectors = listEl[1]
+					surroundings = self.findSurroundings(vectors)
+					info.append(('arraySurrounding', surroundings))
+	
+	def findSurroundings(self, vectors):
+		if len(vectors[0]) == 2:
+			(maxX, maxY) = (0, 0)
+			(minX, minY) = (0, 0)
+			for vector in vectors:
+				curX, curY = vector[0], vector[1]
+				if curX > maxX:
+					maxX = curX
+				if curX <= minX:
+					minX = curX
+				if curY > maxY:
+					maxY = curY
+				if curY <= minY:
+					minY = curY
+			return [(minX, minY),(minX, maxY),(maxX, maxY),(maxX, minY)]
+		(maxX, maxY, maxZ) = (0, 0, 0)
+		(minX, minY, minZ) = (0, 0, 0)
+		for vector in vectors:
+			curX, curY, curZ = vector[0], vector[1], vector[2]
+			if curX > maxX:
+				maxX = curX
+			if curX <= minX:
+				minX = curX
+			if curY > maxY:
+				maxY = curY
+			if curY <= minY:
+				minY = curY
+			if curZ > maxZ:
+				maxZ = curZ
+			if curZ <= minZ:
+				minZ = curZ
+		return [(minX, minY, minZ),(minX, minY, maxZ),(minX, maxY, maxZ),(minX, maxY, minZ),(maxX, maxY, minZ),(maxX, maxY, maxZ),(maxX, minY, maxZ),(maxX, minY, minZ)]
+	
+	def convertListToVector(self, arrayList):
+		vectorArray = []
+		for points in arrayList:
+			pointList = points.split()
+			vector = []
+			for point in pointList:
+				point = float(point)
+				vector.append(point)
+			vector = tuple(vector)
+			vectorArray.append(vector)
+		return vectorArray
 
 
 if __name__ == '__main__':
