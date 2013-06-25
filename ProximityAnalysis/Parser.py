@@ -1,4 +1,5 @@
 ﻿from CADinfoClass import CADinfoClass
+from math import sqrt, pow
 
 class Parser(object):
 	def __init__(self, inputFile):
@@ -7,7 +8,11 @@ class Parser(object):
 		self.createInfoBlocks()
 		self.parseInfoBlocks()
 		self.defineCenterPosition()
+		self.cadClasses = []
 		print(self.infoList)
+		
+	def getCADClasses(self):
+		return self.cadClasses
 	
 	def getInfoBlocks(self):
 		return self.infoBlocks
@@ -62,11 +67,10 @@ class Parser(object):
 					infos.append(('blockName',infoEl[infoEl.index('"')+1:infoEl.index('"',infoEl.index('"')+1)]))
 				if infoEl.find('UniqueID ') >= 0:
 					infos.append(('uniqueID',infoEl[infoEl.index(' ')+1:]))
-				continue
 			if firstInfo.find('Array ') >= 0:
 				infos.append(('blockName','Array'))
 				infos.append(('arrayList',self.convertListToVector(blockList[1:])))
-				infos.append(('arrayID',firstInfo[firstInfo.index('ArrayID ')+len('ArrayID')+1:firstInfo.index(' ',firstInfo.index('ArrayID ')+len('ArrayID')+2)]))
+				infos.append(('arrayID',int(firstInfo[firstInfo.index('ArrayID ')+len('ArrayID')+1:firstInfo.index(' ',firstInfo.index('ArrayID ')+len('ArrayID')+2)])))
 			if firstInfo.find('Matrix ') >= 0:
 				infos.append(('blockName','Matrix'))
 				infos.append(('matrixList',self.convertListToVector(blockList[1:])))
@@ -80,8 +84,13 @@ class Parser(object):
 					vectors = listEl[1]
 					surroundings = self.findSurroundings(vectors)
 					info.append(('arraySurrounding', surroundings))
+					if len(surroundings) == 8:
+						center = (0.5*(surroundings[1][0] + surroundings[4][0]),0.5*(surroundings[1][1] + surroundings[4][1]),0.5*(surroundings[1][2] + surroundings[4][2]))
+						info.append(('centerPosition', center))
+						radius = sqrt(pow(surroundings[1][0]-surroundings[0][0],2)+pow(surroundings[1][1]-surroundings[0][1],2)+pow(surroundings[1][2]-surroundings[0][2],2))+0.5
+						info.append(('radius', radius))
 	
-	def findSurroundings(self, vectors):
+	def findSurroundingsLong(self, vectors):
 		if len(vectors[0]) == 2:
 			(maxX, maxY) = (0, 0)
 			(minX, minY) = (0, 0)
@@ -113,6 +122,30 @@ class Parser(object):
 			if curZ <= minZ:
 				minZ = curZ
 		return [(minX, minY, minZ),(minX, minY, maxZ),(minX, maxY, maxZ),(minX, maxY, minZ),(maxX, maxY, minZ),(maxX, maxY, maxZ),(maxX, minY, maxZ),(maxX, minY, minZ)]
+	
+	def findSurroundings(self, vectors):
+		(maxX, maxY, maxZ) = (0, 0, 0)
+		(minX, minY, minZ) = (0, 0, 0)
+		vectorBool = (len(vectors[0]) == 3)
+		for vector in vectors:
+			curX, curY = vector[0], vector[1]
+			if curX > maxX:
+				maxX = curX
+			if curX <= minX:
+				minX = curX
+			if curY > maxY:
+				maxY = curY
+			if curY <= minY:
+				minY = curY
+			if vectorBool:
+				curZ = vector[2]
+				if curZ > maxZ:
+					maxZ = curZ
+				if curZ <= minZ:
+					minZ = curZ
+		if len(vectors[0]) == 3:
+			return [(minX, minY, minZ),(minX, minY, maxZ),(minX, maxY, maxZ),(minX, maxY, minZ),(maxX, maxY, minZ),(maxX, maxY, maxZ),(maxX, minY, maxZ),(maxX, minY, minZ)]
+		return [(minX, minY),(minX, maxY),(maxX, maxY),(maxX, minY)]
 	
 	def convertListToVector(self, arrayList):
 		vectorArray = []
