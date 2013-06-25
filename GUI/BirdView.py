@@ -10,20 +10,22 @@ import viztask
 birdEyeViewIsActivated = False
 birdEyeWindow = None
 
-#Vogelperspektive
+#Vogelperspektive aktivieren/deaktivieren
 def enableBirdEyeView():
 	global birdEyeViewIsActivated
 	global BirdEyeWindow
 	
-	if not (birdEyeViewIsActivated):
-		BirdEyeWindow = viz.addWindow()
+	if not (birdEyeViewIsActivated): #Falls Vogelperspektive nicht aktiviert ist
+		BirdEyeWindow = viz.addWindow() #Fenster für die Vogelperspektive erstellen
 		BirdEyeWindow.fov(60)
-		BirdEyeView = viz.addView()
-		BirdEyeWindow.setView(BirdEyeView)
-		link = viz.link( viz.MainView, BirdEyeView)
-		link.preEuler([0,90,0]) #winkel der cam
-		link.postTrans([0,30,0]) #höhe der view
+		
+		BirdEyeView = viz.addView() #Eine neue View erstellen
+		BirdEyeWindow.setView(BirdEyeView) #View in das Fenster einfügen
+		link = viz.link( viz.MainView, BirdEyeView) #Die View mit der MainView verknüpfen
+		link.preEuler([0,90,0]) #Winkel, sodass Perspektive von oben
+		link.postTrans([0,30,0]) #Höhe der View
+		
 		birdEyeViewIsActivated = True
 	else:
-		BirdEyeWindow.remove()
+		BirdEyeWindow.remove() #Entferne Vogelperspektive
 		birdEyeViewIsActivated = False

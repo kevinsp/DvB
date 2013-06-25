@@ -13,12 +13,14 @@ import vizdlg
 
 import GlobalVariables
 
+#Erstelle Panel mit Einstellungs Checkboxen
 def oeffneSettingPanel(menubar):
 
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
 		menubar.setVisible(viz.OFF)
-		
+
+		#Theme
 		blackTheme = viz.getTheme()
 		blackTheme.borderColor = (0.1,0.1,0.1,1)
 		blackTheme.backColor = (0.4,0.4,0.4,1)
@@ -29,7 +31,7 @@ def oeffneSettingPanel(menubar):
 
 		myPanel = vizdlg.Panel()
 
-		#Add row of checkboxes
+		#Erstelle Checkboxen
 		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0)
 		row.addItem(viz.addText('Einstellung 1'))
 		check1 = row.addItem(viz.addCheckbox())
@@ -64,21 +66,23 @@ def oeffneSettingPanel(menubar):
 		okButton = bestaetigePanel.addItem(viz.addButtonLabel("OK"))
 
 
-		#Add row to myPanel
+		#Fuege die Rows in das Panel ein
 		myPanel.addItem(row)
 		myPanel.addItem(row2)
 		myPanel.addItem(row3)
 		myPanel.addItem(bestaetigePanel)
 
-
+                #Definiere Panelname und Art
 		tp = vizdlg.TabPanel(theme=blackTheme,align=vizdlg.ALIGN_CENTER)
 		tp.addPanel('Einstellungen',myPanel)
-
-		viz.link(viz.CenterCenter,tp)
-
 		tp.background.alpha(0.8)
 
+                #Setze das Panel in die Mitte des Bildschirms
+		viz.link(viz.CenterCenter,tp)
 
+		
+
+                #Schließe das Fenster und speicher die Werte der Checkboxen
 		def fensterSchliessen():
 			GlobalVariables.variable1 = check1.get()
 			GlobalVariables.variable2 = check2.get()
@@ -90,7 +94,6 @@ def oeffneSettingPanel(menubar):
 			GlobalVariables.windowOpen = False
 			tp.remove()
 
+                #Schließe das Fenster
 		vizact.onbuttondown(okButton,fensterSchliessen)
-				
-	else:
-		pass
+

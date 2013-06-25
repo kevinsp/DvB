@@ -1,3 +1,4 @@
+#Begruessungsnachricht
 """Danke, dass Sie sich fuer unsere Software entschieden haben.
 \nHier die wichtigsten Shortcuts zum bedienen des Programmes:
 c:     Anzeigen der bereits gesetzten Checkpoints
@@ -22,6 +23,18 @@ import viztask
 import vizpopup
 import vizact
 import viznet
+	
+from xml.etree import ElementTree
+from xml.dom import minidom
+
+try:
+	from xml.etree.cElementTree import Element
+	from xml.etree.cElementTree import SubElement
+except ImportError:
+	from xml.etree.ElementTree import Element
+	from xml.etree.ElementTree import SubElement
+
+
 
 import sys
 sys.path.append(r"..\RemoteAppServer")
@@ -29,7 +42,9 @@ from RemoteAppMain import RemoteAppLuncher
 
 #Eigene Module
 import CheckpointFunktionen
+from Checkpoint import Checkpoint
 import Notes
+from Note import Note
 import MouseAndMovement
 import BirdView
 import Porten
@@ -38,12 +53,26 @@ import GlobalVariables
 import SettingPanel
 
 
-#viz.go(viz.QUAD_BUFFER)
-viz.go()
+viz.go(viz.QUAD_BUFFER)
+#viz.go()
 
 
 
 modelIsLoaded = False
+
+
+
+
+"""This class is an Obj that holds data"""
+class DummyObj(object):
+	#the overgiven dict will be convortet into membervarbs (of the createt dummyObj)
+	def __init__(self,dicti):
+		self.__dict__.update(dicti)
+
+
+
+
+#Die Hauptklasse/Oberflaeche
 class Oberflaeche(object):
 	
 	def __init__(self):
@@ -53,10 +82,9 @@ class Oberflaeche(object):
 
 		viz.MainWindow.fov(60)
 		viz.collision(viz.ON)
-		self.beginZ = viz.MainView.getPosition()[1]
 
-		#viz.window.setFullscreen(True)
-		viz.addChild('sky_day.osgb')
+		viz.window.setFullscreen(True)
+		viz.addChild('sky_day.osgb') #Umgebung laden
 		
 		viz.setOption('viz.fullscreen',1)
 		viz.fov(40.0,1.333)
@@ -66,39 +94,37 @@ class Oberflaeche(object):
 		self.menubar = vizmenu.add()
 		self.menubar.setVisible(False)
 
-		#Model
+		#Model DropDownMenu
 		self.BearbeitenMenu = self.menubar.add("Model")
 		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Datei oeffnen")
 		self.buttonModelEntfernen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Model entfernen")
 
-		#Funktionen DropDown
+		#Funktionen DropDownMenu
 		self.FunktionenMenu = self.menubar.add("Funktionen")
 		self.checkPointLoeschen = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Checkpoint loeschen")
-		self.checkPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint porten")
+		self.checkPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint springen")
 		self.deleteNoteButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Loesche 3D Notiz")
-		self.notePortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen porten")
-		self.beliebigPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Porten")
+		self.notePortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen springen")
+		self.beliebigPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Springen zu")
 		#Alphaslider
 		self.alphaSlider = self.FunktionenMenu.add(viz.PROGRESS_BAR, "1.00", "Alphawert")
 		self.alphaSlider.set(1.0)
 		
-		#Einfuegen DropDown
+		#Einfuegen DropDownMenu
 		self.EinfuegenMenu = self.menubar.add("Einfuegen")
 		self.checkPointSetzen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Checkpoint setzen")
 		self.buttonNotizEinfuegen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Notiz")
 
-		#Optionen DropDown
+		#Optionen DropDownMenu
 		self.OptionenMenu = self.menubar.add("Optionen")
 		self.AndroidAppButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Android Server")
 		self.settingButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Einstellungen")
-
-
-
-
-		#Theme
+		self.speichernButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Speichern")
+		self.ladenButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Laden")
+		#Menuebar Theme
 		viz.setTheme(GlobalVariables.darkTheme)
 		
-		#Positionsangabe
+		#Position Anzeige
 		self.textScreen = viz.addText('',viz.SCREEN) 
 		self.textScreen.setScale(0.3,0.3,0)
 		self.textScreen.alignment(viz.ALIGN_RIGHT_TOP)
@@ -106,7 +132,7 @@ class Oberflaeche(object):
 		self.textScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
 		self.textScreen.setBackdropColor([0,0,0])
 		
-		#IP-Angabe
+		#IP-Anzeige
 		self.ipTextScreen = viz.addText("", viz.SCREEN)
 		self.ipTextScreen.setScale(0.3,0.3,0)
 		self.ipTextScreen.alignment(viz.ALIGN_RIGHT_TOP)
@@ -114,23 +140,13 @@ class Oberflaeche(object):
 		self.ipTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
 		self.ipTextScreen.setBackdropColor([0,0,0])
 		
-		#Flugmodus angabe
-		self.midTextScreen = viz.addText("", viz.SCREEN)
-		self.midTextScreen.setScale(0.3,0.3,0)
-		self.midTextScreen.alignment(viz.ALIGN_CENTER_CENTER)
-		self.midTextScreen.setPosition([0.5,0.5,0])
-		self.midTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
-		self.midTextScreen.setBackdropColor([0,0,0])
-
-
-
 		#Steuerung
 		viz.mouse(viz.ON)
-		viz.mouse.setTrap()
-		
-		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
-		GlobalVariables.tracker.setPosition([0,1.8,0])
-		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView)
+		viz.mouse.setTrap() #Maus kann nicht aus dem Fenster gehen
+
+		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed) #Initialisieren Tracker mit bestimmter Geschwindigkeit
+		GlobalVariables.tracker.setPosition([0,1.8,0]) #Setze Tracker Position
+		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView) #Verlinke Tracker mit MainView
 		viz.mouse.setVisible(False)
 
 		#Boden laden
@@ -142,7 +158,9 @@ class Oberflaeche(object):
 		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 
-		#Button Definition
+                                ####Button Definition####
+
+		#Model Buttons
 		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModel)
 		vizact.onbuttonup(self.buttonModelEntfernen, self.deleteModel)
 
@@ -162,20 +180,20 @@ class Oberflaeche(object):
 		#Optionen Buttons
 		vizact.onbuttonup(self.AndroidAppButton, self.startAndroid)
 		vizact.onbuttonup(self.settingButton, SettingPanel.oeffneSettingPanel, self.menubar)
+		vizact.onbuttonup(self.speichernButton, self.save)
+		vizact.onbuttonup(self.ladenButton, self.load)
 	
 		#Shortcuts
 		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, self.menubar)
 		vizact.onkeydown("c", CheckpointFunktionen.checkPoints, False)
 		vizact.onkeydown("v", BirdView.enableBirdEyeView)
 		vizact.onkeydown("n", Notes.noteView, False)
-		vizact.onkeydown("f", self.flugModusOnOff)
+		vizact.onkeydown("f", MouseAndMovement.flugModusOnOff)
 		vizact.onkeydown("p", self.zeigePosition)
-		vizact.onkeydown(viz.KEY_KP_ADD, self.speedUp)
-		vizact.onkeydown(viz.KEY_KP_SUBTRACT, self.speedDown)
-		vizact.onkeydown(viz.KEY_KP_DIVIDE, self.flySpeedDown)
-		vizact.onkeydown(viz.KEY_KP_MULTIPLY, self.flySpeedUp)
-	
-		#Hoch und runter
+		vizact.onkeydown(viz.KEY_KP_ADD, MouseAndMovement.speedUp)
+		vizact.onkeydown(viz.KEY_KP_SUBTRACT, MouseAndMovement.speedDown)
+		vizact.onkeydown(viz.KEY_KP_DIVIDE, MouseAndMovement.flySpeedDown)
+		vizact.onkeydown(viz.KEY_KP_MULTIPLY, MouseAndMovement.flySpeedUp)
 		vizact.onkeydown(viz.KEY_SHIFT_L, MouseAndMovement.moveUpAndDown,  viz.KEY_SHIFT_L)
 		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, viz.KEY_ALT_L)
 		
@@ -184,34 +202,38 @@ class Oberflaeche(object):
 	
 	#Setze Alphawert
 	def setAlpha(self, slider):
+		#Falls ein Model vorhanden ist
 		if self.model is not None:
 			self.alphaSlider.message( str('%.2f'%(slider)) )
 			self.model.alpha(slider)
-	
+
+	#Starte Server fuer Android
 	def startAndroid(self):
-		if GlobalVariables.serverIsRunning is False: #starte nur einen Server, wenn noch keiner laeuft
-			self.ipTextScreen.message(str(viz.net.getIP()))
+		#starte nur einen Server, wenn noch keiner laeuft
+		if GlobalVariables.serverIsRunning is False: 
+			self.ipTextScreen.message(str(viz.net.getIP())) #Zeige IP-Adresse an
 			self.neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
-			self.thread = viz.director(self.neu.lunch)
+			self.thread = viz.director(self.neu.lunch) #Starte Server in neuem Thread
 			GlobalVariables.serverIsRunning = True
+		#Falls bereits ein Server laeuft
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
 			self.neu.shutdown() #beende Server
 			
-		
-
-	#zeige zurzeitige position
+	#Zeige zurzeitige Position
 	def zeigePosition(self):
+		#Aendere die Positionsanzeige
 		def changeMessage():
 			userPosition = viz.MainView.getPosition() #Frage User Position
 			message = str(round(userPosition[0],2)) + " " + str(round(userPosition[1],2)) + " " + str(round(userPosition[2],2))
-			self.textScreen.message(str(message))
-		
+			self.textScreen.message(str(message)) #Setze Anzeige auf neue Position
+			
+		#Falls Position noch nicht gezeigt wird
 		if (GlobalVariables.showPosi is False):
 			self.textScreen.visible(True)
 			GlobalVariables.showPosi = True
-			vizact.ontimer(0.1, changeMessage)
+			vizact.ontimer(0.1, changeMessage) #Aktualisiere durchgehend die Positionsangabe
 		else:
 			self.textScreen.visible(False)
 			GlobalVariables.showPosi = False
@@ -219,9 +241,10 @@ class Oberflaeche(object):
 	#Lade neues Model
 	def setModel (self):
 		global modelIsLoaded
+		#Falls noch kein Model geladen ist
 		if not (modelIsLoaded):
-			self.alphaSlider.set(1.0)
-			self.model = viz.addChild(vizinput.fileOpen())
+			self.alphaSlider.set(1.0) #Setze AlphaSlider zurueck
+			self.model = viz.addChild(vizinput.fileOpen()) #Oeffne Menue zum auswaehlen der Datei
 			self.model.disable(viz.CULL_FACE)
 			self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
 			self.model.setEuler([0,0,0])
@@ -233,67 +256,101 @@ class Oberflaeche(object):
 		global modelIsLoaded
 		self.model.remove()
 		modelIsLoaded = False
-			
-	#FlugmodusOnOFF
-	def flugModusOnOff(self):
-		if (GlobalVariables.flugModus is True):
-			GlobalVariables.flugModus = False
-			viz.collision(viz.ON)
-			GlobalVariables.position = viz.MainView.getPosition()
-			#GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], self.beginZ, viz.MainView.getPosition()[2])
-			self.midTextScreen.message("Flugmodus: OFF")
-			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-			
-		else:
-			GlobalVariables.flugModus = True
-			#GlobalVariables.tracker.setPosition(viz.MainView.getPosition()[0], 1.82, viz.MainView.getPosition()[2])
-			viz.collision(viz.OFF)
-			self.midTextScreen.message("Flugmodus: ON")
-			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
 
-	#erhöhe bewegugnsgeschwindigkeit
-	def speedUp(self):
-		if(GlobalVariables.moveSpeed<40):
-			GlobalVariables.moveSpeed += 1
-			position = viz.MainView.getPosition()
-			euler = viz.MainView.getEuler()
-			GlobalVariables.tracker.remove()
-			GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
-			GlobalVariables.link = viz.link(GlobalVariables.tracker, viz.MainView)
-			GlobalVariables.tracker.setPosition(position)
-			GlobalVariables.tracker.setEuler(euler)
-			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
-			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-			viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)		
-			
-	#verringere bewegeungsgeschwindigkeit
-	def speedDown(self):		
-		if(GlobalVariables.moveSpeed>1):
-			GlobalVariables.moveSpeed -=1
-			position = viz.MainView.getPosition()
-			euler = viz.MainView.getEuler()
-			GlobalVariables.tracker.remove()
-			GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
-			GlobalVariables.link = viz.link(GlobalVariables.tracker, viz.MainView)
-			GlobalVariables.tracker.setPosition(position)
-			GlobalVariables.tracker.setEuler(euler)
-			self.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
-			vizact.ontimer2(1, 0, self.midTextScreen.message, "")
-			viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)		
 
-	#erhöhe Fluggeschwindigkeit
-	def flySpeedUp(self):
-		if GlobalVariables.flySpeed <=9.8:
-			GlobalVariables.flySpeed +=0.2
-		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
-		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+	#Speichere alle Checkpoints und 3D Notizen in XML Dateien
+	def save(self):
+		self.saveXml(GlobalVariables.checkPointsList, "Checkpoints.xml")
+		self.saveXml(GlobalVariables.noteList, "3D Notizen.xml")
+	
+	#Lade alle Checkpoints und 3D Notizen aus XML Dateien
+	def load(self):
+		self.buildMyObjList(GlobalVariables.checkPointsList, "Checkpoints.xml", "Checkpoint()")
+		self.buildMyObjList(GlobalVariables.noteList, "3D Notizen.xml", "Note()")
+
+	"""
+		Mehtode to save Membervarbs to xml file.
+		@elementList - list with obj that you want to save
+		@filepath - path where you will find the xml file after running this methode
+	"""
+	def saveXml(self, elementList,filepath):
+		output_file = open(str(filepath),"w")
+		root = Element("root")
+		for element in elementList:
+			helperDict = dict(element.__dict__)
+			#print helperDict
+			subelement = SubElement(root,"Subelement")
+			for key,value in helperDict.iteritems():
+				name = str(key)
+				typi = type(value).__name__
+				checkpointAttr = SubElement(subelement,name,attrTyp = typi)
+				checkpointAttr.text = str(value)
+		output_file.write(ElementTree.tostring(root))
+		output_file.close()
+		#print self.prettify(root)
+	"""
+		Methode to Load form Xml file. Return value is a list with dummyObj.
+		@filepath - file diraytory to the file where you want to load from
+	"""
+	def loadXml(self, filepath):
+		input_file = open (str(filepath),"r")
+		#print str(input_file)
+		document = ElementTree.parse(input_file)
+		returnList = []
+		root = document.getroot()
+		for Subelement in root:
+			helperDict = dict()
+			for subElementAttr in Subelement:
+				attrTyp = subElementAttr.attrib["attrTyp"]
+				attrTypConv = ""
+				if attrTyp == "str":
+					attrTypConv = str(subElementAttr.text)
+				elif attrTyp == "int":
+					attrTypConv = int(subElementAttr.text)
+				elif attrTyp == "float":
+					attrTypConv = float(subElementAttr.text)
+				helperDict[str(subElementAttr.tag)] = attrTypConv
+				#print helperDict
+			returnList.append(DummyObj(helperDict))
+		input_file.close()
+		#print len(returnList)
+		return returnList
+			
+	def prettify(self, elem):
+		"""Return a pretty-printed XML string for the Element.
+		"""
+		rough_string = ElementTree.tostring(elem, 'utf-8')
+		reparsed = minidom.parseString(rough_string)
+		return reparsed.toprettyxml(indent="  ")
 		
-	#verringere Fluggeschwindigkeit
-	def flySpeedDown(self):
-		if GlobalVariables.flySpeed>0.2:
-			GlobalVariables.flySpeed -=0.2
-		self.midTextScreen.message("Fluggeschwindigkeit: " + str(GlobalVariables.flySpeed))
-		vizact.ontimer2(1, 0, self.midTextScreen.message, "")
+		
+		"""
+		This methode takes a list and fills it with my Object.
+		@myList - the List i want to be filled
+		@filepath - file diraytory to the file where you want to load from
+		@consti - the name of the constructor i want to have. example "MyObj()" where MyObj is the obj you want
+	"""
+	def buildMyObjList(self, myList,filepath,consti):
+		loadList = self.loadXml(filepath)
+		#transforms the dummyObj into your obj
+		for elm in loadList:
+			obj = eval(consti) # replace this, with the obj you want
+			obj.update(elm.__dict__)
+			myList.append(obj)
+			
+		#Setze die 3D Notes wieder in die Umgebung
+		for a in GlobalVariables.noteList:
+			text3D = viz.addText3D(a.name, pos = [a.posX, a.posZ, a.posY])
+			text3D.setScale(0.2, 0.2, 0.2)
+			text3D.color(viz.RED)
+			GlobalVariables.noteListObjects.append(text3D)
+		#Aktualisiere die angezeigte Liste
+		if CheckpointFunktionen.checkPointsVisible:
+			CheckpointFunktionen.checkPoints(False)
+			CheckpointFunktionen.checkPoints(False)
+		elif Notes.checkNotesVisible:
+			Notes.noteView(False)
+			Notes.noteView(False)
 		
 if __name__ == "__main__":
 

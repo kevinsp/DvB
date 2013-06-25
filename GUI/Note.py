@@ -1,8 +1,6 @@
-﻿
 
 
-
-
+#Note Objekt
 class Note(object):
 	def __init__(self, posX=0, posZ=0, posY=0, name="_", eulerX=0, eulerZ=0, eulerY=0):
 		self.posX = posX
