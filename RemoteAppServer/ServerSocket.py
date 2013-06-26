@@ -127,5 +127,6 @@ class Serversocket(object):
 
     def chunks(self,list, n):
         """ Yield successive n-sized chunks from list."""
+
         for i in xrange(0, len(list), n):
             yield list[i:i+n]
