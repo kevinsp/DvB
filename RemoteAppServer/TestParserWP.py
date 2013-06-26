@@ -105,11 +105,11 @@ if __name__ == "__main__":
     """request the cp list from the server"""
     #ans,anz=androidEmu.run(1,2,"n","n")
 
-    """create a checkpoint"""
+    """create a checkpoint on the server"""
     #ans,anz=androidEmu.run(1,3,"cpByA1","This is a Comment")
 
     """port to checkpoint"""
     #ans,anz=androidEmu.run(1,1,None,"n",0)
 
-    """delete checkpoint"""
+    """delete checkpoint on the server"""
     ans,anz=androidEmu.run(1,0,"0","n",0)
