@@ -7,8 +7,8 @@ v:     Anzeigen der Vogelperspektive
 f:     Flugmodus aktivieren/deaktivieren
 h:     Anzeigen dieser Hilfe
 p:     Anzeigen der aktuellen Position
-+ -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 1-40
-* /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.2-10"""
++ -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 0.2-40
+* /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"""
 
 
 
@@ -53,8 +53,8 @@ import GlobalVariables
 import SettingPanel
 
 
-viz.go(viz.QUAD_BUFFER)
-#viz.go()
+#viz.go(viz.QUAD_BUFFER)
+viz.go()
 
 
 
@@ -103,7 +103,7 @@ class Oberflaeche(object):
 		self.FunktionenMenu = self.menubar.add("Funktionen")
 		self.checkPointLoeschen = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Checkpoint loeschen")
 		self.checkPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint springen")
-		self.deleteNoteButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Loesche 3D Notiz")
+		self.deleteNoteButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "3D Notiz loeschen")
 		self.notePortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen springen")
 		self.beliebigPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Springen zu")
 		#Alphaslider
@@ -112,7 +112,7 @@ class Oberflaeche(object):
 		
 		#Einfuegen DropDownMenu
 		self.EinfuegenMenu = self.menubar.add("Einfuegen")
-		self.checkPointSetzen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Checkpoint setzen")
+		self.checkPointSetzen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Checkpoint")
 		self.buttonNotizEinfuegen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Notiz")
 
 		#Optionen DropDownMenu
@@ -190,12 +190,18 @@ class Oberflaeche(object):
 		vizact.onkeydown("n", Notes.noteView, False)
 		vizact.onkeydown("f", MouseAndMovement.flugModusOnOff)
 		vizact.onkeydown("p", self.zeigePosition)
+		vizact.onkeydown("C", CheckpointFunktionen.checkPoints, False)
+		vizact.onkeydown("V", BirdView.enableBirdEyeView)
+		vizact.onkeydown("N", Notes.noteView, False)
+		vizact.onkeydown("F", MouseAndMovement.flugModusOnOff)
+		vizact.onkeydown("P", self.zeigePosition)
 		vizact.onkeydown(viz.KEY_KP_ADD, MouseAndMovement.speedUp)
 		vizact.onkeydown(viz.KEY_KP_SUBTRACT, MouseAndMovement.speedDown)
 		vizact.onkeydown(viz.KEY_KP_DIVIDE, MouseAndMovement.flySpeedDown)
 		vizact.onkeydown(viz.KEY_KP_MULTIPLY, MouseAndMovement.flySpeedUp)
 		vizact.onkeydown(viz.KEY_SHIFT_L, MouseAndMovement.moveUpAndDown,  viz.KEY_SHIFT_L)
 		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, viz.KEY_ALT_L)
+		
 		
 		#Progressbar Alphawert
 		vizact.onslider( self.alphaSlider, self.setAlpha )

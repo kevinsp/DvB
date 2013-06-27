@@ -76,11 +76,11 @@ def speedUp():
 		GlobalVariables.link = viz.link(GlobalVariables.tracker, viz.MainView)
 		GlobalVariables.tracker.setPosition(position)
 		GlobalVariables.tracker.setEuler(euler)
-
-		#Zeige User die neue Geschwindigkeit
-		GlobalVariables.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
-		vizact.ontimer2(1, 0, GlobalVariables.midTextScreen.message, "")
 		viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)		
+	#Zeige User die neue Geschwindigkeit
+	GlobalVariables.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
+	vizact.ontimer2(1, 0, GlobalVariables.midTextScreen.message, "")
+		
 			
 #verringere bewegeungsgeschwindigkeit
 def speedDown():
@@ -96,11 +96,11 @@ def speedDown():
 		GlobalVariables.link = viz.link(GlobalVariables.tracker, viz.MainView)
 		GlobalVariables.tracker.setPosition(position)
 		GlobalVariables.tracker.setEuler(euler)
-
-		#Zeige User die neue Geschwindigkeit
-		GlobalVariables.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
-		vizact.ontimer2(1, 0, GlobalVariables.midTextScreen.message, "")
-		viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)		
+		viz.postEvent(viz.getEventID("VIEW_CHANGED_EVENT"), GlobalVariables.tracker)	
+	#Zeige User die neue Geschwindigkeit
+	GlobalVariables.midTextScreen.message("Geschwindigkeit: " + str(GlobalVariables.moveSpeed))
+	vizact.ontimer2(1, 0, GlobalVariables.midTextScreen.message, "")
+		
 		
 #erhoehe Fluggeschwindigkeit
 def flySpeedUp():
