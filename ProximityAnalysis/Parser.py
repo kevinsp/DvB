@@ -8,14 +8,12 @@ class Parser(object):
 		self.createInfoBlocks()
 		self.parseInfoBlocks()
 		self.defineCenterPosition()
+		self.combineInfoParts()
 		self.cadClasses = []
-		print(self.infoList)
+		print(self.blockFullList)
 		
 	def getCADClasses(self):
 		return self.cadClasses
-	
-	def getInfoBlocks(self):
-		return self.infoBlocks
 	
 	'''
 	extract bracket structure from file
@@ -89,6 +87,56 @@ class Parser(object):
 						info.append(('centerPosition', center))
 						radius = sqrt(pow(surroundings[1][0]-surroundings[0][0],2)+pow(surroundings[1][1]-surroundings[0][1],2)+pow(surroundings[1][2]-surroundings[0][2],2))+0.5
 						info.append(('radius', radius))
+	
+	def combineInfoParts(self):
+		self.blockFullList = {}
+		blockList = []
+		infoList = []
+		previousEl = self.blockLineList[0][1] - 1
+		for el in range(len(self.blockLineList)):
+			block = self.blockLineList[el]
+			if self.blockLineList[el+1][1] == (block[1]+1):
+				blockList.append(block)
+				infoList.append(self.infoList[block])
+				if el == (len(self.blockLineList)-2):
+					block = self.blockLineList[el+1]
+					blockList.append(block)
+					infoList.append(self.infoList[block])
+					self.blockFullList[tuple(blockList)] = infoList
+					break
+				continue
+			elif self.blockLineList[el+1][1] != (block[1]+1) and len(blockList) != 0:
+				if len(blockList) == 1:
+					self.blockFullList[blockList[0]] = infoList
+				elif len(blockList) > 1:
+					self.blockFullList[tuple(blockList)] = infoList
+				if el == (len(self.blockLineList)-2):
+					blockList = []
+					infoList = []
+					block = self.blockLineList[el+1]
+					blockList.append(block)
+					infoList.append(self.infoList[block])
+					self.blockFullList[blockList[0]] = infoList
+					break
+				blockList = []
+				infoList = []
+				continue
+			blockList.append(block)
+			infoList.append(self.infoList[block])
+		'''for block in self.blockLineList:
+			if block[1] == (previousEl+1):
+				previousEl = block[1]
+			elif block[1] != (previousEl+1) and len(blockList) > 1:
+				self.blockFullList[tuple(blockList)] = infoList
+				blockList = []
+				infoList = []
+			elif block[1] != (previousEl+1) and len(blockList) == 1:
+				self.blockFullList[blockList[0]] = infoList
+				blockList = []
+				infoList = []
+			blockList.append(block)
+			infoList.append(self.infoList[block])'''
+				
 	
 	def findSurroundingsLong(self, vectors):
 		if len(vectors[0]) == 2:
