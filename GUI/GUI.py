@@ -11,7 +11,9 @@ p:     Anzeigen der aktuellen Position
 * /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"""
 
 
+"""test 1"""
 
+#import vizard Module
 import viz
 import viztracker
 import vizinput
@@ -23,7 +25,9 @@ import viztask
 import vizpopup
 import vizact
 import viznet
-	
+
+
+#import  XML Module	
 from xml.etree import ElementTree
 from xml.dom import minidom
 
@@ -74,7 +78,7 @@ class DummyObj(object):
 
 #Die Hauptklasse/Oberflaeche
 class Oberflaeche(object):
-	
+	"""test2"""
 	def __init__(self):
 		self.neu = None
 		self.model = None
