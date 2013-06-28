@@ -82,7 +82,7 @@ class Oberflaeche(object):
         """Die Hauptklasse/Oberflaeche"""
         
 	def __init__(self):
-                """Initialisiere die Oberfläche"""
+                """Initialisiere die Oberflaeche"""
 		self.neu = None
 		self.model = None
 		self.thread = None
@@ -91,7 +91,8 @@ class Oberflaeche(object):
 		viz.collision(viz.ON)
 
 		viz.window.setFullscreen(True)
-		viz.addChild('sky_day.osgb') """Umgebung laden"""
+                """Umgebung laden"""
+		viz.addChild('sky_day.osgb')
 		
 		viz.setOption('viz.fullscreen',1)
 		viz.fov(40.0,1.333)
@@ -161,7 +162,7 @@ class Oberflaeche(object):
 		self.ground2 = viz.addChild('ground.osgb')
 		self.ground2.setPosition(0,0,50)
 		
-		"""Begrueßungsnachricht"""
+		"""Begrueï¿½ungsnachricht"""
 		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 

@@ -4,7 +4,7 @@ from JasonEventModule import JasonEventSender
 import json
 import traceback
 import sys
-sys.path.append(r"..\GUI")
+sys.path.append(r"..\Release1.0\GUI")
 from CheckpointFunktionen import createCheckpointAndroid
 from CheckpointFunktionen import deleteCheckpointAndroid
 from CheckpointFunktionen import porteCheckpointAndroid
