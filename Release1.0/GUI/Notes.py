@@ -157,7 +157,7 @@ def noteView(onViolent):
 		
 		
 		def teillisteVerringernErhoehen(wert):
-                        """zirkulierendes "Liste""""
+                        """zirkulierendes "Liste"""
                         
                         #"""Falls man am Anfang ist und zurueck geht, kommt man am Ende wieder raus"""
 			if GlobalVariables.teillisteNote == 1 and wert == -1:
