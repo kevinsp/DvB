@@ -76,16 +76,17 @@ class Oberflaeche(object):
 	def __init__(self):
                 """Initialisiere die Oberflaeche"""
                 
-                self.message = "Danke, dass Sie sich fuer unsere Software entschieden haben. \
-                                \nHier die wichtigsten Shortcuts zum bedienen des Programmes:\
-                                c:     Anzeigen der bereits gesetzten Checkpoints\
-                                n:     Anzeigen der bereits gesetzten 3D Notizen\
-                                v:     Anzeigen der Vogelperspektive\
-                                f:     Flugmodus aktivieren/deaktivieren\
-                                h:     Anzeigen dieser Hilfe\
-                                p:     Anzeigen der aktuellen Position\
-                                + -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 0.2-40\
-                                * /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"
+                self.message = """Danke, dass Sie sich fuer unsere Software entschieden haben.
+
+Hier die wichtigsten Shortcuts zum bedienen des Programmes:
+    c:     Anzeigen der bereits gesetzten Checkpoints
+    n:     Anzeigen der bereits gesetzten 3D Notizen
+    v:     Anzeigen der Vogelperspektive
+    f:     Flugmodus aktivieren/deaktivieren
+    h:     Anzeigen dieser Hilfe
+    p:     Anzeigen der aktuellen Position
+    + -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 0.2-40
+    * /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"""
 
                 self.neu = None
 		self.model = None
@@ -171,7 +172,7 @@ class Oberflaeche(object):
 		self.ground2.setPosition(0,0,50)
 		
 		#"""Begruessungsnachricht"""
-		self.checkPointsPanel = vizinfo.InfoPanel(message = self.message, align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
+		self.checkPointsPanel = vizinfo.InfoPanel(self.message, align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 
                # """Button Definition"""
@@ -211,10 +212,10 @@ class Oberflaeche(object):
 		vizact.onkeydown("N", Notes.noteView, False)
 		vizact.onkeydown("F", MouseAndMovement.flugModusOnOff)
 		vizact.onkeydown("P", self.zeigePosition)
-		vizact.onkeydown(viz.KEY_KP_ADD, MouseAndMovement.speedUp)
-		vizact.onkeydown(viz.KEY_KP_SUBTRACT, MouseAndMovement.speedDown)
-		vizact.onkeydown(viz.KEY_KP_DIVIDE, MouseAndMovement.flySpeedDown)
-		vizact.onkeydown(viz.KEY_KP_MULTIPLY, MouseAndMovement.flySpeedUp)
+		vizact.onkeydown(viz.KEY_RIGHT, MouseAndMovement.speedUp)
+		vizact.onkeydown(viz.KEY_LEFT, MouseAndMovement.speedDown)
+		vizact.onkeydown(viz.KEY_UP, MouseAndMovement.flySpeedUp)
+		vizact.onkeydown(viz.KEY_DOWN, MouseAndMovement.flySpeedDown())
 		vizact.onkeydown(viz.KEY_SHIFT_L, MouseAndMovement.moveUpAndDown,  viz.KEY_SHIFT_L)
 		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, viz.KEY_ALT_L)
 		

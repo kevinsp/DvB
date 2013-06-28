@@ -1,24 +1,11 @@
 __author__ = 'MrLapTop'
 import viz
-
-from TestClassEmulateJEvents import EmulateJEvents
-import sys
-
 from JasonEventModule import JassonCam
 from JasonEventModule import JasonEventRegister
-from JasonEventModule import JasonEventSender
 from ServerSocket import Serversocket
 from Parser import Parser
 from Connector import Connector
-from server import MyServer
 
-#sys.path.append(r"..\GUI")
-
-
-
-
-
-"""insert new ip and go"""
 
 class RemoteAppLuncher(object):
     def __init__(self,HostIp,view=None,checkPointList = None):
@@ -31,12 +18,12 @@ class RemoteAppLuncher(object):
         @param view: the view/tracker will be manupilated by the jEventCam
         @type view: in our case a Tracker
 
-        @param checkPointList: is a list overgiven list with or without checkpoints in it
+        @param checkPointList: is a overgiven list with or without checkpoints in it
         @type checkPointList: list
         """
 
         self.jEventRegister = JasonEventRegister()
-        self.jCam = JassonCam(self.jEventRegister,view) #
+        self.jCam = JassonCam(self.jEventRegister,view)
         self.jParser = Parser(self.jEventRegister,checkPointList)
         self.connector = Connector(self.jParser)
         self.sSocket = Serversocket(str(HostIp),self.connector)
