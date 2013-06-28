@@ -24,22 +24,25 @@ def checkPoints(onViolent):
 	global checkPointsVisible	
 	global myPanel
 
-
-	if not checkPointsVisible: 	"""Falls Checkboxfenster nicht sichtbar, checkpoints auslesen und ausgeben"""
+        """Falls Checkboxfenster nicht sichtbar, checkpoints auslesen und ausgeben"""
+	if not checkPointsVisible: 	
 			
 		checkPointZaehler = 1		
 
 		"""Berechnung der Gesamtteillisten"""
-		if len(GlobalVariables.checkPointsList) >= 10: """Jede Teilliste besteht aus maximal 10 Einträgen"""
+		"""Jede Teilliste besteht aus maximal 10 Einträgen"""
+		if len(GlobalVariables.checkPointsList) >= 10: 
 			GlobalVariables.gesamtTeillisteCheckpoint = (len(GlobalVariables.checkPointsList)/10)+1
 
-                
-		message = [] """Die Liste mit den Texten, die später auf den Buttons stehen"""
+                """Die Liste mit den Texten, die später auf den Buttons stehen"""
+		message = [] 
 		
 		"""Füge die Eintraege in "message" ein"""
-		while(checkPointZaehler <=10 and checkPointZaehler <= (len(GlobalVariables.checkPointsList))-(10*(GlobalVariables.teillisteCheckpoint-1))): """Nicht mehr als 10 Einträge pro Teilliste"""
+		"""Nicht mehr als 10 Einträge pro Teilliste"""
+		while(checkPointZaehler <=10 and checkPointZaehler <= (len(GlobalVariables.checkPointsList))-(10*(GlobalVariables.teillisteCheckpoint-1))): 
 			objekt = GlobalVariables.checkPointsList[checkPointZaehler-1+(10*(GlobalVariables.teillisteCheckpoint-1))] #:Lese Checkpoint Objekt aus der Checkpoint Liste aus
-			message.append(str (checkPointZaehler+(10*(GlobalVariables.teillisteCheckpoint-1))) + ". "+ str (objekt.name)+"\n") """Füge Text in die Liste ein"""
+                        """Füge Text in die Liste ein"""
+			message.append(str (checkPointZaehler+(10*(GlobalVariables.teillisteCheckpoint-1))) + ". "+ str (objekt.name)+"\n") 
 			
 			checkPointZaehler += 1
 
@@ -144,8 +147,9 @@ def checkPoints(onViolent):
 		
 		def makeCommentary(position):
 				"""Mache den zeilenumbruch für das Kommentar"""
-				
-				comment = str(GlobalVariables.checkPointsList[position+(10*(GlobalVariables.teillisteCheckpoint-1))].comment.strip()) """Kommentar des Checkpoints an Position "position" auslesen"""
+
+				"""Kommentar des Checkpoints an Position "position" auslesen"""
+				comment = str(GlobalVariables.checkPointsList[position+(10*(GlobalVariables.teillisteCheckpoint-1))].comment.strip()) 
 
 				"""Kommentar so formatieren, dass es nach einer bestimmten Länge am letzten Wort einen Zeilenumbruch einfügt"""
 				comment = comment.split(" ")
@@ -211,8 +215,8 @@ def checkPoints(onViolent):
 		for a in checkpointButtons:
 			vizact.onbuttonup(checkpointButtons[i], subMenu, i)
 			i+=1
-
-	else: """Falls Checkboxfenster sichtbar, unsichtbar machen"""
+        """Falls Checkboxfenster sichtbar, unsichtbar machen"""
+	else: 
 		checkPointsVisible = False
 		myPanel.visible(False)
 		if (onViolent is False):
@@ -427,7 +431,8 @@ def portCheckPoint(menubar=None):
 			if object is input.accept:
 				try:
                                        """Ist die Eingabe ein Integer Wert und in Listenlänge?"""
-					if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): #Ist die Eingabe in Listenlänge?
+                                       """Ist die Eingabe in Listenlänge?"""
+					if (type(int(data.value)) is int and len(GlobalVariables.checkPointsList) >= int(data.value) and int(data.value) >0 ): 
                                                  """Springe zu Checkpoint"""
 						porteCheckpoint(data.value)
 
@@ -486,7 +491,7 @@ def createCheckpointAndroid(name="", comment=""):
 	userPosition = viz.MainView.getPosition() 
 	userEuler = viz.MainView.getEuler()	
 	
-	"""Fuege Checkpoint zur Liste auf 3 Nachkommastellen gerundet an	"""
+	"""Fuege Checkpoint zur Liste auf 3 Nachkommastellen gerundet an"""
 	checkpoint = Checkpoint.Checkpoint(round(userPosition[0],3), round(userPosition[1],3), round(userPosition[2],3), str(name),\
 	round(userEuler[0], 3), round(userEuler[1], 3), round(userEuler[2], 3), str(comment))
 

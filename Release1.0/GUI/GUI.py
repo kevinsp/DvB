@@ -83,6 +83,7 @@ class Oberflaeche(object):
         
 	def __init__(self):
                 """Initialisiere die Oberflaeche"""
+                
 		self.neu = None
 		self.model = None
 		self.thread = None
@@ -91,8 +92,8 @@ class Oberflaeche(object):
 		viz.collision(viz.ON)
 
 		viz.window.setFullscreen(True)
-                """Umgebung laden"""
-		viz.addChild('sky_day.osgb')
+		"""Umgebung laden"""
+		viz.addChild('sky_day.osgb') 
 		
 		viz.setOption('viz.fullscreen',1)
 		viz.fov(40.0,1.333)
@@ -150,11 +151,15 @@ class Oberflaeche(object):
 		
 		"""Steuerung"""
 		viz.mouse(viz.ON)
-		viz.mouse.setTrap() """Maus kann nicht aus dem Fenster gehen"""
-
-		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed) """Initialisieren Tracker mit bestimmter Geschwindigkeit"""
-		GlobalVariables.tracker.setPosition([0,1.8,0]) """Setze Tracker Position"""
-		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView) """Verlinke Tracker mit MainView"""
+		"""Maus kann nicht aus dem Fenster gehen"""
+		viz.mouse.setTrap() 
+		
+                """Initialisieren Tracker mit bestimmter Geschwindigkeit"""
+		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
+		 """Setze Tracker Position"""
+		GlobalVariables.tracker.setPosition([0,1.8,0])
+		 """Verlinke Tracker mit MainView"""
+		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView)
 		viz.mouse.setVisible(False)
 
 		"""Boden laden"""
@@ -162,11 +167,11 @@ class Oberflaeche(object):
 		self.ground2 = viz.addChild('ground.osgb')
 		self.ground2.setPosition(0,0,50)
 		
-		"""Begrueï¿½ungsnachricht"""
+		"""Begrueßungsnachricht"""
 		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 
-                               """Button Definition"""
+                """Button Definition"""
 
 		"""Model Buttons"""
 		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModel)
@@ -228,16 +233,19 @@ class Oberflaeche(object):
                 """Starte Server fuer Android"""
                 
 		"""starte nur einen Server, wenn noch keiner laeuft"""
-		if GlobalVariables.serverIsRunning is False: 
-			self.ipTextScreen.message(str(viz.net.getIP())) """Zeige IP-Adresse an"""
+		if GlobalVariables.serverIsRunning is False:
+                        """Zeige IP-Adresse an"""
+			self.ipTextScreen.message(str(viz.net.getIP())) 
 			self.neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
-			self.thread = viz.director(self.neu.lunch) """Starte Server in neuem Thread"""
+			"""Starte Server in neuem Thread"""
+			self.thread = viz.director(self.neu.lunch) 
 			GlobalVariables.serverIsRunning = True
 		"""Falls bereits ein Server laeuft"""
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
-			self.neu.shutdown() """beende Server"""
+			"""beende Server"""
+			self.neu.shutdown() 
 			
 	
 	def zeigePosition(self):
@@ -246,16 +254,19 @@ class Oberflaeche(object):
 		
 		def changeMessage():
                         """Aendere die Positionsanzeige"""
-                        
-			userPosition = viz.MainView.getPosition() """Frage User Position"""
+
+                        """Frage User Position"""
+			userPosition = viz.MainView.getPosition() 
 			message = str(round(userPosition[0],2)) + " " + str(round(userPosition[1],2)) + " " + str(round(userPosition[2],2))
-			self.textScreen.message(str(message)) """Setze Anzeige auf neue Position"""
+			"""Setze Anzeige auf neue Position"""
+			self.textScreen.message(str(message)) 
 			
 		"""Falls Position noch nicht gezeigt wird"""
 		if (GlobalVariables.showPosi is False):
 			self.textScreen.visible(True)
 			GlobalVariables.showPosi = True
-			vizact.ontimer(0.1, changeMessage) """Aktualisiere durchgehend die Positionsangabe"""
+			"""Aktualisiere durchgehend die Positionsangabe"""
+			vizact.ontimer(0.1, changeMessage) 
 		else:
 			self.textScreen.visible(False)
 			GlobalVariables.showPosi = False
@@ -267,8 +278,10 @@ class Oberflaeche(object):
 		global modelIsLoaded
 		"""Falls noch kein Model geladen ist"""
 		if not (modelIsLoaded):
-			self.alphaSlider.set(1.0) """Setze AlphaSlider zurueck"""
-			self.model = viz.addChild(vizinput.fileOpen()) """Oeffne Menue zum auswaehlen der Datei"""
+                         """Setze AlphaSlider zurueck"""
+			self.alphaSlider.set(1.0)
+			 """Oeffne Menue zum auswaehlen der Datei"""
+			self.model = viz.addChild(vizinput.fileOpen())
 			self.model.disable(viz.CULL_FACE)
 			self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
 			self.model.setEuler([0,0,0])
@@ -367,7 +380,8 @@ class Oberflaeche(object):
 		loadList = self.loadXml(filepath)
 		"""transforms the dummyObj into your obj"""
 		for elm in loadList:
-			obj = eval(consti) """replace this, with the obj you want"""
+                         """replace this, with the obj you want"""
+			obj = eval(consti)
 			obj.update(elm.__dict__)
 			myList.append(obj)
 			

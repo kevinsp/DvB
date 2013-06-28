@@ -39,8 +39,9 @@ def openTextBox(menubar):
 			if object is input.accept:
 				"""Ist eine Eingabe vorhanden und nicht laenger als 15 Zeichen?"""
 				if (data.value.strip() is not "" and len(str(data.value).strip())<=15):
-									
-					writeText(data.value) """Funktion fuer Text schreiben"""
+
+					"""Funktion fuer Text schreiben"""				
+					writeText(data.value) 
 
 					"""Noteliste akutalisieren falls sichtbar"""
 					if (checkNotesVisible is True):
@@ -114,10 +115,10 @@ def noteView(onViolent):
 	global checkNotesVisible
 	global myPanel
 	
-	
-	if not checkNotesVisible: """Falls Checkboxfenster nicht sichtbar, notes auslesen und ausgeben"""
-
-		message = []	"""Die Liste mit den Texten, die später angezeigt wird"""
+	"""Falls Checkboxfenster nicht sichtbar, notes auslesen und ausgeben"""
+	if not checkNotesVisible: 
+                """Die Liste mit den Texten, die später angezeigt wird"""
+		message = []	
 		checkNotesZaehler = 1
 		
 		"""Berechnung der Gesamtteillisten"""
@@ -136,11 +137,15 @@ def noteView(onViolent):
 			
 		"""Haupt Panel des Checkpointlisten Fensters"""
 		myPanel = vizdlg.Panel(theme = GlobalVariables.blackTheme, fontSize=25, align=viz.ALIGN_RIGHT_CENTER, background=False, border=False)
-		
-		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0) """Panel für Navigation"""
-		zurueck = row.addItem(viz.addButtonLabel("Zurueck")) """Button für eine Teilliste zurueck"""
-		teillisteView = row.addItem(viz.addText(str(GlobalVariables.teillisteNote) + "/" + str(GlobalVariables.gesamtTeillisteNote))) """Anzeige in welcher Teilliste von wie vielen Gesamtlisten man sich befindet"""
-		naechste = row.addItem(viz.addButtonLabel("Naechste")) """Button für eine Teilliste vorwaerts"""
+
+		"""Panel für Navigation"""
+		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0)
+		"""Button für eine Teilliste zurueck"""
+		zurueck = row.addItem(viz.addButtonLabel("Zurueck"))
+		"""Anzeige in welcher Teilliste von wie vielen Gesamtlisten man sich befindet"""
+		teillisteView = row.addItem(viz.addText(str(GlobalVariables.teillisteNote) + "/" + str(GlobalVariables.gesamtTeillisteNote))) 
+                """Button für eine Teilliste vorwaerts"""
+		naechste = row.addItem(viz.addButtonLabel("Naechste"))
 
                 """Füge Panel in Hauptpanel ein"""
 		myPanel.addItem(row)
@@ -163,7 +168,7 @@ def noteView(onViolent):
 			else:
 
 				GlobalVariables.teillisteNote = GlobalVariables.teillisteNote+wert
-			"""NoteView aktualisieren	"""
+			"""NoteView aktualisieren"""
 			noteView(False)
 			noteView(False)
 
@@ -178,9 +183,10 @@ def noteView(onViolent):
 			GlobalVariables.nurEinmalSetzen = True
 	
 	
-
-		rowlist = [] """Liste mit den rows"""
-		noteButtons = [] """Liste mit den Buttons"""
+                """Liste mit den rows"""
+		rowlist = []
+		 """Liste mit den Buttons"""
+		noteButtons = []
 		buttonZaehler = 0
 
 		"""Liste Durchlaufen"""
@@ -190,9 +196,12 @@ def noteView(onViolent):
 			"""Erstelle Panel fuer den jeweiligen noteButon"""
 			buttonRow = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False, background = False, margin=0)
 
-			buttonRow.addItem(noteButtons[buttonZaehler])"""Füge Buttons in die Liste ein"""
-			rowlist.append(buttonRow) """Füge die Row in die Rowlist ein"""
-			myPanel.addItem(rowlist[buttonZaehler])  """Füge die noteRows ins panel ein"""
+                        """Füge Buttons in die Liste ein"""
+			buttonRow.addItem(noteButtons[buttonZaehler])
+			"""Füge die Row in die Rowlist ein"""
+			rowlist.append(buttonRow)
+			"""Füge die noteRows ins panel ein"""
+			myPanel.addItem(rowlist[buttonZaehler])  
 			buttonZaehler+=1
 
 
@@ -218,8 +227,8 @@ def noteView(onViolent):
 		for a in noteButtons:
 			vizact.onbuttonup(noteButtons[i], subMenu, i)
 			i+=1
-
-	else: """Falls Checkboxfenster sichtbar, unsichtbar machen"""
+        """Falls Checkboxfenster sichtbar, unsichtbar machen"""
+	else: 
 		checkNotesVisible = False
 		myPanel.visible(False)
 		if (onViolent is False):
@@ -245,10 +254,12 @@ def delete3DNote(menubar=None, position = None):
 			if object is input.accept:
 				try:
                                         """Ist die Eingabe ein Integer Wert und in Listenlänge?"""
-					if (type(int(data.value)) is int and int(data.value) <= len(GlobalVariables.noteList) and int(data.value )> 0): """Ist die Eingabe im gültigen bereich?"""
-
-						GlobalVariables.noteListObjects[int (data.value)-1].remove()"""Entferne Notiz aus der Umgebung"""
-						del GlobalVariables.noteList[int (data.value)-1] """Lösche 3D Notiz aus der Liste"""
+                                        """Ist die Eingabe im gültigen bereich?"""
+					if (type(int(data.value)) is int and int(data.value) <= len(GlobalVariables.noteList) and int(data.value )> 0): 
+                                                """Entferne Notiz aus der Umgebung"""
+						GlobalVariables.noteListObjects[int (data.value)-1].remove()
+						"""Lösche 3D Notiz aus der Liste"""
+						del GlobalVariables.noteList[int (data.value)-1] 
 						GlobalVariables.windowOpen = False
 						
                                                 """Eingabefenster entfernen"""
@@ -303,9 +314,11 @@ def delete3DNote(menubar=None, position = None):
 			if (int(position) < len(GlobalVariables.noteList) and int(position)>= 0): 
 				print GlobalVariables.noteListObjects
 				print int(position)
-				GlobalVariables.noteListObjects[int (position)].remove() """Loesche 3D Notiz aus Umgebung"""
+				"""Loesche 3D Notiz aus Umgebung"""
+				GlobalVariables.noteListObjects[int (position)].remove() 
 				del GlobalVariables.noteListObjects[int (position)]
-				del GlobalVariables.noteList[int (position)] """Loesche 3D Notiz aus Liste"""
+				"""Loesche 3D Notiz aus Liste"""
+				del GlobalVariables.noteList[int (position)] 
 
                 """NoteView Fenster aktualisieren, falls angezeigt"""
 		if (checkNotesVisible is True):
@@ -331,8 +344,11 @@ def port3DNote(menubar=None, position=None):
 			if object is input.accept:
 				try:
                                         """Ist die Eingabe ein Integer Wert und in Listenlänge?"""
-					if (type(int(data.value)) is int and int(data.value) <= len(GlobalVariables.noteList) and int(data.value )> 0): """Ist die Eingabe im gültigen bereich?"""
-						text = GlobalVariables.noteList[int(data.value)-1] """Lese Note aus Liste aus"""
+
+                                        """Ist die Eingabe im gültigen bereich?"""
+					if (type(int(data.value)) is int and int(data.value) <= len(GlobalVariables.noteList) and int(data.value )> 0):
+                                                """Lese Note aus Liste aus"""
+						text = GlobalVariables.noteList[int(data.value)-1] 
 
                                                 """Setze Position"""
 						viz.MainView.setPosition(text.posX, text.posZ, text.posY-0.5)
@@ -388,7 +404,8 @@ def port3DNote(menubar=None, position=None):
 		else:
                         """Ist die Eingabe in Listenlaenge?"""
 			if (int(position) < len(GlobalVariables.noteList) and int(position)>= 0):
-				text = GlobalVariables.noteList[int(position)] """Lese Note aus Liste aus"""
+                                """Lese Note aus Liste aus"""
+				text = GlobalVariables.noteList[int(position)] 
 
                                 """Setze Position"""
 				viz.MainView.setPosition(text.posX, text.posZ, text.posY-0.5)
