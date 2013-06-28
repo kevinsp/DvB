@@ -24,10 +24,10 @@ class JasonEventRegister(viz.EventClass):
         """
         Registers callback with our callerClass
 
-        @param ls: ls is a list.
-            ls[0] is the callable funk/obj that should be executed when an specific Event(specified by eventName) is received.
-            ls[1] is the viz.Priority, if not specified , default is used.
-        @type ls: List
+        @param dicti: key = eventName and value = a list.
+            list[0] is the callable funk/obj that should be executed when an specific Event(specified by eventName) is received.
+            list[1] is the viz.Priority, if not specified , default is used.
+        @type dicti: dict
         """
 
         for eventName,ls in dicti.iteritems():
