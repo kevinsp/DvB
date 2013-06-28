@@ -12,54 +12,58 @@ import vizdlg
 
 import GlobalVariables
 
-#Springe zu selbst definierter Position
+
 def porten(menubar):
-	#Falls noch kein Eingabefenster offen
+        """Springe zu selbst definierter Position"""
+        
+	"""Falls noch kein Eingabefenster offen"""
 	if (GlobalVariables.windowOpen is False):
 		GlobalVariables.windowOpen = True
 
-		#Verstecke menubar
+		"""Verstecke menubar"""
 		menubar.setVisible(False)
 		
-		#ueberpruefe die Eingabe und springe
+		
 		def ueberpruefeEingabe(data):
+                        """ueberpruefe die Eingabe und springe"""
+                        
 			object = viz.pick(0,viz.SCREEN)
-			#Falls man auf Accept geklickt hat: ueberpruefen und springen
+			"""Falls man auf Accept geklickt hat: ueberpruefen und springen"""
 			if object is input.accept:
 				coordinates = data.value.split()
 				try:
-                                        #Ist die Eingabe ein Float Wert und in Listenlänge?
+                                       """Ist die Eingabe ein Float Wert und in Listenlänge?"""
 					if (type(float(coordinates[0])) is float and type(float(coordinates[1])) is float and type(float(coordinates[2])) is float): 
-						#setze Position
+						"""setze Position"""
 						viz.MainView.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
 						GlobalVariables.tracker.setPosition(float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
 
-						#Uebergebe neue Position an Globale Variable
+						"""Uebergebe neue Position an Globale Variable"""
 						GlobalVariables.position = tracker.getPosition()
 
-                                                #Entferne Eingabefenster
+                                                """Entferne Eingabefenster"""
 						input.remove()
 						GlobalVariables.windowOpen = False
 
-                                        #Falsche Eingabe
+                                        """Falsche Eingabe"""
 					else:
 						data.error = "Biite nur Zahlen eingeben."
 						input.box.setFocus(viz.ON)
-                                #Falsche Eingabe
+                                """Falsche Eingabe"""
 				except:
 					data.error = "Biite nur Zahlen eingeben."
 					input.box.setFocus(viz.ON)
-			#Falls man auf Cancel geklickt hat: Vorgang abbrechen	
+			"""Falls man auf Cancel geklickt hat: Vorgang abbrechen	"""
 			elif object is input.cancel:
 				GlobalVariables.windowOpen = False
 				input.remove()
 				
-			#Falls man ausversehen nicht auf einen der Buttons geklickt hat	
+			"""Falls man ausversehen nicht auf einen der Buttons geklickt hat"""	
 			else:
 				data.error=""
 				input.box.setFocus(viz.ON)
 				
-		#Dialogfenster fuer zu selbst definieren Position springen erstellen
+		"""Dialogfenster fuer zu selbst definieren Position springen erstellen"""
 		input = vizdlg.InputDialog(title='Springe zu', prompt = "Die Koordinaten hintereinander eingeben\n \"10.0  5.0  7.5\" (X Z Y)", length=1.0, validate = ueberpruefeEingabe)
 		viz.link(viz.CenterCenter,input)
 		input.alpha(0.4)
@@ -72,7 +76,7 @@ def porten(menubar):
 					break
 				else:
 					break
-		#Fokus auf Textfeld			
+		"""Fokus auf Textfeld"""	
 		input.box.setFocus(viz.ON)
 		viztask.schedule(showdialog()) 
 		

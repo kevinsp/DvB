@@ -1,6 +1,7 @@
 
-#Checkpoint Objekt
+
 class Checkpoint(object):
+    """Checkpoint Objekt"""
 
     def __init__(self, posX=0, posZ=1.82, posY=0, name="test", eulerX=0, eulerZ=0, eulerY=0, comment=""):
         self.posX = posX
