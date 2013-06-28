@@ -123,7 +123,7 @@ class JassonCam():
     TURN_SPEED = 50.0
     """constant definitions"""
 
-    def __init__(self,jasonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_LOCAL,moveScale=1.0,turnScale=1.0):
+    def __init__(self,jasonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_PARENT,moveScale=1.0,turnScale=1.0):
         """This Class will interpret the JasonEvents to CamaraMovments"""
 
         self.myHandler = jasonEventRegister #: needed for Registering
