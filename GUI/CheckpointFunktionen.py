@@ -38,7 +38,7 @@ def checkPoints(onViolent):
 		
 		"""Füge die Eintraege in "message" ein"""
 		while(checkPointZaehler <=10 and checkPointZaehler <= (len(GlobalVariables.checkPointsList))-(10*(GlobalVariables.teillisteCheckpoint-1))): """Nicht mehr als 10 Einträge pro Teilliste"""
-			objekt = GlobalVariables.checkPointsList[checkPointZaehler-1+(10*(GlobalVariables.teillisteCheckpoint-1))] """Lese Checkpoint Objekt aus der Checkpoint Liste aus"""
+			objekt = GlobalVariables.checkPointsList[checkPointZaehler-1+(10*(GlobalVariables.teillisteCheckpoint-1))] #:Lese Checkpoint Objekt aus der Checkpoint Liste aus
 			message.append(str (checkPointZaehler+(10*(GlobalVariables.teillisteCheckpoint-1))) + ". "+ str (objekt.name)+"\n") """Füge Text in die Liste ein"""
 			
 			checkPointZaehler += 1
