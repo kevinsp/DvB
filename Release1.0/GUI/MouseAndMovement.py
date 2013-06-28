@@ -143,7 +143,7 @@ def flugModusOnOff():
 		GlobalVariables.flugModus = False
 		viz.collision(viz.ON)
 			
-		GlobalVariables.position = viz.MainView.getPosition() """evtl noch entfernen"""
+		GlobalVariables.position = viz.MainView.getPosition()
 
         #"""Zeige Flugmodusangabe auf dem Bildschirm"""
 		GlobalVariables.midTextScreen.message("Flugmodus: OFF")
