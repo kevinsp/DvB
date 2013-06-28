@@ -22,7 +22,7 @@ class JasonEventRegister(viz.EventClass):
 
     def registerCallback(self, callerClass, **dicti):
         """
-        Registers callback with our callerClass
+        Registers callback with our callerClass and manages the eventID's
 
         @param dicti: key = eventName and value = a list.
             list[0] is the callable funk/obj that should be executed when an specific Event(specified by eventName) is received.

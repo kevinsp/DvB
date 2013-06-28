@@ -46,7 +46,7 @@ class Serversocket(object):
             return
 
         print "Server: Server is Running"
-        self.socket.setblocking(0) # now it is possible to stop this methode from running
+        self.socket.setblocking(0) # now it is possible to stop this method from running
         while self.shoudIRun:
             try:
 
@@ -67,7 +67,7 @@ class Serversocket(object):
                     print e
 
             except Exception:
-                    #Exception Handeling missing
+
                     traceback.print_exc()
                     print ("Server: Something Went wrong with accepting a Client")
 
@@ -78,10 +78,10 @@ class Serversocket(object):
         errorCounter = 0
         while self.shoudIRun:
             try:
-                data = connection.recv(self.BUFF_SIZE)
+                data = connection.recv(self.BUFF_SIZE) # what happens if the recv size is bigger?
 
                 if not data:
-                    print "Server: connection interuppted"
+                    print "Server: connection interrupted"
                     break
 
                 print ("Server: Data-> % s" % data)
@@ -89,31 +89,31 @@ class Serversocket(object):
                 self.ans = self.connector.feedData(data) #: the return value form the connector/parser
 
                 if self.ans == "end":
-                    print "Server: connection was interuppted by user"
+                    print "Server: connection was interrupted by user"
                     break
                 elif self.ans == "":
-                    #noting to send back to the Android Handy
+                    #noting to send back to the App
                     pass
                 else:
                     print "Server: sending back Checkpoint list"
-                    helperList = list(self.chunks(self.ans,5))
+                    helperList = list(self.chunks(self.ans,5)) # our Checkpoint List chopped into chunks
 
-                    for partList in helperList:
+                    for partList in helperList: # sending chunk by chunk gives the App time to breath
                         connection.sendall("".join(partList)+ "\n")
 
             except socket.timeout:
                     print "Server: connection timeout"
                     break
             except socket.error as e:
-                    if e.args[0] == errno.EWOULDBLOCK: # no data was found
+                    if e.args[0] == errno.EWOULDBLOCK:   # no data was found
                         continue
-                    else:
+                    else:   # maybe it was another socket.error?
                         print e
                         break
             except Exception:
                 print "Server: cant recive data"
                 traceback.print_exc()
-                errorCounter += 1
+                errorCounter += 1 # not the best way to do this. Try to find something else
                 if errorCounter < 5:
                     continue
                 else:
@@ -125,8 +125,8 @@ class Serversocket(object):
         if self.shoudIRun: # only if we are allowed to run
             self.connector.connectionInteruppted()
 
-    def chunks(self,list, n):
+    def chunks(self,myList, n):
         """ Yield successive n-sized chunks from list."""
 
-        for i in xrange(0, len(list), n):
+        for i in xrange(0, len(myList), n):
             yield list[i:i+n]
