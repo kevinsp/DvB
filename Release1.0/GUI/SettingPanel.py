@@ -20,7 +20,7 @@ def oeffneSettingPanel(menubar):
 		GlobalVariables.windowOpen = True
 		menubar.setVisible(viz.OFF)
 
-		"""Theme"""
+		#"""Theme"""
 		blackTheme = viz.getTheme()
 		blackTheme.borderColor = (0.1,0.1,0.1,1)
 		blackTheme.backColor = (0.4,0.4,0.4,1)
@@ -31,7 +31,7 @@ def oeffneSettingPanel(menubar):
 
 		myPanel = vizdlg.Panel()
 
-		"""Erstelle Checkboxen"""
+		#"""Erstelle Checkboxen"""
 		row = vizdlg.Panel(layout=vizdlg.LAYOUT_HORZ_BOTTOM,border=False,background=False,margin=0)
 		row.addItem(viz.addText('Einstellung 1'))
 		check1 = row.addItem(viz.addCheckbox())
@@ -66,18 +66,18 @@ def oeffneSettingPanel(menubar):
 		okButton = bestaetigePanel.addItem(viz.addButtonLabel("OK"))
 
 
-		"""Fuege die Rows in das Panel ein"""
+		#"""Fuege die Rows in das Panel ein"""
 		myPanel.addItem(row)
 		myPanel.addItem(row2)
 		myPanel.addItem(row3)
 		myPanel.addItem(bestaetigePanel)
 
-                """Definiere Panelname und Art"""
+                #"""Definiere Panelname und Art"""
 		tp = vizdlg.TabPanel(theme=blackTheme,align=vizdlg.ALIGN_CENTER)
 		tp.addPanel('Einstellungen',myPanel)
 		tp.background.alpha(0.8)
 
-                """Setze das Panel in die Mitte des Bildschirms"""
+               #"""Setze das Panel in die Mitte des Bildschirms"""
 		viz.link(viz.CenterCenter,tp)
 
 		
@@ -96,6 +96,6 @@ def oeffneSettingPanel(menubar):
 			GlobalVariables.windowOpen = False
 			tp.remove()
 
-                """Schließe das Fenster"""
+                #"""Schließe das Fenster"""
 		vizact.onbuttondown(okButton,fensterSchliessen)
 

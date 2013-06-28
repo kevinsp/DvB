@@ -17,25 +17,25 @@ def enableBirdEyeView():
 	global birdEyeViewIsActivated
 	global BirdEyeWindow
 
-	"""Falls Vogelperspektive nicht aktiviert ist"""
+	#"""Falls Vogelperspektive nicht aktiviert ist"""
 	if not (birdEyeViewIsActivated):
-                """Fenster für die Vogelperspektive erstellen"""
+               # """Fenster für die Vogelperspektive erstellen"""
 		BirdEyeWindow = viz.addWindow() 
 		BirdEyeWindow.fov(60)
 
-		"""Eine neue View erstellen"""
+		#"""Eine neue View erstellen"""
 		BirdEyeView = viz.addView()
-		"""View in das Fenster einfügen"""
+		#"""View in das Fenster einfügen"""
 		BirdEyeWindow.setView(BirdEyeView)
-		"""Die View mit der MainView verknüpfen"""
+		#"""Die View mit der MainView verknüpfen"""
 		link = viz.link( viz.MainView, BirdEyeView)
-		"""Winkel, sodass Perspektive von oben"""
+		#"""Winkel, sodass Perspektive von oben"""
 		link.preEuler([0,90,0])
-		"""Höhe der View"""
+		#"""Höhe der View"""
 		link.postTrans([0,30,0]) 
 		
 		birdEyeViewIsActivated = True
 	else:
-                 """Entferne Vogelperspektive"""
+                 #"""Entferne Vogelperspektive"""
 		BirdEyeWindow.remove()
 		birdEyeViewIsActivated = False

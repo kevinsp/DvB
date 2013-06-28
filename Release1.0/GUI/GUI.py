@@ -1,18 +1,8 @@
 
-"""Danke, dass Sie sich fuer unsere Software entschieden haben.
-\nHier die wichtigsten Shortcuts zum bedienen des Programmes:
-c:     Anzeigen der bereits gesetzten Checkpoints
-n:     Anzeigen der bereits gesetzten 3D Notizen
-v:     Anzeigen der Vogelperspektive
-f:     Flugmodus aktivieren/deaktivieren
-h:     Anzeigen dieser Hilfe
-p:     Anzeigen der aktuellen Position
-+ -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 0.2-40
-* /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"""
 
 
 
-"""import vizard Module"""
+#"""import vizard Module"""
 import viz
 import viztracker
 import vizinput
@@ -26,7 +16,7 @@ import vizact
 import viznet
 
 
-"""import  XML Module"""
+#"""import  XML Module"""
 from xml.etree import ElementTree
 from xml.dom import minidom
 
@@ -43,7 +33,7 @@ import sys
 sys.path.append(r"..\RemoteAppServer")
 from RemoteAppMain import RemoteAppLuncher
 
-"""Eigene Module"""
+#"""Eigene Module"""
 import CheckpointFunktionen
 from Checkpoint import Checkpoint
 import Notes
@@ -70,8 +60,10 @@ modelIsLoaded = False
 class DummyObj(object):
         """This class is an Obj that holds data"""
         
-	"""the overgiven dict will be convortet into membervarbs (of the createt dummyObj)"""
+	
 	def __init__(self,dicti):
+                """the overgiven dict will be convortet into membervarbs (of the createt dummyObj)"""
+                
 		self.__dict__.update(dicti)
 
 
@@ -84,7 +76,18 @@ class Oberflaeche(object):
 	def __init__(self):
                 """Initialisiere die Oberflaeche"""
                 
-		self.neu = None
+                self.message = "Danke, dass Sie sich fuer unsere Software entschieden haben. \
+                                \nHier die wichtigsten Shortcuts zum bedienen des Programmes:\
+                                c:     Anzeigen der bereits gesetzten Checkpoints\
+                                n:     Anzeigen der bereits gesetzten 3D Notizen\
+                                v:     Anzeigen der Vogelperspektive\
+                                f:     Flugmodus aktivieren/deaktivieren\
+                                h:     Anzeigen dieser Hilfe\
+                                p:     Anzeigen der aktuellen Position\
+                                + -:   Erhoehen/Verringern der Bewegungsgeschwindigkeit 0.2-40\
+                                * /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"
+
+                self.neu = None
 		self.model = None
 		self.thread = None
 
@@ -92,48 +95,48 @@ class Oberflaeche(object):
 		viz.collision(viz.ON)
 
 		viz.window.setFullscreen(True)
-		"""Umgebung laden"""
+		#"""Umgebung laden"""
 		viz.addChild('sky_day.osgb') 
 		
 		viz.setOption('viz.fullscreen',1)
 		viz.fov(40.0,1.333)
 		viz.setOption('viz.stereo', viz.QUAD_BUFFER)
 		
-		"""Menuebar"""
+		#"""Menuebar"""
 		self.menubar = vizmenu.add()
 		self.menubar.setVisible(False)
 
-		"""Model DropDownMenu"""
+		#"""Model DropDownMenu"""
 		self.BearbeitenMenu = self.menubar.add("Model")
 		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Datei oeffnen")
 		self.buttonModelEntfernen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Model entfernen")
 
-		"""Funktionen DropDownMenu"""
+		#"""Funktionen DropDownMenu"""
 		self.FunktionenMenu = self.menubar.add("Funktionen")
 		self.checkPointLoeschen = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Checkpoint loeschen")
 		self.checkPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu Checkpoint springen")
 		self.deleteNoteButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "3D Notiz loeschen")
 		self.notePortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Zu 3D Notizen springen")
 		self.beliebigPortButton = self.FunktionenMenu.add(viz.BUTTON_LABEL, "Springen zu")
-		"""Alphaslider"""
+		#"""Alphaslider"""
 		self.alphaSlider = self.FunktionenMenu.add(viz.PROGRESS_BAR, "1.00", "Alphawert")
 		self.alphaSlider.set(1.0)
 		
-		"""Einfuegen DropDownMenu"""
+		#"""Einfuegen DropDownMenu"""
 		self.EinfuegenMenu = self.menubar.add("Einfuegen")
 		self.checkPointSetzen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Checkpoint")
 		self.buttonNotizEinfuegen = self.EinfuegenMenu.add(viz.BUTTON_LABEL, "Notiz")
 
-		"""Optionen DropDownMenu"""
+		#"""Optionen DropDownMenu"""
 		self.OptionenMenu = self.menubar.add("Optionen")
 		self.AndroidAppButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Android Server")
 		self.settingButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Einstellungen")
 		self.speichernButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Speichern")
 		self.ladenButton = self.OptionenMenu.add(viz.BUTTON_LABEL, "Laden")
-		"""Menuebar Theme"""
+		#"""Menuebar Theme"""
 		viz.setTheme(GlobalVariables.darkTheme)
 		
-		"""Position Anzeige"""
+		#"""Position Anzeige"""
 		self.textScreen = viz.addText('',viz.SCREEN) 
 		self.textScreen.setScale(0.3,0.3,0)
 		self.textScreen.alignment(viz.ALIGN_RIGHT_TOP)
@@ -141,7 +144,7 @@ class Oberflaeche(object):
 		self.textScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
 		self.textScreen.setBackdropColor([0,0,0])
 		
-		"""IP-Anzeige"""
+		#"""IP-Anzeige"""
 		self.ipTextScreen = viz.addText("", viz.SCREEN)
 		self.ipTextScreen.setScale(0.3,0.3,0)
 		self.ipTextScreen.alignment(viz.ALIGN_RIGHT_TOP)
@@ -149,54 +152,54 @@ class Oberflaeche(object):
 		self.ipTextScreen.setBackdrop(viz.BACKDROP_RIGHT_BOTTOM)
 		self.ipTextScreen.setBackdropColor([0,0,0])
 		
-		"""Steuerung"""
+		#"""Steuerung"""
 		viz.mouse(viz.ON)
-		"""Maus kann nicht aus dem Fenster gehen"""
+		#"""Maus kann nicht aus dem Fenster gehen"""
 		viz.mouse.setTrap() 
 		
-                """Initialisieren Tracker mit bestimmter Geschwindigkeit"""
+                #"""Initialisieren Tracker mit bestimmter Geschwindigkeit"""
 		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
-		 """Setze Tracker Position"""
+		# """Setze Tracker Position"""
 		GlobalVariables.tracker.setPosition([0,1.8,0])
-		 """Verlinke Tracker mit MainView"""
+		# """Verlinke Tracker mit MainView"""
 		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView)
 		viz.mouse.setVisible(False)
 
-		"""Boden laden"""
+		#"""Boden laden"""
 		self.ground1 = viz.addChild('ground.osgb')
 		self.ground2 = viz.addChild('ground.osgb')
 		self.ground2.setPosition(0,0,50)
 		
-		"""Begrueﬂungsnachricht"""
-		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
+		#"""Begruessungsnachricht"""
+		self.checkPointsPanel = vizinfo.InfoPanel(message = self.message, align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 
-                """Button Definition"""
+               # """Button Definition"""
 
-		"""Model Buttons"""
+		#"""Model Buttons"""
 		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModel)
 		vizact.onbuttonup(self.buttonModelEntfernen, self.deleteModel)
 
-		"""Note Buttons"""
+		#"""Note Buttons"""
 		vizact.onbuttonup(self.buttonNotizEinfuegen, Notes.openTextBox, self.menubar)
 		vizact.onbuttonup(self.deleteNoteButton, Notes.delete3DNote, self.menubar)
 		vizact.onbuttonup(self.notePortButton, Notes.port3DNote, self.menubar)
 
-		"""Checkpoints Buttons"""
+		#"""Checkpoints Buttons"""
 		vizact.onbuttonup(self.checkPointSetzen, CheckpointFunktionen.createCheckpoint, self.menubar)
 		vizact.onbuttonup(self.checkPointLoeschen, CheckpointFunktionen.deleteCheckpoint, self.menubar)
 		vizact.onbuttonup(self.checkPortButton, CheckpointFunktionen.portCheckPoint, self.menubar)
 
-		"""Port Button"""
+		#"""Port Button"""
 		vizact.onbuttonup(self.beliebigPortButton, Porten.porten, self.menubar)
 	
-		"""Optionen Buttons"""
+		#"""Optionen Buttons"""
 		vizact.onbuttonup(self.AndroidAppButton, self.startAndroid)
 		vizact.onbuttonup(self.settingButton, SettingPanel.oeffneSettingPanel, self.menubar)
 		vizact.onbuttonup(self.speichernButton, self.save)
 		vizact.onbuttonup(self.ladenButton, self.load)
 	
-		"""Shortcuts"""
+		#"""Shortcuts"""
 		vizact.onkeydown(viz.KEY_CONTROL_L, MouseAndMovement.enableDisableMouse, self.menubar)
 		vizact.onkeydown("c", CheckpointFunktionen.checkPoints, False)
 		vizact.onkeydown("v", BirdView.enableBirdEyeView)
@@ -216,14 +219,14 @@ class Oberflaeche(object):
 		vizact.onkeydown(viz.KEY_ALT_L, MouseAndMovement.moveUpAndDown, viz.KEY_ALT_L)
 		
 		
-		"""Progressbar Alphawert"""
+		#"""Progressbar Alphawert"""
 		vizact.onslider( self.alphaSlider, self.setAlpha )
 	
 	
 	def setAlpha(self, slider):
                 """Setze Alphawert"""
 	
-		"""Falls ein Model vorhanden ist"""
+		#"""Falls ein Model vorhanden ist"""
 		if self.model is not None:
 			self.alphaSlider.message( str('%.2f'%(slider)) )
 			self.model.alpha(slider)
@@ -232,19 +235,19 @@ class Oberflaeche(object):
 	def startAndroid(self):
                 """Starte Server fuer Android"""
                 
-		"""starte nur einen Server, wenn noch keiner laeuft"""
+		#"""starte nur einen Server, wenn noch keiner laeuft"""
 		if GlobalVariables.serverIsRunning is False:
-                        """Zeige IP-Adresse an"""
+                       # """Zeige IP-Adresse an"""
 			self.ipTextScreen.message(str(viz.net.getIP())) 
 			self.neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
-			"""Starte Server in neuem Thread"""
+			#"""Starte Server in neuem Thread"""
 			self.thread = viz.director(self.neu.lunch) 
 			GlobalVariables.serverIsRunning = True
-		"""Falls bereits ein Server laeuft"""
+		#"""Falls bereits ein Server laeuft"""
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
-			"""beende Server"""
+			#"""beende Server"""
 			self.neu.shutdown() 
 			
 	
@@ -255,17 +258,17 @@ class Oberflaeche(object):
 		def changeMessage():
                         """Aendere die Positionsanzeige"""
 
-                        """Frage User Position"""
+                        #"""Frage User Position"""
 			userPosition = viz.MainView.getPosition() 
 			message = str(round(userPosition[0],2)) + " " + str(round(userPosition[1],2)) + " " + str(round(userPosition[2],2))
-			"""Setze Anzeige auf neue Position"""
+			#"""Setze Anzeige auf neue Position"""
 			self.textScreen.message(str(message)) 
 			
-		"""Falls Position noch nicht gezeigt wird"""
+		#"""Falls Position noch nicht gezeigt wird"""
 		if (GlobalVariables.showPosi is False):
 			self.textScreen.visible(True)
 			GlobalVariables.showPosi = True
-			"""Aktualisiere durchgehend die Positionsangabe"""
+			#"""Aktualisiere durchgehend die Positionsangabe"""
 			vizact.ontimer(0.1, changeMessage) 
 		else:
 			self.textScreen.visible(False)
@@ -276,11 +279,11 @@ class Oberflaeche(object):
                 """Lade neues Model"""
                 
 		global modelIsLoaded
-		"""Falls noch kein Model geladen ist"""
+		#"""Falls noch kein Model geladen ist"""
 		if not (modelIsLoaded):
-                         """Setze AlphaSlider zurueck"""
+                         #"""Setze AlphaSlider zurueck"""
 			self.alphaSlider.set(1.0)
-			 """Oeffne Menue zum auswaehlen der Datei"""
+			# """Oeffne Menue zum auswaehlen der Datei"""
 			self.model = viz.addChild(vizinput.fileOpen())
 			self.model.disable(viz.CULL_FACE)
 			self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
@@ -378,20 +381,20 @@ class Oberflaeche(object):
                 """
                 
 		loadList = self.loadXml(filepath)
-		"""transforms the dummyObj into your obj"""
+		#"""transforms the dummyObj into your obj"""
 		for elm in loadList:
-                         """replace this, with the obj you want"""
+                         #"""replace this, with the obj you want"""
 			obj = eval(consti)
 			obj.update(elm.__dict__)
 			myList.append(obj)
 			
-		"""Setze die 3D Notes wieder in die Umgebung"""
+		#"""Setze die 3D Notes wieder in die Umgebung"""
 		for a in GlobalVariables.noteList:
 			text3D = viz.addText3D(a.name, pos = [a.posX, a.posZ, a.posY])
 			text3D.setScale(0.2, 0.2, 0.2)
 			text3D.color(viz.RED)
 			GlobalVariables.noteListObjects.append(text3D)
-		"""Aktualisiere die angezeigte Liste"""
+		#"""Aktualisiere die angezeigte Liste"""
 		if CheckpointFunktionen.checkPointsVisible:
 			CheckpointFunktionen.checkPoints(False)
 			CheckpointFunktionen.checkPoints(False)
