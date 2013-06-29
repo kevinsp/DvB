@@ -79,22 +79,23 @@ class JasonEventSender(object):
     def run(self):
         """
         start posting jEvents.
-            1. Check if we good to go. If not look at E{5}.
-            2. iterate throu the jEventsToSend
-            3. iterate throu the value list from jEventsToSend
+            1. Check if we good to go. If not look at E{6}.
+            2. iterate through the jEventsToSend
+            3. iterate through the list ,from the value of the key eventID
             4. post the jEvent with the eventID from step E{2} and the jEventObj from step E{3}
-            5. clear the jEventsToSend dict. and stop running.
+            5. start from E{1} again.
+            6. clear the jEventsToSend dict. and stop running.
         """
 
         self.shouldIRun = True #: mabye the JasonEventSender has stopt sending before, but we want to run it again
         while True:
             with self.lock:
-                if self.shouldIRun:
-                    for eventID,jEventObjList in self.jEventsToSend.iteritems():
-                        for jEventObj in jEventObjList:
-                           self.postJEvent(eventID,jEventObj)
+                if self.shouldIRun: #1
+                    for eventID,jEventObjList in self.jEventsToSend.iteritems(): #2
+                        for jEventObj in jEventObjList: #3
+                           self.postJEvent(eventID,jEventObj)#4
                 else:
-                    self.jEventsToSend.clear()
+                    self.jEventsToSend.clear()#6
                     break
 
             viz.waitFrame(1)
