@@ -22,7 +22,7 @@ class JasonEventRegister(viz.EventClass):
 
     def registerCallback(self, callerClass, **dicti):
         """
-        Registers callback with our callerClass and manages the eventID's
+        Registers the callerClass and manages the eventID's
 
         @param dicti: key = eventName and value = a list.
             list[0] is the callable funk/obj that should be executed when an specific Event(specified by eventName) is received.
@@ -107,9 +107,9 @@ class JasonEventSender(object):
 
     def postJEvent(self,eventID,jEObj):
         """
-        This command allows us to send events to the running viz from different threads.
-        The event is saved in a list, which the viz thread processes at the beginning of every frame.
-        Callback's which are registered to the specific event, will be notified and the jEObj will be passed on to them
+        This command allows us to send events to the running viz module from different threads.
+        The event is saved in a list, which the viz module processes at the beginning of every frame.
+        Funktion's/Classe's which are registered to the specific event, will be notified and the jEObj will be passed on to them
         """
 
         viz.postEvent(eventID,jEObj)
@@ -117,21 +117,21 @@ class JasonEventSender(object):
 
 
 
-class JassonCam():
+class JassonCam(object):
 
     MOVE_SPEED = 3.0
     TURN_SPEED = 50.0
-    """constant definitions"""
+    """constant definition"""
 
     def __init__(self,jasonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_PARENT,moveScale=1.0,turnScale=1.0):
-        """This Class will interpret the JasonEvents to CamaraMovments"""
+        """This Class will interpret the JasonEvents to CameraMovements"""
 
         self.myHandler = jasonEventRegister #: needed for Registering
 
         if view == None:
             self.view = viz.MainView
         else:
-            self.view = view #: if the view is diffrent than viz.MainView
+            self.view = view #: if the view is different than viz.MainView
 
         self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"],VIEW_CHANGED_EVENT=["onViewChanged"]) #: Register funkt with Events
 
@@ -140,7 +140,7 @@ class JassonCam():
 
         self.moveMode = moveMode #: Translation mode
 
-        self.moveSet = set() #: these are the movments that must be realised
+        self.moveSet = set() #: these are the movements that must be realised
 
         self.helperDict = {} #: helper dict for getting the keys into the moveSet
 
@@ -168,7 +168,7 @@ class JassonCam():
     def onJassonKeyDown(self, jE):
         """
         the helperDict looks like this.{ "w" : set(viz.Data(index=2,sign=1,move=True)), "s" : set(viz.Data(index=2,sign=-1,move=True)), ....}.
-        1.The methode takes the jE.key as the Key for the helperDict
+        1.The method takes the jE.key as the Key for the helperDict
         2.Now we get the Value form the helperDict, which is a set that contains only one viz.Data obj.
         3.Then it adds the set from E{2} to the moveSet
         """
