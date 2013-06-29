@@ -8,12 +8,12 @@ class JEventObj(object):
     """This class is an Obj that holds data"""
 
     def __init__(self,dicti):
-        """the overgiven dict will be convortet into membervarbs (of the createt jEventObj)"""
+        """dicti will be converted into membervariables (of the created jEventObj)"""
         self.__dict__.update(dicti)
 
 
 class JasonEventRegister(viz.EventClass):
-    """This class handels the EventIDs and registers callbacks"""
+    """This class handel's the EventIDs and registers callbacks"""
 
     def __init__(self):
 
@@ -38,7 +38,7 @@ class JasonEventRegister(viz.EventClass):
                 self.callback(self.eventID, getattr(callerClass, ls[0]))
 
     def getEventID(self, eventName):
-        """a methode to get an eventID from viz."""
+        """a method to get an eventID from viz."""
 
         return self.dictOfEvents.setdefault(eventName,viz.getEventID(eventName))
 
@@ -110,7 +110,7 @@ class JasonEventSender(object):
         """
         This command allows us to send events to the running viz module from different threads.
         The event is saved in a list, which the viz module processes at the beginning of every frame.
-        Funktion's/Classe's which are registered to the specific event, will be notified and the jEObj will be passed on to them
+        Function's/Classes which are registered to the specific event, will be notified and the jEObj will be passed on to them
         """
 
         viz.postEvent(eventID,jEObj)
@@ -134,7 +134,7 @@ class JassonCam(object):
         else:
             self.view = view #: if the view is different than viz.MainView
 
-        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"],VIEW_CHANGED_EVENT=["onViewChanged"]) #: Register funkt with Events
+        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"],VIEW_CHANGED_EVENT=["onViewChanged"]) #: Register, which event, triggers which function
 
         self.moveScale = self.MOVE_SPEED * moveScale #: the actual Movement speed
         self.turnScale = self.TURN_SPEED * turnScale #: the actual turn speed
@@ -145,7 +145,7 @@ class JassonCam(object):
 
         self.helperDict = {} #: helper dict for getting the keys into the moveSet
 
-        self.typOfMovment = {} #: consist movements for each type
+        self.typOfMovment = {} #: contains data about each type of movement
         self.typOfMovment[forward] = viz.Data(index=2,sign=1,move=True)
         self.typOfMovment[backward] = viz.Data(index=2,sign=-1,move=True)
         self.typOfMovment[left] = viz.Data(index=0,sign=-1,move=True)
