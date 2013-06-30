@@ -51,7 +51,7 @@ viz.go(viz.QUAD_BUFFER)
 
 
 
-modelIsLoaded = False
+modellIsLoaded = False
 
 
 
@@ -89,7 +89,7 @@ Hier die wichtigsten Shortcuts zum bedienen des Programmes:
     * /:   Erhoehen/Verringern der Fluggeschwindigkeit 0.05-10"""
 
                 self.neu = None
-		self.model = None
+		self.modell = None
 		self.thread = None
 
 		viz.MainWindow.fov(60)
@@ -107,10 +107,10 @@ Hier die wichtigsten Shortcuts zum bedienen des Programmes:
 		self.menubar = vizmenu.add()
 		self.menubar.setVisible(False)
 
-		#"""Model DropDownMenu"""
-		self.BearbeitenMenu = self.menubar.add("Model")
+		#"""modell DropDownMenu"""
+		self.BearbeitenMenu = self.menubar.add("Modell")
 		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Datei oeffnen")
-		self.buttonModelEntfernen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Model entfernen")
+		self.buttonModellEntfernen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Modell entfernen")
 
 		#"""Funktionen DropDownMenu"""
 		self.FunktionenMenu = self.menubar.add("Funktionen")
@@ -177,9 +177,9 @@ Hier die wichtigsten Shortcuts zum bedienen des Programmes:
 
                # """Button Definition"""
 
-		#"""Model Buttons"""
-		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModel)
-		vizact.onbuttonup(self.buttonModelEntfernen, self.deleteModel)
+		#"""Modell Buttons"""
+		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModell)
+		vizact.onbuttonup(self.buttonModellEntfernen, self.deleteModell)
 
 		#"""Note Buttons"""
 		vizact.onbuttonup(self.buttonNotizEinfuegen, Notes.openTextBox, self.menubar)
@@ -227,10 +227,10 @@ Hier die wichtigsten Shortcuts zum bedienen des Programmes:
 	def setAlpha(self, slider):
                 """Setze Alphawert"""
 	
-		#"""Falls ein Model vorhanden ist"""
-		if self.model is not None:
+		#"""Falls ein Modell vorhanden ist"""
+		if self.Modell is not None:
 			self.alphaSlider.message( str('%.2f'%(slider)) )
-			self.model.alpha(slider)
+			self.Modell.alpha(slider)
 
 	
 	def startAndroid(self):
@@ -276,29 +276,29 @@ Hier die wichtigsten Shortcuts zum bedienen des Programmes:
 			GlobalVariables.showPosi = False
 		
 	
-	def setModel (self):
-                """Lade neues Model"""
+	def setModell (self):
+                """Lade neues Modell"""
                 
-		global modelIsLoaded
-		#"""Falls noch kein Model geladen ist"""
-		if not (modelIsLoaded):
+		global ModellIsLoaded
+		#"""Falls noch kein Modell geladen ist"""
+		if not (ModellIsLoaded):
                          #"""Setze AlphaSlider zurueck"""
 			self.alphaSlider.set(1.0)
 			# """Oeffne Menue zum auswaehlen der Datei"""
-			self.model = viz.addChild(vizinput.fileOpen())
-			self.model.disable(viz.CULL_FACE)
-			self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
-			self.model.setEuler([0,0,0])
+			self.Modell = viz.addChild(vizinput.fileOpen())
+			self.Modell.disable(viz.CULL_FACE)
+			self.Modell.setPosition(0,0,60, viz.ABS_GLOBAL)
+			self.Modell.setEuler([0,0,0])
 			viz.collision(viz.ON)
-			modelIsLoaded = True
+			ModellIsLoaded = True
 			
 			
-	def deleteModel(self):
-                """Loesche Model"""
+	def deleteModell(self):
+                """Loesche Modell"""
                 
-		global modelIsLoaded
-		self.model.remove()
-		modelIsLoaded = False
+		global ModellIsLoaded
+		self.Modell.remove()
+		ModellIsLoaded = False
 
 
 	
