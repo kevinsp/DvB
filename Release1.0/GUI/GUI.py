@@ -109,7 +109,7 @@ Hier die wichtigsten Shortcuts zum bedienen des Programmes:
 
 		#"""modell DropDownMenu"""
 		self.BearbeitenMenu = self.menubar.add("Modell")
-		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Datei oeffnen")
+		self.buttonDateiOeffnen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Modell oeffnen")
 		self.buttonModellEntfernen = self.BearbeitenMenu.add(viz.BUTTON_LABEL, "Modell entfernen")
 
 		#"""Funktionen DropDownMenu"""
