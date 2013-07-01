@@ -68,8 +68,8 @@ modelIsLoaded = False
 
 
 class DummyObj(object):
-        """This class is an Obj that holds data"""
-        
+	"""This class is an Obj that holds data"""
+	
 	"""the overgiven dict will be convortet into membervarbs (of the createt dummyObj)"""
 	def __init__(self,dicti):
 		self.__dict__.update(dicti)
@@ -79,10 +79,9 @@ class DummyObj(object):
 
 
 class Oberflaeche(object):
-        """Die Hauptklasse/Oberflaeche"""
-        
+	"""Die Hauptklasse/Oberflaeche"""
 	def __init__(self):
-                """Initialisiere die Oberfläche"""
+		"""Initialisiere die Oberfläche"""
 		self.neu = None
 		self.model = None
 		self.thread = None
@@ -91,7 +90,8 @@ class Oberflaeche(object):
 		viz.collision(viz.ON)
 
 		viz.window.setFullscreen(True)
-		viz.addChild('sky_day.osgb') """Umgebung laden"""
+		viz.addChild('sky_day.osgb')
+		"""Umgebung laden"""
 		
 		viz.setOption('viz.fullscreen',1)
 		viz.fov(40.0,1.333)
@@ -149,11 +149,15 @@ class Oberflaeche(object):
 		
 		"""Steuerung"""
 		viz.mouse(viz.ON)
-		viz.mouse.setTrap() """Maus kann nicht aus dem Fenster gehen"""
+		viz.mouse.setTrap()
+		"""Maus kann nicht aus dem Fenster gehen"""
 
-		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed) """Initialisieren Tracker mit bestimmter Geschwindigkeit"""
-		GlobalVariables.tracker.setPosition([0,1.8,0]) """Setze Tracker Position"""
-		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView) """Verlinke Tracker mit MainView"""
+		GlobalVariables.tracker = vizcam.addWalkNavigate(moveScale=GlobalVariables.moveSpeed)
+		"""Initialisieren Tracker mit bestimmter Geschwindigkeit"""
+		GlobalVariables.tracker.setPosition([0,1.8,0])
+		"""Setze Tracker Position"""
+		GlobalVariables.link = viz.link(GlobalVariables.tracker,viz.MainView)
+		"""Verlinke Tracker mit MainView"""
 		viz.mouse.setVisible(False)
 
 		"""Boden laden"""
@@ -165,7 +169,7 @@ class Oberflaeche(object):
 		self.checkPointsPanel = vizinfo.InfoPanel(align=viz.ALIGN_CENTER,fontSize=15,icon=False,key="h")
 		self.checkPointsPanel.visible(True)
 
-                               """Button Definition"""
+		"""Button Definition"""
 
 		"""Model Buttons"""
 		vizact.onbuttonup(self.buttonDateiOeffnen, self.setModel)
@@ -215,7 +219,7 @@ class Oberflaeche(object):
 	
 	
 	def setAlpha(self, slider):
-                """Setze Alphawert"""
+		"""Setze Alphawert"""
 	
 		"""Falls ein Model vorhanden ist"""
 		if self.model is not None:
@@ -224,50 +228,58 @@ class Oberflaeche(object):
 
 	
 	def startAndroid(self):
-                """Starte Server fuer Android"""
-                
+		"""Starte Server fuer Android"""
+			
 		"""starte nur einen Server, wenn noch keiner laeuft"""
 		if GlobalVariables.serverIsRunning is False: 
-			self.ipTextScreen.message(str(viz.net.getIP())) """Zeige IP-Adresse an"""
+			self.ipTextScreen.message(str(viz.net.getIP()))
+			"""Zeige IP-Adresse an"""
 			self.neu = RemoteAppMain.RemoteAppLuncher(str(viz.net.getIP()), GlobalVariables.tracker, GlobalVariables.checkPointsList)
-			self.thread = viz.director(self.neu.lunch) """Starte Server in neuem Thread"""
+			self.thread = viz.director(self.neu.lunch)
+			"""Starte Server in neuem Thread"""
 			GlobalVariables.serverIsRunning = True
-		"""Falls bereits ein Server laeuft"""
+			"""Falls bereits ein Server laeuft"""
 		else:
 			GlobalVariables.serverIsRunning = False
 			self.ipTextScreen.message("")
-			self.neu.shutdown() """beende Server"""
+			self.neu.shutdown()
+			"""beende Server"""
 			
 	
 	def zeigePosition(self):
-                """Zeige zurzeitige Position"""
-                
+		"""Zeige zurzeitige Position"""
+			
 		
 		def changeMessage():
-                        """Aendere die Positionsanzeige"""
-                        
-			userPosition = viz.MainView.getPosition() """Frage User Position"""
+			"""Aendere die Positionsanzeige"""
+					
+			userPosition = viz.MainView.getPosition()
+			"""Frage User Position"""
 			message = str(round(userPosition[0],2)) + " " + str(round(userPosition[1],2)) + " " + str(round(userPosition[2],2))
-			self.textScreen.message(str(message)) """Setze Anzeige auf neue Position"""
+			self.textScreen.message(str(message))
+			"""Setze Anzeige auf neue Position"""
 			
 		"""Falls Position noch nicht gezeigt wird"""
 		if (GlobalVariables.showPosi is False):
 			self.textScreen.visible(True)
 			GlobalVariables.showPosi = True
-			vizact.ontimer(0.1, changeMessage) """Aktualisiere durchgehend die Positionsangabe"""
+			vizact.ontimer(0.1, changeMessage)
+			"""Aktualisiere durchgehend die Positionsangabe"""
 		else:
 			self.textScreen.visible(False)
 			GlobalVariables.showPosi = False
 		
 	
 	def setModel (self):
-                """Lade neues Model"""
-                
+		"""Lade neues Model"""
+			
 		global modelIsLoaded
 		"""Falls noch kein Model geladen ist"""
 		if not (modelIsLoaded):
-			self.alphaSlider.set(1.0) """Setze AlphaSlider zurueck"""
-			self.model = viz.addChild(vizinput.fileOpen()) """Oeffne Menue zum auswaehlen der Datei"""
+			self.alphaSlider.set(1.0)
+			"""Setze AlphaSlider zurueck"""
+			self.model = viz.addChild(vizinput.fileOpen())
+			"""Oeffne Menue zum auswaehlen der Datei"""
 			self.model.disable(viz.CULL_FACE)
 			self.model.setPosition(0,0,60, viz.ABS_GLOBAL)
 			self.model.setEuler([0,0,0])
@@ -276,8 +288,8 @@ class Oberflaeche(object):
 			
 			
 	def deleteModel(self):
-                """Loesche Model"""
-                
+		"""Loesche Model"""
+			
 		global modelIsLoaded
 		self.model.remove()
 		modelIsLoaded = False
@@ -285,26 +297,26 @@ class Oberflaeche(object):
 
 	
 	def save(self):
-                """Speichere alle Checkpoints und 3D Notizen in XML Dateien"""
-                
+		"""Speichere alle Checkpoints und 3D Notizen in XML Dateien"""
+			
 		self.saveXml(GlobalVariables.checkPointsList, "Checkpoints.xml")
 		self.saveXml(GlobalVariables.noteList, "3D Notizen.xml")
 	
 	
 	def load(self):
-                """Lade alle Checkpoints und 3D Notizen aus XML Dateien"""
-                
+		"""Lade alle Checkpoints und 3D Notizen aus XML Dateien"""
+			
 		self.buildMyObjList(GlobalVariables.checkPointsList, "Checkpoints.xml", "Checkpoint()")
 		self.buildMyObjList(GlobalVariables.noteList, "3D Notizen.xml", "Note()")
 
 
 	def saveXml(self, elementList,filepath):
-                """
+		"""
 		Mehtode to save Membervarbs to xml file.
 		@elementList - list with obj that you want to save
 		@filepath - path where you will find the xml file after running this methode
-                """
-                
+		"""
+			
 		output_file = open(str(filepath),"w")
 		root = Element("root")
 		for element in elementList:
@@ -319,11 +331,11 @@ class Oberflaeche(object):
 		output_file.close()
 
 	def loadXml(self, filepath):
-                """
+		"""
 		Methode to Load form Xml file. Return value is a list with dummyObj.
 		@filepath - file diraytory to the file where you want to load from
-                """
-                
+		"""
+			
 		input_file = open (str(filepath),"r")
 
 		document = ElementTree.parse(input_file)
@@ -356,17 +368,18 @@ class Oberflaeche(object):
 		
 
 	def buildMyObjList(self, myList,filepath,consti):
-                """
+		"""
 		This methode takes a list and fills it with my Object.
 		@myList - the List i want to be filled
 		@filepath - file diraytory to the file where you want to load from
 		@consti - the name of the constructor i want to have. example "MyObj()" where MyObj is the obj you want
-                """
-                
+		"""
+		
 		loadList = self.loadXml(filepath)
 		"""transforms the dummyObj into your obj"""
 		for elm in loadList:
-			obj = eval(consti) """replace this, with the obj you want"""
+			obj = eval(consti)
+			"""replace this, with the obj you want"""
 			obj.update(elm.__dict__)
 			myList.append(obj)
 			
