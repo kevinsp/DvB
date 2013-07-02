@@ -1,7 +1,7 @@
 from datetime import time
 import viz
-from JasonEventModule import JEventObj
-from JasonEventModule import JasonEventSender
+from JsonEventModule import JEventObj
+from JsonEventModule import JsonEventSender
 import json
 import traceback
 import sys
@@ -22,14 +22,15 @@ class Parser(object):
         C{ {wp: 3, name: MyWaypoint, comment: very exciting view} }
     """
 
-    def __init__(self, jasonEventRegister,wayPointList):
+    def __init__(self, jsonEventRegister,wayPointList):
         """
             Has global EventHandler and Waypointlist referenced.
             Also create mreDict, the hardcoded dictionary with
             the permutations of our movement parameters.
         """
-        self.jEventReg = jasonEventRegister
-        self.sender = JasonEventSender()
+
+        self.jEventReg = jsonEventRegister
+        self.sender = JsonEventSender()
         viz.director(self.sender.run)
         self.mreDict = self.createDicti()
         self.wayPointList = wayPointList
@@ -51,6 +52,7 @@ class Parser(object):
             @return:     Either empty String, so Socket knows not to send anything back,
                          or 'end' / the actual stringed waypoint list.
         """
+
         if connectionIterupted:
             self.sender.resetMovements()
             return ""
@@ -82,10 +84,11 @@ class Parser(object):
             @return:        Either empty String, so Socket knows not to send anything back,
                             or 'end' / the actual stringed waypoint list.
         """
+
         try:
             self.jloadout = json.loads(jpacket)
         except ValueError:
-            print "json OBJ could not be loaded"
+            print "Server: json OBJ could not be loaded"
             self.sender.resetMovements()
             return ""
 
@@ -139,6 +142,7 @@ class Parser(object):
             @return:          fully toString'ed list of existing waypoints, seperated by semicolon
                               and tail-ended with our endTag.
         """
+
         self.wpValue = jwaypoint["wp"]
             # 0 -> Delete a waypoint by name.
         if self.wpValue == 0:
@@ -179,8 +183,9 @@ class Parser(object):
             @return: A dictionary containing assigned eventIDs with the matching key literal
                      so the eventHandling routine can work with it.
         """
+
         self.jEventDict = {}
-        self.eventID = self.jEventReg.getEventID("JASON_KEYDOWN_EVENT")
+        self.eventID = self.jEventReg.getEventID("JSON_KEYDOWN_EVENT")
         self.jEventDict[self.eventID] = []
 
         for key in self.keyToSend:

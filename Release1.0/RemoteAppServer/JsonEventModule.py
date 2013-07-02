@@ -12,7 +12,7 @@ class JEventObj(object):
         self.__dict__.update(dicti)
 
 
-class JasonEventRegister(viz.EventClass):
+class JsonEventRegister(viz.EventClass):
     """This class handel's the EventIDs and registers callbacks"""
 
     def __init__(self):
@@ -44,16 +44,16 @@ class JasonEventRegister(viz.EventClass):
 
 
 
-class JasonEventSender(object):
+class JsonEventSender(object):
     def __init__(self):
         """
-        This class sends JassonEvents to viz and must be started via viz.director()
+        This class sends JsonEvents to viz and must be started via viz.director()
 
         @param jEventsToSend: is a dict. where key = eventID and value = is a list.
             The list contains jEventObj.
         @type jEventsToSend: dict.
 
-        @param shouldIRun: tells the JasonEventSender Obj to keep running or not
+        @param shouldIRun: tells the JsonEventSender Obj to keep running or not
         @type shouldIRun: bool
 
         @param lock: a Lock obj for synchronisation purposes
@@ -87,7 +87,7 @@ class JasonEventSender(object):
             6. clear the jEventsToSend dict. and stop running.
         """
 
-        self.shouldIRun = True #: mabye the JasonEventSender has stopt sending before, but we want to run it again
+        self.shouldIRun = True #: mabye the JsonEventSender has stopt sending before, but we want to run it again
         while True:
             with self.lock:
                 if self.shouldIRun: #1
@@ -118,23 +118,23 @@ class JasonEventSender(object):
 
 
 
-class JassonCam(object):
+class JsonCam(object):
 
     MOVE_SPEED = 3.0
     TURN_SPEED = 50.0
     """constant definition"""
 
-    def __init__(self,jasonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_PARENT,moveScale=1.0,turnScale=1.0):
-        """This Class will interpret the JasonEvents to CameraMovements"""
+    def __init__(self,jsonEventRegister,view=None,forward='w',backward='s',left='q',right='e',up='r',down='f',turnRight='d',turnLeft='a',pitchDown='h',pitchUp='y',rollRight='j',rollLeft='g',moveMode=viz.REL_PARENT,moveScale=1.0,turnScale=1.0):
+        """This Class will interpret the JsonEvents to CameraMovements"""
 
-        self.myHandler = jasonEventRegister #: needed for Registering
+        self.myHandler = jsonEventRegister #: needed for Registering
 
         if view == None:
             self.view = viz.MainView
         else:
             self.view = view #: if the view is different than viz.MainView
 
-        self.myHandler.registerCallback(self,JASON_KEYDOWN_EVENT=["onJassonKeyDown"],UPDATE_EVENT=["onCamUpdate"],VIEW_CHANGED_EVENT=["onViewChanged"]) #: Register, which event, triggers which function
+        self.myHandler.registerCallback(self,JSON_KEYDOWN_EVENT=["onJsonKeyDown"],UPDATE_EVENT=["onCamUpdate"],VIEW_CHANGED_EVENT=["onViewChanged"]) #: Register, which event, triggers which function
 
         self.moveScale = self.MOVE_SPEED * moveScale #: the actual Movement speed
         self.turnScale = self.TURN_SPEED * turnScale #: the actual turn speed
@@ -166,7 +166,7 @@ class JassonCam(object):
         self.helperDict.setdefault(key,set()).add(vizDataObj)
 
 
-    def onJassonKeyDown(self, jE):
+    def onJsonKeyDown(self, jE):
         """
         the helperDict looks like this.{ "w" : set(viz.Data(index=2,sign=1,move=True)), "s" : set(viz.Data(index=2,sign=-1,move=True)), ....}.
         1.The method takes the jE.key as the Key for the helperDict
@@ -192,7 +192,7 @@ class JassonCam(object):
                 if k.move:
                     move[k.index] += k.sign * e.elapsed * self.moveScale
                 else:
-                    self.view.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
+                   self.view.setAxisAngle(k.axis[0],k.axis[1],k.axis[2],e.elapsed * self.turnScale,viz.HEAD_ORI,k.mode)
             self.view.setPosition(move,self.moveMode)
             self.moveSet.clear()
 

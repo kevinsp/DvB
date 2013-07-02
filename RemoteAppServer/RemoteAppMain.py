@@ -56,25 +56,5 @@ class RemoteAppLuncher(object):
 
 
 if __name__ == "__main__":
-    jEventRegister = JasonEventRegister()
-    jCam = JassonCam(jEventRegister)
-    waypointList = []
-    jParser = Parser(jEventRegister,waypointList)
-    connector = Connector(jParser)
-    sSocket = Serversocket("127.0.0.1",connector)
-
-
-
-
-    #jEventEmulator1 = EmulateJEvents(jEventRegister,{"JASON_KEYDOWN_EVENT":[{"key":"w"},{"key":"a"},{"key":"s"},{"key":"d"}]})
-    #jEventEmulator2 = EmulateJEvents(jEventHandler,{"JASON_KEYDOWN_EVENT":{"key":"w"}})
-
-    viz.go()
-    viz.addChild('piazza.osgb')
-    viz.collision(viz.ON)
-    #vizcam.KeyboardCamera()
-    viz.director(sSocket.run_server)
-    #viz.director(jEventEmulator2.startJEvents,1)
-
-
-
+    pass
+    #jEventEmulator1 = EmulateJEvents(jReg,{"JASON_KEYDOWN_EVENT":[{"key":"w"},{"key":"a"},{"key":"s"},{"key":"d"}]})
