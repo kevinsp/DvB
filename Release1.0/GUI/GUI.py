@@ -51,7 +51,7 @@ viz.go(viz.QUAD_BUFFER)
 
 
 
-modellIsLoaded = False
+ModellIsLoaded = False
 
 
 
